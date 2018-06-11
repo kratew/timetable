@@ -289,21 +289,21 @@
                 app:fabSize="auto"
                 app:rippleColor="#FFFFFF" />
 
-            <com.bowyer.app.fabtransitionlayout.BottomSheetLayout
-                android:id="@+id/bottom_sheet"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                app:ft_container_gravity="center"
-                app:ft_color="@color/primary" >
+            <!--<com.bowyer.app.fabtransitionlayout.BottomSheetLayout-->
+                <!--android:id="@+id/bottom_sheet"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--app:ft_container_gravity="center"-->
+                <!--app:ft_color="@color/primary" >-->
 
-                <ListView
-                    android:id="@+id/list_menu"
-                    android:background="@color/primary"
-                    android:divider="@null"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.bowyer.app.fabtransitionlayout.BottomSheetLayout>
+                <!--<ListView-->
+                    <!--android:id="@+id/list_menu"-->
+                    <!--android:background="@color/primary"-->
+                    <!--android:divider="@null"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content" />-->
+            <!--</com.bowyer.app.fabtransitionlayout.BottomSheetLayout>-->
 
         </FrameLayout>
     </ScrollView>

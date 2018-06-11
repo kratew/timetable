@@ -1,8 +1,6 @@
 package com.example.kimilm.timetable;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,14 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class FriendsFragment extends AAH_FabulousFragment implements View.OnClickListener{
+public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     ArrayList<FriendsItem> friends;
     FloatingActionButton fab;
