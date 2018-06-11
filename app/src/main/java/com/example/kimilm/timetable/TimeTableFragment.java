@@ -131,7 +131,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         }.start();
 
         //insertLesson
-        //==========================================================================
         View v = view.findViewById(R.id.mon);
         v.setOnClickListener(new View.OnClickListener()
         {
@@ -140,10 +139,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 popInsertLessonFragment(v);
             }
         });
-        //==========================================================================
 
         //toImage
-        //==========================================================================
         v = view.findViewById(R.id.tue);
         v.setOnClickListener(new View.OnClickListener()
         {
@@ -152,10 +149,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 toImage(v);
             }
         });
-        //==========================================================================
 
         //temp Insert Lesson
-        //==========================================================================
         v = view.findViewById(R.id.wed);
         v.setOnClickListener(new View.OnClickListener()
         {
@@ -164,7 +159,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 BottomSheet(R.layout.insert_lesson_modal_bottom_sheet);
             }
         });
-        //==========================================================================
 
         return view;
     }
@@ -178,7 +172,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
            - setAction(Action문자열, 이벤트 핸들러)
            - 사용자가 Action문자열을 클릭하면, 두 번째 매개변수인 OnClickListener()를 구현한 이벤트 핸들러가 실행
         */
-        //=====================================================================
         Snackbar.make(v,"Snackbar with Action", Snackbar.LENGTH_LONG).setActionTextColor(Color.YELLOW).setAction("현재 시간?", new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -189,7 +182,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(), getTime, Toast.LENGTH_LONG).show();
             }
         }).show();
-        //=====================================================================
     }
 
     //화면 사이즈에 맞게 변환
