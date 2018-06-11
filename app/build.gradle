@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.allattentionhere:fabulousfilter:0.0.2'
-    implementation 'com.bowyer.app:fabtransitionlayout:0.4.0@arr'
+    compile 'com.bowyer.app:fabtransitionlayout:0.4.0'
     implementation 'com.github.ksoichiro:android-observablescrollview:1.5.1'
     implementation files('/Users/kimilm/Downloads/mongo-java-driver-3.7.1-javadoc.jar')
     implementation files('/Users/kimilm/Downloads/mongo-java-driver-3.7.1.jar')
