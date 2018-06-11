@@ -17,6 +17,9 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -105,6 +108,41 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
         return view;
+    }
+
+    // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.fragment_time_table_fab_items, menu);
+        super.onCreateOptionsMenu(menu, menuInflater);
+
+        MenuItem item1 = menu.findItem(R.id.option1);
+        MenuItem item2 = menu.findItem(R.id.option2);
+        MenuItem item3 = menu.findItem(R.id.option3);
+
+        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {   // item1 온클릭리스너
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Toast.makeText(getActivity(), "강의추가 선택됨", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
+        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {   // item2 온클릭리스너
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Toast.makeText(getActivity(), "이미지로 저장 선택됨", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
+        item3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {   // item3 온클릭리스너
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Toast.makeText(getActivity(), "시간표 변경 선택됨", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
     }
 
     @Override
