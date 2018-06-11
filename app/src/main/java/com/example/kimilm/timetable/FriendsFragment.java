@@ -1,8 +1,6 @@
 package com.example.kimilm.timetable;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,14 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class FriendsFragment extends AAH_FabulousFragment implements View.OnClickListener{
+public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     ArrayList<FriendsItem> friends;
     FloatingActionButton fab;
@@ -68,21 +64,4 @@ public class FriendsFragment extends AAH_FabulousFragment implements View.OnClic
         //=====================================================================
 
     }
-
-
-    // Fabulous Filter 코드
-    /*
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        View contentView = View.inflate(getContext(), R.layout.filter_sample_view, null);
-        RelativeLayout rl_content = (RelativeLayout) contentView.findViewById(R.id.rl_content);
-        LinearLayout ll_buttons = (LinearLayout) contentView.findViewById(R.id.ll_buttons);
-        contentView.findViewById(R.id.btn_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFilter("closed");
-            }
-        });
-    }
-    */
 }
