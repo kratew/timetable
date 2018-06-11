@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never">
+
+        <FrameLayout
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
+
+
+            <GridLayout
+                android:id="@+id/gridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="6"
+                android:orientation="horizontal"
+                android:rowCount="15">
+
+                <!--space-->
+                <TextView
+                    android:id="@+id/space"
+                    android:layout_gravity="fill"
+                    android:background="@drawable/bolder" />
+
+                <!--day-->
+                <TextView
+                    android:id="@+id/mon"
+                    style="@style/day"
+                    android:onClick="toImage"
+                    android:text="Mon" />
+
+                <TextView
+                    android:id="@+id/tue"
+                    style="@style/day"
+                    android:text="Tue" />
+
+                <TextView
+                    android:id="@+id/wed"
+                    style="@style/day"
+                    android:text="Wed" />
+
+                <TextView
+                    android:id="@+id/thr"
+                    style="@style/day"
+                    android:text="Thr" />
+
+                <TextView
+                    android:id="@+id/fri"
+                    style="@style/day"
+                    android:background="@drawable/bolder_bottom"
+                    android:text="Fri" />
+
+                <!--time-->
+                <TextView
+                    android:id="@+id/am9"
+                    style="@style/time"
+                    android:text="9" />
+
+                <TextView
+                    android:id="@+id/am10"
+                    style="@style/time"
+                    android:text="10" />
+
+                <TextView
+                    android:id="@+id/am11"
+                    style="@style/time"
+                    android:text="11" />
+
+                <TextView
+                    android:id="@+id/pm12"
+                    style="@style/time"
+                    android:text="12" />
+
+                <TextView
+                    android:id="@+id/pm1"
+                    style="@style/time"
+                    android:text="1" />
+
+                <TextView
+                    android:id="@+id/pm2"
+                    style="@style/time"
+                    android:text="2" />
+
+                <TextView
+                    android:id="@+id/pm3"
+                    style="@style/time"
+                    android:text="3" />
+
+                <TextView
+                    android:id="@+id/pm4"
+                    style="@style/time"
+                    android:text="4" />
+
+                <TextView
+                    android:id="@+id/pm5"
+                    style="@style/time"
+                    android:text="5" />
+
+                <TextView
+                    android:id="@+id/pm6"
+                    style="@style/time"
+                    android:text="6" />
+
+                <TextView
+                    android:id="@+id/pm7"
+                    style="@style/time"
+                    android:text="7" />
+
+                <TextView
+                    android:id="@+id/pm8"
+                    style="@style/time"
+                    android:text="8" />
+
+                <TextView
+                    android:id="@+id/pm9"
+                    style="@style/time"
+                    android:text="9" />
+
+                <TextView
+                    android:id="@+id/pm10"
+                    style="@style/time"
+                    android:background="@drawable/bolder_right"
+                    android:text="10" />
+
+                <!--table-->
+                <TextView
+                    style="@style/table"
+                    android:layout_column="1"
+                    android:layout_row="1" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table" />
+
+                <TextView style="@style/table_right" />
+
+                <TextView style="@style/table_bottom" />
+
+                <TextView style="@style/table_bottom" />
+
+                <TextView style="@style/table_bottom" />
+
+                <TextView style="@style/table_bottom" />
+
+                <TextView android:layout_gravity="fill" />
+
+            </GridLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/faButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:src="@drawable/add"
+                app:backgroundTint="@android:color/background_light"
+                app:fabSize="auto"
+                app:rippleColor="#FFFFFF" />
+
+            <com.bowyer.app.fabtransitionlayout.BottomSheetLayout
+                android:id="@+id/bottom_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                app:ft_container_gravity="center"
+                app:ft_color="@color/primary"
+                >
+
+                <ListView
+                    android:id="@+id/list_menu"
+                    android:background="@color/primary"
+                    android:divider="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </com.bowyer.app.fabtransitionlayout.BottomSheetLayout>
+
+        </FrameLayout>
+    </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
+
