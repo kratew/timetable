@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.addOnTabSelectedListener(this);   // tabLayout의 이벤트 핸들러 등록.
 
         //얘를 기본값으로 못 바꾸나?
-        //getSupportActionBar().setElevation(0);  // 액션바 그림자 제거.
+        getSupportActionBar().setElevation(0);  // 액션바 그림자 제거.
     }
 
 
@@ -89,3 +89,5 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
     }
 }
+
+
