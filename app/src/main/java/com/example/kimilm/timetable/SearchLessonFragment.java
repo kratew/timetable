@@ -1,15 +1,22 @@
 package com.example.kimilm.timetable;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -35,6 +42,8 @@ public class SearchLessonFragment extends Fragment
     String key;
     ArrayList<Document> searchDocument;
 
+    Thread thread;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -45,13 +54,17 @@ public class SearchLessonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
+        thread = new Thread();
         View view = inflater.inflate(R.layout.search_lesson_modal_bottom_sheet, container, false);
 
         prefix = view.findViewById(R.id.prefix);
         searchBack = view.findViewById(R.id.searchBack);
-        searchBtn = view.findViewById(R.id.searchBtn);
         toSearch = view.findViewById(R.id.toSearch);
         recyclerView = view.findViewById(R.id.search_modal_recyclerView);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+
+        출처: http://superwony.tistory.com/4 [개발자 키우기]
 
         searchDocument = new ArrayList<>();
 
@@ -85,11 +98,16 @@ public class SearchLessonFragment extends Fragment
             }
         });
 
-        searchBtn.setOnClickListener(new View.OnClickListener()
-        {
+        toSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                lessonSearch(v);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    lessonSearch(v);
+
+                    KeyboardUtils.hideKeyboard(getContext());
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -99,7 +117,7 @@ public class SearchLessonFragment extends Fragment
     public void searchBack (View v)
     {
         InsertLessonFragment insertLessonFragment = new InsertLessonFragment();
-
+        insertLessonFragment.setArguments(getArguments());
 
         FragmentManager fManager = getFragmentManager();
         FragmentTransaction fTransaction = fManager.beginTransaction();
@@ -108,8 +126,6 @@ public class SearchLessonFragment extends Fragment
 
     public void lessonSearch (View v)
     {
-        searchDocument.clear();
-
         if(toSearch.getText().toString().length() == 0)
         {
             Toast.makeText(getActivity(), "입력 값이 없습니다.", Toast.LENGTH_SHORT).show();
@@ -117,14 +133,18 @@ public class SearchLessonFragment extends Fragment
             return;
         }
 
-        new Thread() {
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 synchronized (this) {
                     TimeTableFragment.mongo(searchDocument, key, toSearch.getText().toString());
                 }
             }
-        }.start();
+        };
+
+        thread.start();
+        //쓰레드 끝나는 시간을 기다려야한다
+        try { thread.join(); } catch (Exception e) {}
 
         if(searchDocument.size() == 0)
         {
@@ -147,7 +167,24 @@ public class SearchLessonFragment extends Fragment
         recyclerView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
+    }
+}
 
-        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+class KeyboardUtils
+{
+    public static void hideKeyboard(Context context)
+    {
+        try
+        {
+            ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            if ((((Activity) context).getCurrentFocus() != null) && (((Activity) context).getCurrentFocus().getWindowToken() != null))
+            {
+                ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(((Activity) context).getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

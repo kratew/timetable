@@ -56,10 +56,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     GridLayout gridLayout;
     FloatingActionButton fab;
     ScrollView scrollView;
-    CoordinatorLayout coordinator;
 
-
-    ArrayList<Document> document;
+    ArrayList<Document> documents;
 
     BottomSheetDialog modalBottomSheet;
 
@@ -126,12 +124,12 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
-        document = new ArrayList<>();
+        documents = new ArrayList<>();
 
         new Thread() {
             @Override
             public void run() {
-                mongo(document, null, null);
+                mongo(documents, null, null);
             }
         }.start();
 
@@ -161,7 +159,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         {
             @Override
             public void onClick(View v) {
-                BottomSheet(R.layout.insert_lesson_modal_bottom_sheet);
+                BottomSheet(R.layout.info_lesson_modal_bottom_sheet);
             }
         });
 
@@ -234,9 +232,13 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
     public void popInsertLessonFragment (View v)
     {
+        //프래그먼트 생성하고 강의 정보 넘김
         InsertLessonFragment insertLessonFragment = new InsertLessonFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Doc", documents);
+        insertLessonFragment.setArguments(bundle);
 
-
+        //화면에 띄움
         FragmentManager fManager = getFragmentManager();
         FragmentTransaction fTransaction = fManager.beginTransaction();
         fTransaction.replace(R.id.coordinator, insertLessonFragment).commit();
@@ -246,24 +248,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     public void BottomSheet(int layoutId)
     {
         View view = getLayoutInflater().inflate(layoutId, null);
-
-        if(layoutId == R.layout.insert_lesson_modal_bottom_sheet)
-        {
-            List<Lesson> list = new ArrayList<>();
-
-            for(Document doc : document)
-            {
-                list.add(insertLesson(doc));
-            }
-
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(list);
-
-            RecyclerView recyclerView = view.findViewById(R.id.modal_recyclerView);
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-            recyclerView.setAdapter(adapter);
-        }
 
         modalBottomSheet = new BottomSheetDialog(getActivity());
 
