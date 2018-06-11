@@ -13,14 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class FriendsFragment extends AAH_FabulousFragment implements View.OnClickListener{
+public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     ArrayList<FriendsItem> friends;
     FloatingActionButton fab;

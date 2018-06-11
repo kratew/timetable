@@ -1,8 +1,6 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
-import android.app.ActionBar;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,23 +15,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
-import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
