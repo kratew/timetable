@@ -31,6 +31,4 @@ dependencies {
     implementation 'com.allattentionhere:fabulousfilter:0.0.2'
     implementation 'com.bowyer.app:fabtransitionlayout:0.4.0@arr'
     implementation 'com.github.ksoichiro:android-observablescrollview:1.5.1'
-    implementation files('/Users/kimilm/Downloads/mongo-java-driver-3.7.1-javadoc.jar')
-    implementation files('/Users/kimilm/Downloads/mongo-java-driver-3.7.1.jar')
 }
