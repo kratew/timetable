@@ -9,7 +9,6 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -107,43 +106,85 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
+        setHasOptionsMenu(true);
         return view;
     }
 
     // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.fragment_time_table_fab_items, menu);
-        super.onCreateOptionsMenu(menu, menuInflater);
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
+
+/*
         MenuItem item1 = menu.findItem(R.id.option1);
         MenuItem item2 = menu.findItem(R.id.option2);
         MenuItem item3 = menu.findItem(R.id.option3);
 
-        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {   // item1 온클릭리스너
+        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "강의추가 선택됨", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "13243546576454", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
 
-        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {   // item2 온클릭리스너
+        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "이미지로 저장 선택됨", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "13243546576454", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
-
-        item3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {   // item3 온클릭리스너
+        item3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "시간표 변경 선택됨", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "SDYRTHEGRWSV", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
+*/
     }
+/*
+    @Override
+    public boolean onOptionsItemSelected(MenuI
+                        Toast.makeText(getActivity(), "비교시간표 변경 선택됨!", Toast.LENGTH_LONG).show();
+                        return false;tem item) {
+                        return super.onOptionsItemSelected(item);
+                    }
+*/
+
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+    int curId = item.getItemId();
+    switch(curId){
+        case R.id.option1:
+            Toast.makeText(getActivity(), "강의추가 선택됨!", Toast.LENGTH_LONG).show();
+            return false;
+            case R.id.option2:
+                Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
+                return false;
+                case R.id.option3:
+                    Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
+                    return false;
+                    default:
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onOptionsMenuClosed(Menu menu) {
+                super.onOptionsMenuClosed(menu);
+            }
 
     @Override
     public void onClick(View v) {

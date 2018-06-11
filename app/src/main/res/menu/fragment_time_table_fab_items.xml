@@ -22,6 +22,6 @@
     <item
         android:id="@+id/option3"
         android:icon="@drawable/compare"
-        android:title="시간표 변경" />
+        android:title="비교시간표 변경" />
 
 </menu>
