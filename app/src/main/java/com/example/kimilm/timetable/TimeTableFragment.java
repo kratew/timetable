@@ -27,6 +27,8 @@ import android.widget.GridLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.dekoservidoni.omfm.OneMoreFabMenu;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -40,7 +42,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     ScrollView scrollView;
     FrameLayout frameLayout;
     GridLayout gridLayout;
-    FloatingActionButton fab;
+    OneMoreFabMenu fab;
     Animation visib;
     Animation invisib;
     boolean checker; // fab.setVisibility(View.VISIBLE)가 최하단이 아닌 모든 스크롤 위치에서 작동하기 때문에 이를 막기 위한 변수.
@@ -65,7 +67,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         frameLayout = (FrameLayout)view.findViewById(R.id.frame);
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
-        fab = (FloatingActionButton)view.findViewById(R.id.faButton);
+        fab = (OneMoreFabMenu)view.findViewById(R.id.faButton);
         fab.setOnClickListener(this);
         visib = AnimationUtils.loadAnimation(getActivity(), R.anim.visib);
         invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
