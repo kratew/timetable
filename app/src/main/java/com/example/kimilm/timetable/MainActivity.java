@@ -1,13 +1,14 @@
 package com.example.kimilm.timetable;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.RelativeLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +32,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.addOnTabSelectedListener(this);   // tabLayout의 이벤트 핸들러 등록.
 
         //얘를 기본값으로 못 바꾸나?
-        //getSupportActionBar().setElevation(0);  // 액션바 그림자 제거.
+        getSupportActionBar().setElevation(0);  // 액션바 그림자 제거.
     }
-
 
     /* OnTabSelectedListener의 콜백 메소드.
      - TabLayout의 탭 버튼을 사용자가 터치했을 때 이벤트를 처리하기 위한 콜백 메소드로,
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         List<Fragment> fragments=new ArrayList<>();//fragments ArrayList
 
         //탭 버튼 문자열 배열
-        String title[]=new String[]{"", ""};
+        String title[]=new String[]{"TimeTable", "Friends"};
 
         //Adapter 생성자
         public MyPagerAdapter(FragmentManager fm){
@@ -89,5 +89,3 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
     }
 }
-
-
