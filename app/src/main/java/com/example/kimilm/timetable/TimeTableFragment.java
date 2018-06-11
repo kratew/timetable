@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +56,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     GridLayout gridLayout;
     FloatingActionButton fab;
     ScrollView scrollView;
+    CoordinatorLayout coordinator;
+
 
     ArrayList<Document> document;
 
@@ -126,7 +131,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         new Thread() {
             @Override
             public void run() {
-                mongo(document);
+                mongo(document, null, null);
             }
         }.start();
 
@@ -229,11 +234,13 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
     public void popInsertLessonFragment (View v)
     {
-//        InsertLessonFragment lessonFragment = new InsertLessonFragment();
-//        FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(android.R.id.content, lessonFragment);
-//        fragmentTransaction.commit();
+        InsertLessonFragment insertLessonFragment = new InsertLessonFragment();
+
+
+        FragmentManager fManager = getFragmentManager();
+        FragmentTransaction fTransaction = fManager.beginTransaction();
+        fTransaction.replace(R.id.coordinator, insertLessonFragment).commit();
+
     }
 
     public void BottomSheet(int layoutId)
@@ -363,7 +370,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return new Lesson(code, title, classify, credit, strArray[0], prof, strArray[1], 0);
     }
 
-    public static void mongo (ArrayList<Document> document)
+    public static void mongo (ArrayList<Document> document, String key, String value)
     {
         document.clear();
 
@@ -378,21 +385,16 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         //IT_ComputerEngineering code
         MongoCollection<Document> collection = db.getCollection("CJ0200");
 
-        //User Input
-        String key = "title";
-//        String key = "prof";
+        Document query = new Document();
 
-        //User Input
-        String value = "프로그래밍";
-//        String value = "황희정";
+        //search
+        if(key != null && value != null)
+        {
+            query = new Document(key, new Document("$regex", value));
+        }
 
-//        Document query = new Document(key, new Document("$regex", value));
+        MongoCursor<Document> cursor = collection.find(query).iterator();
 
-        Document totalQuery = new Document();
-
-        MongoCursor<Document> cursor = collection.find(totalQuery).iterator();
-
-        String [] result = new String [7];
 
         while (cursor.hasNext())
         {

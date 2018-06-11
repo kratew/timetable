@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:background="@android:color/white"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -14,19 +15,21 @@
         android:paddingRight="10dp">
 
         <RadioGroup
+            android:id="@+id/prefix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <RadioButton
+                android:id="@+id/searchTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:checked="true"
                 android:text="강의명"
                 android:textSize="12sp"/>
 
             <RadioButton
+                android:id="@+id/searchProf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
@@ -34,6 +37,7 @@
                 android:textSize="12sp"/>
 
             <RadioButton
+                android:id="@+id/searchCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="학수번호"
@@ -51,13 +55,12 @@
         android:background="@drawable/bolder_bottom">
 
         <ImageView
-            android:id="@+id/insertBack"
+            android:id="@+id/searchBack"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:onClick="exitBack"
             app:srcCompat="@android:drawable/ic_menu_revert" />
 
         <EditText
@@ -80,21 +83,13 @@
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:onClick="searchLesson"
             app:srcCompat="@android:drawable/ic_menu_search" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_modal_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="250dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/search_modal_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:behavior_hideable="false" />
-
-    </LinearLayout>
+        android:layout_height="250dp" />
 
 </LinearLayout>

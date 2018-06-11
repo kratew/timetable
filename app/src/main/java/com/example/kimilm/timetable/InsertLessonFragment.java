@@ -1,9 +1,10 @@
 package com.example.kimilm.timetable;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,18 +56,22 @@ public class InsertLessonFragment extends Fragment
             }
         });
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     public void insertExit (View v)
     {
-        FragmentManager fragmentManager = getActivity().getFragmentManager();
-        fragmentManager.beginTransaction().remove(InsertLessonFragment.this).commit();
-        fragmentManager.popBackStack();
+        FragmentManager fManager = getFragmentManager();
+        FragmentTransaction fTransaction = fManager.beginTransaction();
+        fTransaction.hide(this).commit();
     }
 
     public void setInsertSearch (View v)
     {
-        //Search Fragment
+        SearchLessonFragment searchLessonFragment = new SearchLessonFragment();
+
+        FragmentManager fManager = getFragmentManager();
+        FragmentTransaction fTransaction = fManager.beginTransaction();
+        fTransaction.replace(R.id.coordinator, searchLessonFragment).commit();
     }
 }
