@@ -6,6 +6,8 @@
 
     <color name="clear">#00ffffff</color>
 
+    <color name="primary">#00933D</color>
+
     <color name="color1">#BB3E45</color>
     <color name="color2">#F9642D</color>
     <color name="color3">#FFCB12</color>
