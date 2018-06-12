@@ -1,7 +1,11 @@
 package com.example.kimilm.timetable;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -18,13 +22,12 @@ import java.util.Locale;
 
 //어댑터 클래스
 public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
+
     private List<Lesson> list;
 
     public RecyclerViewAdapter(List<Lesson> list) {
         this.list = list;
     }
-
-
 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,7 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder holder, int position) {
+    public void onBindViewHolder(final ItemHolder holder, int position) {
         Lesson vo = list.get(position);
 
         holder.code.setText(vo.code);
@@ -44,23 +47,44 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
         holder.prof.setText(vo.prof);
         holder.classroom.setText(vo.classroom.toString().replace("[", "").replace("]", ""));
 
-        holder.view.setOnClickListener(new View.OnClickListener()
+        final Lesson lesson = vo;
+        final View holderView = holder.view;
+
+        holderView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) {
-                Snackbar snackbar = Snackbar.make(v, "강의 추가!", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(v, "강의 추가", Snackbar.LENGTH_INDEFINITE);
                 snackbar.getView().setBackgroundColor(v.getResources().getColor(R.color.color8));
 
                 snackbar.setActionTextColor(v.getResources().getColor(R.color.color3))
                         .setAction("강의 추가", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(v.getContext(), "insert Logic", Toast.LENGTH_SHORT).show();
+                        if(TimeTable.addLesson(lesson));
+                        {
+                            Intent intent = new Intent();
+                            FragmentManager fm = (FragmentManager) intent.getSerializableExtra("FragmentManager");
+                            TimeTableFragment fragment = (TimeTableFragment) fm.findFragmentById(R.layout.fragment_time_table);
+                            fragment.showTable(lesson);
+                        }
+                    }
+                });
+
+                snackbar.addCallback(new Snackbar.Callback()
+                {
+                    @Override
+                    public void onShown(Snackbar sb) {
+                        holderView.setBackgroundColor(Color.LTGRAY);
+                    }
+
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        holderView.setBackgroundColor(Color.argb(00, 00, 00, 00));
                     }
                 });
 
                 snackbar.show();
-
             }
         });
     }

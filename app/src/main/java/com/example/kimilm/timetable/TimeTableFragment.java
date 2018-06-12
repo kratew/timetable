@@ -28,9 +28,12 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mongodb.MongoClient;
@@ -42,6 +45,7 @@ import org.bson.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +55,7 @@ import java.util.Locale;
 public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
-    TimeTable timeTable;    //그래서 안 씀! (개발기간 부족)
+//    TimeTable timeTable;    //그래서 안 씀! (개발기간 부족)
     FrameLayout frameLayout;
     GridLayout gridLayout;
     FloatingActionButton fab;
@@ -163,6 +167,9 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+        Intent intent = new Intent();
+        intent.putExtra("FragmentManager", (Serializable) getFragmentManager());
+
         return view;
     }
 
@@ -196,6 +203,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
         ViewGroup.LayoutParams params = gridLayout.getLayoutParams();
         params.height = size.y;
+        gridLayout.setLayoutParams(params);
     }
 
     public TimeTable getTable (View v)
@@ -207,27 +215,177 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return timeTable;
     }
 
+    public void showTable (Lesson lesson)
+    {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        Button [] btn = new Button[lesson.times.size()];
+
+        for(int i = 0; i < lesson.times.size(); ++i)
+        {
+            LinearLayout wrapBtn = new LinearLayout(getContext());
+
+            wrapBtn.setLayoutParams(layoutParams);
+
+            btn[i] = new Button(getContext());
+
+            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams( setBtnWidth(lesson.times.get(i).substring(0, 1)),
+                                                                                    setBtnHeight(lesson.times.get(i).substring(1)));
+
+            btnParams.setMargins(setBtnLeftMargin(lesson.times.get(i).substring(0, 1)),
+                    setBtnTopMargin(lesson.times.get(i).substring(1)), 0, 0);
+
+            btn[i].setLayoutParams(btnParams);
+
+            btn[i].setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    infoLesson(v);
+                }
+            });
+
+            btn[i].setBackgroundColor(getResources().getColor(R.color.color1));
+
+            wrapBtn.addView(btn[i]);
+
+            frameLayout.addView(wrapBtn);
+        }
+    }
+
+//    time.substring(0, 1)
+    public int setBtnLeftMargin(String time)
+    {
+        switch(time)
+        {
+            case "월":
+                return getActivity().findViewById(R.id.mon).getLeft();
+            case "화":
+                return getActivity().findViewById(R.id.tue).getLeft();
+            case "수":
+                return getActivity().findViewById(R.id.wed).getLeft();
+            case "목":
+                return getActivity().findViewById(R.id.thr).getLeft();
+            case "금":
+                return getActivity().findViewById(R.id.fri).getLeft();
+        }
+
+        return 0;
+    }
+
+//    time.substring(0, 1)
+    public int setBtnWidth(String time)
+    {
+        switch(time)
+        {
+            case "월":
+                return getActivity().findViewById(R.id.mon).getWidth();
+            case "화":
+                return getActivity().findViewById(R.id.tue).getWidth();
+            case "수":
+                return getActivity().findViewById(R.id.wed).getWidth();
+            case "목":
+                return getActivity().findViewById(R.id.thr).getWidth();
+            case "금":
+                return getActivity().findViewById(R.id.fri).getWidth();
+        }
+
+        return 0;
+    }
+
+//    time.substring(1)
+    public int setBtnTopMargin(String time)
+    {
+
+        //A, B, C, D, E 교시
+        if (time.charAt(0) >= 65)
+        {
+            switch(time)
+            {
+                case "A":
+                    return getActivity().findViewById(R.id.time1).getTop()
+                            + getActivity().findViewById(R.id.time1).getHeight() * (30 / 60);
+                case "B":
+                    return getActivity().findViewById(R.id.time3).getTop();
+                case "C":
+                    return getActivity().findViewById(R.id.time4).getTop()
+                            + getActivity().findViewById(R.id.time4).getHeight() * (30 / 60);
+                case "D":
+                    return getActivity().findViewById(R.id.time6).getTop();
+                case "E":
+                    return getActivity().findViewById(R.id.time7).getTop()
+                            + getActivity().findViewById(R.id.time7).getHeight() * (30 / 60);
+            }
+        }
+        //1 ~ 14 교시
+        else
+        {
+            if(Integer.parseInt(time) < 9)
+            {
+                int resId = getResources().getIdentifier("time" + Integer.parseInt(time), "id", getActivity().getPackageName());
+                return getActivity().findViewById(resId).getTop();
+            }
+            else
+            {
+                int resId = getResources().getIdentifier("time" + Integer.parseInt(time), "id", getActivity().getPackageName());
+                return getActivity().findViewById(resId).getTop()
+                        + getActivity().findViewById(resId).getHeight() * ((30 - (Integer.parseInt(time) - 9) * 5) / 60);
+            }
+        }
+        return 0;
+    }
+
+    //    time.substring(1)
+    public int setBtnHeight(String time)
+    {
+
+        //A, B, C, D, E 교시
+        if (time.charAt(0) >= 65)
+        {
+            switch(time)
+            {
+                case "A":
+                    return getActivity().findViewById(R.id.time1).getHeight()
+                            + getActivity().findViewById(R.id.time1).getHeight() * (30 / 60);
+                case "B":
+                    return getActivity().findViewById(R.id.time3).getHeight();
+                case "C":
+                    return getActivity().findViewById(R.id.time4).getHeight()
+                            + getActivity().findViewById(R.id.time4).getHeight() * (30 / 60);
+                case "D":
+                    return getActivity().findViewById(R.id.time6).getHeight();
+                case "E":
+                    return getActivity().findViewById(R.id.time7).getHeight()
+                            + getActivity().findViewById(R.id.time7).getHeight() * (30 / 60);
+            }
+        }
+        //1 ~ 14 교시
+        else
+        {
+            if(Integer.parseInt(time) < 9)
+            {
+                int resId = getResources().getIdentifier("time" + Integer.parseInt(time), "id", getActivity().getPackageName());
+                return getActivity().findViewById(resId).getHeight();
+            }
+            else
+            {
+                int resId = getResources().getIdentifier("time" + Integer.parseInt(time), "id", getActivity().getPackageName());
+                return getActivity().findViewById(resId).getHeight()
+                        - getActivity().findViewById(resId).getHeight() * (5 / 60);
+            }
+        }
+        return 0;
+    }
+
     public void saveTable (View v)
     {
 
     }
 
-    //프래그먼트는 온클릭을 이렇게 달면 안 된대
-//    public void insertLesson (View v)
-//    {
-////        BottomSheet(R.layout.insert_lesson_modal_bottom_sheet);
-//
-//        //toTest
-//        BottomSheet(R.layout.info_lesson_modal_bottom_sheet);
-//
-////        timeTable.addLesson(new Lesson());
-//    }
-
     public void infoLesson (View v)
     {
         BottomSheet(R.layout.info_lesson_modal_bottom_sheet);
-
-        timeTable.addLesson(new Lesson());
     }
 
     public void popInsertLessonFragment (View v)
@@ -240,9 +398,9 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
         //화면에 띄움
         FragmentManager fManager = getFragmentManager();
+
         FragmentTransaction fTransaction = fManager.beginTransaction();
         fTransaction.replace(R.id.coordinator, insertLessonFragment).commit();
-
     }
 
     public void BottomSheet(int layoutId)

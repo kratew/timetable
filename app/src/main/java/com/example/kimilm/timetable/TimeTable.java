@@ -1,5 +1,7 @@
 package com.example.kimilm.timetable;
 
+import android.app.Application;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,26 +9,31 @@ import java.util.Arrays;
  * Created by kimilm on 2018. 5. 1..
  */
 
-public class TimeTable
+public class TimeTable extends Application
 {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
     //월-금, 9시-22시, 5분 단위로 중복 검사
-    private boolean jungBok [] = new boolean[5 * 14 * 12];
+    private static boolean jungBok [] = new boolean[5 * 14 * 12];
 
     //각 시간표별 강의 입력
-    ArrayList<Lesson> lessons = new ArrayList<>();
+    static ArrayList<Lesson> lessons = new ArrayList<>();
 
-    TimeTable ()
+    public TimeTable ()
     {
         Arrays.fill(jungBok, false);
     }
 
-    TimeTable (TimeTable timeTable)
+    public TimeTable (TimeTable timeTable)
     {
         //며용
     }
 
     //false -> 강의 추가 실패, true -> 강의 추가 성공
-    public boolean addLesson (Lesson lesson)
+    public static boolean addLesson (Lesson lesson)
     {
         for (int i = 0; i < lesson.times.size(); ++i)
         {
@@ -49,7 +56,7 @@ public class TimeTable
         return true;
     }
 
-    public void delLesson (Lesson lesson)
+    public static void delLesson (Lesson lesson)
     {
         for (int i = 0; i < lesson.times.size(); ++i)
         {
@@ -63,7 +70,7 @@ public class TimeTable
     }
 
     //리턴이 true면 중복임
-    private boolean isJungBok (String times)
+    private static boolean isJungBok (String times)
     {
         boolean jFlag = false;
         int day;
@@ -83,7 +90,7 @@ public class TimeTable
         return jFlag;
     }
 
-    private void setJungBok (String times, boolean set)
+    private static void setJungBok (String times, boolean set)
     {
         int day;
         int [] setTime;
@@ -98,7 +105,7 @@ public class TimeTable
     }
 
     //jungBok 배열의 날짜 시작 위치 리턴 ex) 월 -> 0 ~ 167, 화 -> 168 ~ 335
-    private int dayToInt (String day)
+    private static int dayToInt (String day)
     {
         switch (day)
         {
@@ -116,14 +123,14 @@ public class TimeTable
         return 0;
     }
 
-    private int [] timeToInt (String time)
+    private static int [] timeToInt (String time)
     {
         int temp;
 
         //A, B, C, D, E 교시
-        if (time.charAt(1) >= 65)
+        if (time.charAt(0) >= 65)
         {
-            temp = 6 * (1 + 3 * (time.charAt(1) - 65));
+            temp = 6 * (1 + 3 * (time.charAt(0) - 65));
 
             return new int [] { temp, temp + 17 };
         }
@@ -134,5 +141,10 @@ public class TimeTable
 
             return new int [] { temp, temp + 11 };
         }
+    }
+
+    public static void showLesson (Lesson lesson)
+    {
+
     }
 }
