@@ -83,6 +83,7 @@ public class TimeTable
         return jFlag;
     }
 
+    // 추가된 강의 자리에 boolean = ture;
     private void setJungBok (String times, boolean set)
     {
         int day;

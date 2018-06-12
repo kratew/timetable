@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/add"
+            android:title="Account" />
+
+        <item
+            android:id="@+id/nav_contact_mail"
+            android:icon="@drawable/save"
+            android:title="Contact Mail" />
+        <item
+            android:id="@+id/nav_contact_phone"
+            android:icon="@drawable/add"
+            android:title="Contact Phone" />
+    </group>
+
+    <item android:title="Action">
+        <menu>
+            <item
+                android:id="@+id/nav_setting"
+                android:icon="@drawable/save"
+                android:title="Setting" />
+            <item
+                android:id="@+id/nav_search"
+                android:icon="@drawable/add"
+                android:title="Search" />
+            <item
+                android:id="@+id/nav_zoom_in"
+                android:icon="@drawable/save"
+                android:title="Zoom In" />
+            <item
+                android:id="@+id/nav_zoom_out"
+                android:icon="@drawable/add"
+                android:title="Zoom Out" />
+        </menu>
+    </item>
+
+    <item android:title="Help">
+        <menu>
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/save"
+                android:title="Help" />
+        </menu>
+    </item>
+
+    <item android:title="Home">
+        <menu>
+            <item
+                android:id="@+id/nav_home"
+                android:icon="@drawable/add"
+                android:title="Home" />
+        </menu>
+    </item>
+</menu>
