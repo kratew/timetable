@@ -17,9 +17,15 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import java.io.FileReader;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +81,32 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         });
 
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
+        /*
+        try{
+            JSONObject obj = new JSONObject(readJSONFromAsset());
+            String id = (String)obj.get("_id");
+            String pw = (String)obj.get("pwd");
+            String name = (String)obj.get("name");
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        public String readJSONFromAsset(){
+            String json = null;
+            try{
+                InputStream is = getAssets().open("AccInDevice.txt");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                json = new String(buffer, "UTF-8");
+            } catch(IOException e){
+                e.printStackTrace();
+                return null;
+            }
+            return json;
+        }
+        */
+        /*
         JSONParser parser = new JSONParser();
         try{
             Object obj = parser.parse(new FileReader("/data/data/com.example.kimilm.timetable/AccInDevice.txt"));
@@ -85,13 +117,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         } catch(Exception e){
             e.printStackTrace();
         }
+        */
+
+
         /*
         JSONObject obj = new JSONObject();
         StringBuffer buffer = new StringBuffer();
         String data = null;
         FileInputStream fis = null;
         try{
-            fis = openFileInput("AccInDevice.txt");
+            fis = openFileInput("AccInDevice.json");
             BufferedReader iReader = new BufferedReader(new InputStreamReader((fis)));
 
             data = iReader.readLine();
@@ -108,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
         */
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // onOptionsItemSelected() Required. 이벤트가 toggle에서 발생한거라면 메뉴 이벤트 로직에서 벗어나게 처리.

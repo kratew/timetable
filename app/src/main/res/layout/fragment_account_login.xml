@@ -35,10 +35,10 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.278"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            tools:layout_editor_absoluteY="63dp" />
+            app:layout_constraintHorizontal_bias="0.28"
+            app:layout_constraintStart_toEndOf="@+id/textView2" />
 
         <TextView
             android:id="@+id/textView2"
@@ -101,7 +101,7 @@
 
         <EditText
             android:id="@+id/inputLoginPw"
-            android:layout_width="222dp"
+            android:layout_width="225dp"
             android:layout_height="53dp"
             android:ems="10"
             android:inputType="textPassword"

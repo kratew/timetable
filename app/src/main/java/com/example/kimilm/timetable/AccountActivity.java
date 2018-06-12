@@ -5,10 +5,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -72,7 +74,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         }
         FileOutputStream fos = null;
         try{
-            fos = openFileOutput("AccInDevice.txt", Context.MODE_PRIVATE);
+            fos = openFileOutput("AccInDevice.json", MODE_PRIVATE);
             fos.write(obj.toString().getBytes());
             fos.close();
         } catch(FileNotFoundException e){
@@ -80,7 +82,14 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         } catch(IOException e){
             e.printStackTrace();
         }
+        Toast.makeText(this, obj.get("_id"), Toast.LENGTH_LONG).show();
+        File files = new File("data/data/package/files/AccInDevice.json");
+        if(files.exists()==true){
+            Toast.makeText(this, "파일이 존재함!!", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
 
+        }
 
         /*
         ───────────────────────────────────────────────────────────────────────────────────
