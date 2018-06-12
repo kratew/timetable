@@ -1,5 +1,6 @@
 package com.example.kimilm.timetable;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,15 +17,18 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     RelativeLayout container;
     ViewPager viewPager;
     TabLayout tabLayout;
+    MyPagerAdapter fragmentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fragmentAdapter = new MyPagerAdapter(getSupportFragmentManager());
+
         container = (RelativeLayout)findViewById(R.id.container);
         viewPager = (ViewPager)findViewById(R.id.viewPager);
-        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));  // viewPager에 Adapter 설정
+        viewPager.setAdapter(fragmentAdapter);  // viewPager에 Adapter 설정
 
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);    // tabLayout을 ViewPager와 연동.
@@ -51,6 +55,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
+//    나중에 시도할것 뷰페이져 다시 그리기
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        fragmentAdapter.notifyDataSetChanged();
+//    }
+
     /* TabLayout과 연동하기 위한 ViewPager의 Adapter 클래스 선언 */
     class MyPagerAdapter extends FragmentPagerAdapter {
         List<Fragment> fragments=new ArrayList<>();//fragments ArrayList
@@ -64,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             //프래그먼트를 생성하여 ArrayList에 add
             fragments.add(new TimeTableFragment());
             fragments.add(new FriendsFragment());
+
+            TimeTable.fragment = (TimeTableFragment) fragments.get(0);
         }
 
         /* 실제 ViewPager에서 보여질 프래그먼트를 반환

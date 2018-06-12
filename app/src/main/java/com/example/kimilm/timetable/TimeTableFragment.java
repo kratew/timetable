@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,6 @@ import java.util.Locale;
 public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
-//    TimeTable timeTable;    //그래서 안 씀! (개발기간 부족)
     FrameLayout frameLayout;
     GridLayout gridLayout;
     FloatingActionButton fab;
@@ -167,8 +167,9 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        Intent intent = new Intent();
-        intent.putExtra("FragmentManager", (Serializable) getFragmentManager());
+//        프래그먼트 매니저를 전달해야할텐데..
+//        Intent intent = new Intent();
+//        intent.putExtra("FragmentManager", (Serializable) getFragmentManager());
 
         return view;
     }
@@ -246,12 +247,17 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 }
             });
 
-            btn[i].setBackgroundColor(getResources().getColor(R.color.color1));
+            btn[i].setBackgroundColor(getResources().getColor(R.color.color8));
 
             wrapBtn.addView(btn[i]);
 
             frameLayout.addView(wrapBtn);
         }
+
+        btn[0].setEllipsize(TextUtils.TruncateAt.END);
+        btn[0].setSingleLine(true);
+        btn[0].setTextColor(Color.WHITE);
+        btn[0].setText(lesson.title);
     }
 
 //    time.substring(0, 1)

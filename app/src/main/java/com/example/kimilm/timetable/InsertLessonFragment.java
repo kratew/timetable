@@ -30,6 +30,10 @@ public class InsertLessonFragment extends Fragment
     TextView insertTitle;
     RecyclerView recyclerView;
 
+    public InsertLessonFragment() {
+
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

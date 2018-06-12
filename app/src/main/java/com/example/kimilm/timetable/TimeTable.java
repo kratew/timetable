@@ -1,6 +1,8 @@
 package com.example.kimilm.timetable;
 
 import android.app.Application;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,13 @@ import java.util.Arrays;
 
 public class TimeTable extends Application
 {
+    public static TimeTableFragment fragment;
+
+//    public TimeTable (TimeTableFragment fragment) {
+//        this();
+//        this.fragment = fragment;
+//    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -43,12 +52,17 @@ public class TimeTable extends Application
             }
         }
 
+//        for (int i = 0; i < lesson.times.size(); ++i)
+//        {
+//            if (isJungBok(lesson.times.get(i)))
+//            {
+//                setJungBok(lesson.times.get(i), true);
+//            }
+//        }
+
         for (int i = 0; i < lesson.times.size(); ++i)
         {
-            if (isJungBok(lesson.times.get(i)))
-            {
-                setJungBok(lesson.times.get(i), true);
-            }
+            setJungBok(lesson.times.get(i), true);
         }
 
         lessons.add(lesson);
@@ -137,7 +151,7 @@ public class TimeTable extends Application
         //1 ~ 14 교시
         else
         {
-            temp = (Integer.parseInt(time.substring(1)) - 1) * 12;
+            temp = (Integer.parseInt(time) - 1) * 12;
 
             return new int [] { temp, temp + 11 };
         }

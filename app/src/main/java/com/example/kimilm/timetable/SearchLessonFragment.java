@@ -44,6 +44,10 @@ public class SearchLessonFragment extends Fragment
 
     Thread thread;
 
+    public SearchLessonFragment() {
+
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {

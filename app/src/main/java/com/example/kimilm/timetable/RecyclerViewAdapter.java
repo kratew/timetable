@@ -1,10 +1,10 @@
 package com.example.kimilm.timetable;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -15,10 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimerTask;
 
 //어댑터 클래스
 public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
@@ -61,12 +63,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
                         .setAction("강의 추가", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(TimeTable.addLesson(lesson));
+                        if(TimeTable.addLesson(lesson))
                         {
-                            Intent intent = new Intent();
-                            FragmentManager fm = (FragmentManager) intent.getSerializableExtra("FragmentManager");
-                            TimeTableFragment fragment = (TimeTableFragment) fm.findFragmentById(R.layout.fragment_time_table);
-                            fragment.showTable(lesson);
+                            TimeTable.fragment.showTable(lesson);
+                        }
+                        else
+                        {
+                            Toast.makeText(v.getContext(), "강의 시간이 중복됩니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
