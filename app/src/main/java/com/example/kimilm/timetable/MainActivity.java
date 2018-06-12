@@ -1,5 +1,7 @@
 package com.example.kimilm.timetable;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,7 +13,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     TabLayout tabLayout;
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
+    LinearLayout account_window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,28 +62,21 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id=item.getItemId();
 
-                if(id==R.id.nav_account){
-                    Toast.makeText(getApplicationContext(), "A", Toast.LENGTH_LONG).show();
+                if(id==R.id.nav_account){   // 계정설정 클릭시 AccountActivity로 날아감.
+                    Intent myIntent = new Intent(getApplicationContext(), AccountActivity.class);
+                    startActivityForResult(myIntent, 1000);
+                    drawer.closeDrawer(Gravity.LEFT);
                 }else if(id==R.id.nav_contact_mail){
                     Toast.makeText(getApplicationContext(), "B", Toast.LENGTH_LONG).show();
+                    drawer.closeDrawer(Gravity.LEFT);
                 }else if(id==R.id.nav_contact_phone){
                     Toast.makeText(getApplicationContext(), "C", Toast.LENGTH_LONG).show();
-                }else if(id==R.id.nav_setting){
-                    Toast.makeText(getApplicationContext(), "D", Toast.LENGTH_LONG).show();
-                }else if(id==R.id.nav_search){
-                    Toast.makeText(getApplicationContext(), "E", Toast.LENGTH_LONG).show();
-                }else if(id==R.id.nav_zoom_in){
-                    Toast.makeText(getApplicationContext(), "F", Toast.LENGTH_LONG).show();
-                }else if(id==R.id.nav_zoom_out){
-                    Toast.makeText(getApplicationContext(), "G", Toast.LENGTH_LONG).show();
-                }else if(id==R.id.nav_help){
-                    Toast.makeText(getApplicationContext(), "H", Toast.LENGTH_LONG).show();
-                }else if(id==R.id.nav_home){
-                    Toast.makeText(getApplicationContext(), "I", Toast.LENGTH_LONG).show();
+                    drawer.closeDrawer(Gravity.LEFT);
                 }
                 return false;
             }
         });
+
     }
 
     @Override
@@ -141,6 +140,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         public CharSequence getPageTitle(int position) {
             return title[position];
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, "Return to MainActivity.", Toast.LENGTH_LONG).show();
     }
 }
 
