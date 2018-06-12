@@ -1,5 +1,8 @@
 package com.example.kimilm.timetable;
 
+
+import com.example.kimilm.timetable.TimeTable;
+
 import java.util.ArrayList;
 
 public class Friend {
@@ -11,11 +14,11 @@ public class Friend {
     ArrayList<String> frList;  // 새로 추가한 친구의 아이디를 저장하는 어레이리스트
 
     public Friend(String id, String pw, String name, TimeTable table, ArrayList<String> frList) {
-        Id = id;
+    		Id = id;
         Pw = pw;
         Name = name;
         this.table = table;
-        this.frList = frList;
+        this.frList = new ArrayList<String>(frList);
     }
 
     public ArrayList<String> getFrList() {

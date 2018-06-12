@@ -23,22 +23,22 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.312"
+            app:layout_constraintHorizontal_bias="0.309"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputPw"
+            app:layout_constraintTop_toBottomOf="@+id/inputLoginPw"
             app:layout_constraintVertical_bias="0.059" />
 
         <EditText
-            android:id="@+id/inputId"
+            android:id="@+id/inputLoginId"
             android:layout_width="225dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
             android:textSize="30sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.278"
-            app:layout_constraintStart_toEndOf="@+id/textView2" />
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            tools:layout_editor_absoluteY="63dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -82,7 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.241"
             app:layout_constraintStart_toEndOf="@+id/cteateAccBtn"
-            app:layout_constraintTop_toBottomOf="@+id/inputPw"
+            app:layout_constraintTop_toBottomOf="@+id/inputLoginPw"
             app:layout_constraintVertical_bias="0.059" />
 
         <TextView
@@ -100,7 +100,7 @@
             app:layout_constraintVertical_bias="0.075" />
 
         <EditText
-            android:id="@+id/inputPw"
+            android:id="@+id/inputLoginPw"
             android:layout_width="222dp"
             android:layout_height="53dp"
             android:ems="10"

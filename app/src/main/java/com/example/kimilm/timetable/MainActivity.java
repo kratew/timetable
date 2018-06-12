@@ -1,6 +1,5 @@
 package com.example.kimilm.timetable;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,12 +13,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     LinearLayout account_window;
+    Friend thisFr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +48,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.setupWithViewPager(viewPager);    // tabLayout을 ViewPager와 연동.
         tabLayout.addOnTabSelectedListener(this);   // tabLayout의 이벤트 핸들러 등록.
 
-        //얘를 기본값으로 못 바꾸나?
-        //getSupportActionBar().setElevation(0);  // 액션바 그림자 제거.
-
         // MainActivity에 NavigationDrawer 설정하는 코드 ↓
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);    // ActionBar()에 기본 타이틀 표시하지 않도록 false 설정.
         toggle=new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // ActionBar에서 기본 홈 버튼을 사용 가능.
         toggle.syncState(); // ActionBarDrawerToggle의 상태를 sync
@@ -77,6 +74,39 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             }
         });
 
+        // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
+        JSONParser parser = new JSONParser();
+        try{
+            Object obj = parser.parse(new FileReader("/data/data/com.example.kimilm.timetable/AccInDevice.txt"));
+            JSONObject jsonObject = (JSONObject) obj;
+            String id = (String)jsonObject.get("_id");
+            String pw = (String)jsonObject.get("pwd");
+            String name = (String)jsonObject.get("name");
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        /*
+        JSONObject obj = new JSONObject();
+        StringBuffer buffer = new StringBuffer();
+        String data = null;
+        FileInputStream fis = null;
+        try{
+            fis = openFileInput("AccInDevice.txt");
+            BufferedReader iReader = new BufferedReader(new InputStreamReader((fis)));
+
+            data = iReader.readLine();
+            while(data != null){
+                buffer.append(data);
+                data = iReader.readLine();
+            }
+            buffer.append("\n");
+            iReader.close();
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        */
     }
 
     @Override
@@ -145,7 +175,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, "Return to MainActivity.", Toast.LENGTH_LONG).show();
+        if(requestCode == 1000 && resultCode == RESULT_OK){
+
+        }
     }
 }
 
