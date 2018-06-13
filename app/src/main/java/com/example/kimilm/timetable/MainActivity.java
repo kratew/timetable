@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         fragmentAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
-        TimeTable.fragmentStatePagerAdapter = fragmentAdapter;
-
         container = (RelativeLayout)findViewById(R.id.container);
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPager.setAdapter(fragmentAdapter);  // viewPager에 Adapter 설정
@@ -100,11 +98,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         @Override
         public CharSequence getPageTitle(int position) {
             return title[position];
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-                return POSITION_NONE;   // notifyDataSetChanged
         }
     }
 }

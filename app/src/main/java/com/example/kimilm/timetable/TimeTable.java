@@ -17,7 +17,6 @@ import java.util.Arrays;
 public class TimeTable extends Application
 {
     public static TimeTableFragment fragment;
-    public static FragmentStatePagerAdapter fragmentStatePagerAdapter;
 
     @Override
     public void onCreate() {
@@ -35,22 +34,30 @@ public class TimeTable extends Application
         Arrays.fill(jungBok, false);
     }
 
+
+    //저장된 강의 정보 가져올 때 사용 (예정)
     public TimeTable (TimeTable timeTable)
     {
-        //며용
+
     }
 
     //false -> 강의 추가 실패, true -> 강의 추가 성공
     public static boolean addLesson (Lesson lesson)
     {
+        // 강의 이름이 같다면 추가 불가, (원어 강의) 같은 접미사 체크하기 위해 두 번 검사
         for (int i = 0; i < lessons.size(); ++i)
         {
             if(lessons.get(i).title.contains(lesson.title))
             {
                 return false;
             }
+            if(lesson.title.contains(lessons.get(i).title))
+            {
+                return false;
+            }
         }
 
+        // 동일한 시간대가 존재한다면 추가 불가
         for (int i = 0; i < lesson.times.size(); ++i)
         {
             if (isJungBok(lesson.times.get(i)))
@@ -59,6 +66,7 @@ public class TimeTable extends Application
             }
         }
 
+        // 둘 다 아니라면 강의 추가 가능
         for (int i = 0; i < lesson.times.size(); ++i)
         {
             setJungBok(lesson.times.get(i), true);
@@ -74,6 +82,7 @@ public class TimeTable extends Application
     {
         Lesson lesson = null;
 
+        // 학수번호에 해당하는 강의 뽑기
         for(int i = 0; i < lessons.size(); ++i)
         {
             if(code.equals(lessons.get(i).code))
@@ -82,6 +91,7 @@ public class TimeTable extends Application
             }
         }
 
+        // 삭제 전 중복 배열 세팅
         for (int i = 0; i < lesson.times.size(); ++i)
         {
             setJungBok(lesson.times.get(i), false);
@@ -110,6 +120,7 @@ public class TimeTable extends Application
         return false;
     }
 
+    //강의 추가 또는 삭제시 중복 배열 세팅
     private static void setJungBok (String times, boolean set)
     {
         int day;
@@ -143,6 +154,7 @@ public class TimeTable extends Application
         return 0;
     }
 
+    //jungBok 배열의 시간 정보 리턴 ex) 1교시 -> 0 ~ 11, 2교시 12 ~ 23
     private static int [] timeToInt (String time)
     {
         int temp;
@@ -161,10 +173,5 @@ public class TimeTable extends Application
 
             return new int [] { temp, temp + 11 };
         }
-    }
-
-    public static void showLesson (Lesson lesson)
-    {
-
     }
 }
