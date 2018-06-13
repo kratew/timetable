@@ -292,7 +292,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             case "금":
                 return getActivity().findViewById(R.id.fri).getLeft();
         }
-
         return 0;
     }
 
@@ -312,14 +311,12 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             case "금":
                 return getActivity().findViewById(R.id.fri).getWidth();
         }
-
         return 0;
     }
 
 //    time.substring(1)
     public int setBtnTopMargin(String time)
     {
-
         //A, B, C, D, E 교시
         if (time.charAt(0) >= 65)
         {
@@ -363,7 +360,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     //    time.substring(1)
     public int setBtnHeight(String time)
     {
-
         //A, B, C, D, E 교시
         if (time.charAt(0) >= 65)
         {
@@ -402,9 +398,10 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return 0;
     }
 
+    // 강의 추가 또는 삭제시 로컬 파일에 저장
     public void saveTable (View v)
     {
-
+        
     }
 
     public void popInsertLessonFragment (View v)
