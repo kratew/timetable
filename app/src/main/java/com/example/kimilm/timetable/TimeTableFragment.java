@@ -83,14 +83,14 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 if (scrollView != null) {
                     if (scrollView.getChildAt(0).getBottom() <= (scrollView.getHeight() + scrollView.getScrollY())) {
                         // scroll view가 최하단에 도달함.
-                        fab.setVisibility(View.INVISIBLE);
-                        fab.startAnimation(invisib);
+                        //fab.setVisibility(View.INVISIBLE);
+                        //fab.startAnimation(invisib);
                         checker = true;
                     } else {
                         // scroll view가 최하단이 아님.
                         if(checker == true) {
-                            fab.setVisibility(View.VISIBLE);
-                            fab.startAnimation(visib);
+                            //fab.setVisibility(View.VISIBLE);
+                            //fab.startAnimation(visib);
                             checker = false;
                         }
                     }
@@ -112,13 +112,11 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
     // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
 
-
     @Override
     public void onResume() {
         super.onResume();
         getActivity().invalidateOptionsMenu();
     }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -273,6 +271,7 @@ public boolean onOptionsItemSelected(MenuItem item) {
 
         /*화면 크기를 초과한 이미지는 BuildDrawingCache() 사용시 이미지를 읽어오지 못하는 문제가 있어서 Canvas 클래스 사용함*/
         //레이아웃 크기와 동일한 비트맵 생성
+
         Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
 
         //생성한 비트맵으로 캔버스를 만들고

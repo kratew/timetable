@@ -18,6 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    /*
+    configurations.all {
+        resolutionStrategy.force 'junit:junit:4.12'
+    }
+    */
 }
 
 dependencies {
@@ -34,4 +39,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.51'
     implementation files('mongo-java-driver-3.7.1-javadoc.jar')
     implementation files('mongo-java-driver-3.7.1.jar')
+    //implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 }
+//Program type already present: org.hamcrest.core.DescribedAs
+//Message{kind=ERROR, text=Program type already present: org.hamcrest.core.DescribedAs, sources=[Unknown source file], tool name=Optional.of(D8)}

@@ -1,31 +1,25 @@
 package com.example.kimilm.timetable;
 
-import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class AccountActivity extends AppCompatActivity implements AccountCreateFragment.OnCreateAccountSetListener, AccountLoginFragment.OnLoginAccSetListener{
+public class AccountActivity extends AppCompatActivity implements AccountCreateFragment.OnCreateAccountSetListener, AccountLoginFragment.OnLoginAccSetListener, AccountLogoutDeleteFragment.OnCurAccCheckSetListener{
 
     AccountLoginFragment frlogin;
     AccountCreateFragment frcreate;
     AccountLogoutDeleteFragment frlogoutdelacc;
+    boolean isCurAcc;
+    String curAccId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +30,22 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         frcreate = new AccountCreateFragment();
         frlogoutdelacc = new AccountLogoutDeleteFragment();
 
-        // AccountActivity가 떴을 때 AccountLoginFragment를 가져오는 코드 ↓
-        /*
-        ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        기존 디바이스 계정 정보가 있으면 AccountLogoutDeleteFragment를, 없으면 AccountLoginFragment를 가져오는 코드 작성 요망!!!
-        ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-         */
+        // 기존 디바이스 계정 정보가 있으면 AccountLogoutDeleteFragment를, 없으면 AccountLoginFragment를 가져오는 코드 ↓
+        Intent isCurAccIntent = getIntent();    // MainActivity에서 isCurAcc과 curAccId를 받음.
+        isCurAcc = isCurAccIntent.getBooleanExtra("isCurAcc", false);
+        curAccId = isCurAccIntent.getStringExtra("curAccId");
+        Toast.makeText(this, isCurAcc + curAccId, Toast.LENGTH_LONG);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_lay, new AccountLoginFragment());
-        fragmentTransaction.commit();
-
+        if(isCurAcc == true) {
+            fragmentTransaction.replace(R.id.fragment_lay, new AccountLogoutDeleteFragment());
+            fragmentTransaction.commit();
+            //Toast.makeText(this, "현재 디바이스에 계정 정보가 있음.", Toast.LENGTH_LONG).show();
+        }else{
+            fragmentTransaction.replace(R.id.fragment_lay, new AccountLoginFragment());
+            fragmentTransaction.commit();
+            Toast.makeText(this, "현재 디바이스에 계정 정보가 없음.", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onFragmentChanged(int index) {  // 프래그먼트 간 변환 인덱스.
@@ -77,17 +76,13 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         catch (JSONException e){
             e.printStackTrace();
         }
-        File file = new File("data/data/com.example.kimilm.timetable/files/AccInDevice.json");
+        File file = new File(getFilesDir(), "AccInDevice.json");
         FileWriter fw = null;
         BufferedWriter bufwr = null;
         try {
             fw = new FileWriter(file);
             bufwr = new BufferedWriter(fw);
-            bufwr.write(obj.optString("_id"));
-            bufwr.write(obj.optString("pwd"));
-            bufwr.write(obj.optString("name"));
-            bufwr.write(obj.optString("timetable"));
-            bufwr.write(obj.optString("f_id"));
+            bufwr.write(obj.toString());
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -103,51 +98,18 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         }
 
         /*
-        FileOutputStream fos = null;
-        try{
-            fos = openFileOutput("AccInDevice.txt", MODE_PRIVATE);
-            fos.write(fr_new.getId().getBytes());
-            fos.close();
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
-        } catch(IOException e){
-            e.printStackTrace();
-        }
-        */
-
-        // 저장한 파일을 읽어오는 코드 ↓
-        File files = new File("data/data/com.example.kimilm.timetable/files/AccInDevice.json");
-        if(files.exists()==true){
-            FileReader fr = null;
-            BufferedReader bufrd = null;
-
-            int [] ch = new int[1000];
-            int i = 0;
-
-            try{
-                fr = new FileReader(files);
-                bufrd = new BufferedReader(fr);
-
-                while((ch[i] = bufrd.read()) != -1){
-                    i++;
-                }
-
-                Toast.makeText(this, Arrays.toString(ch), Toast.LENGTH_LONG).show();
-                bufrd.close();
-                fr.close();
-            } catch(Exception e){
-                e.printStackTrace();
-            }
-        }else{
-            Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
-        }
-
-        /*
-        ───────────────────────────────────────────────────────────────────────────────────
-        이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
-        ───────────────────────────────────────────────────────────────────────────────────
+        ────────────────────────────────────────────────────────────────
+        이 메소드에서 받은 정보들로 서버에 계정정보를 저장하는 코드 추가 요망!!!
+        ────────────────────────────────────────────────────────────────
          */
+
+        isCurAcc = true;
+        Intent retIntent = new Intent(this, MainActivity.class);
+        retIntent.putExtra("isCurAcc", isCurAcc);
+        setResult(RESULT_OK, retIntent);
+        finish();
     }
+
 
     // AccountLoginFragment에서 정보를 가져와서 로그인을 하는 코드 ↓
     @Override
@@ -155,11 +117,26 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
 
         /*
-        ───────────────────────────────────────────────────
-        이 메소드에서 받은 정보들로 로그인 하는 코드 추가 요망!!!
-        ───────────────────────────────────────────────────
+        ────────────────────────────────────────────────────────────────────────
+        이 메소드에서 받은 정보들로 서버에서 정보를 찾아서 로그인 하는 코드 추가 요망!!!
+        ────────────────────────────────────────────────────────────────────────
          */
+
+        isCurAcc = true;
+        Intent retIntent = new Intent(this, MainActivity.class);
+        retIntent.putExtra("isCurAcc", isCurAcc);
+        setResult(RESULT_OK, retIntent);
+        finish();
     }
 
+    // AccountLogoutDeleteFragment에 curAccId를 전달하는 메소드.
+    public String getData(){
+        return curAccId;
+    }
 
+    // AccountLogoutDeleteFragment에서 로그아웃/계정삭제 버튼이 눌렸을때 바뀐 isCurAcc를 받아오는 코드. ↓
+    @Override
+    public void OnCurAccCheckSet(boolean isCurAcc) {
+        this.isCurAcc = isCurAcc;
+    }
 }

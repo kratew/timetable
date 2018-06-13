@@ -17,18 +17,12 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
@@ -40,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     DrawerLayout drawer;
     LinearLayout account_window;
     Friend thisFr;
+    boolean isCurAcc;
+    String curAccId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
                 if(id==R.id.nav_account){   // 계정설정 클릭시 AccountActivity로 날아감.
                     Intent myIntent = new Intent(getApplicationContext(), AccountActivity.class);
+                    myIntent.putExtra("isCurAcc", isCurAcc); // 디바이스에 계정 정보가 있으면 true, 없으면 false를 전달함.
+                    if(isCurAcc == true){   // 디바이스 계정정보가 있으면 그 id를 전달.
+                        myIntent.putExtra("curAccId", curAccId);
+                    }
                     startActivityForResult(myIntent, 1000);
                     drawer.closeDrawer(Gravity.LEFT);
                 }else if(id==R.id.nav_contact_mail){
@@ -83,92 +83,69 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         });
 
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
-        /*
-        try{
-            JSONObject obj = new JSONObject(readJSONFromAsset());
-            String id = (String)obj.get("_id");
-            String pw = (String)obj.get("pwd");
-            String name = (String)obj.get("name");
-        } catch(JSONException e){
-            e.printStackTrace();
-        }
-        public String readJSONFromAsset(){
-            String json = null;
-            try{
-                InputStream is = getAssets().open("AccInDevice.txt");
-                int size = is.available();
-                byte[] buffer = new byte[size];
-                is.read(buffer);
-                is.close();
-                json = new String(buffer, "UTF-8");
-            } catch(IOException e){
-                e.printStackTrace();
-                return null;
-            }
-            return json;
-        }
-        */
-        /*
-        JSONParser parser = new JSONParser();
-        try{
-            Object obj = parser.parse(new FileReader("/data/data/com.example.kimilm.timetable/AccInDevice.txt"));
-            JSONObject jsonObject = (JSONObject) obj;
-            String id = (String)jsonObject.get("_id");
-            String pw = (String)jsonObject.get("pwd");
-            String name = (String)jsonObject.get("name");
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-        */
-
-
-        /*
-        JSONObject obj = new JSONObject();
-        StringBuffer buffer = new StringBuffer();
-        String data = null;
-        FileInputStream fis = null;
-        try{
-            fis = openFileInput("AccInDevice.json");
-            BufferedReader iReader = new BufferedReader(new InputStreamReader((fis)));
-
-            data = iReader.readLine();
-            while(data != null){
-                buffer.append(data);
-                data = iReader.readLine();
-            }
-            buffer.append("\n");
-            iReader.close();
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
-        } catch(IOException e){
-            e.printStackTrace();
-        }
-        */
-
-        // 저장한 파일을 읽어오는 코드 ↓
-        File files = new File("data/data/com.example.kimilm.timetable/files/AccInDevice.json");
-        if(files.exists()==true){
+        File files = new File(getFilesDir(), "AccInDevice.json");
+        if(files.exists()==true){   // 만약 이미 존재하느 파일이 있으면 파일 불러오기.
+            isCurAcc = true;
             FileReader fr = null;
             BufferedReader bufrd = null;
-
-            int [] ch = new int[1000];
-            int i = 0;
-
+            char ch;
             try{
+                String jsonStr = new String();
                 fr = new FileReader(files);
                 bufrd = new BufferedReader(fr);
 
-                while((ch[i] = bufrd.read()) != -1){
-                    i++;
+                while((ch = (char)bufrd.read()) != -1){
+                    jsonStr += String.valueOf(ch);
+                    if(ch == '}'){
+                        break;
+                    }
                 }
 
-                Toast.makeText(this, Arrays.toString(ch), Toast.LENGTH_LONG).show();
+                JSONObject jsonObj = new JSONObject(jsonStr);
+                curAccId = jsonObj.getString("_id");
+                Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
+                /*
+                // JSON으로 넘어온 timetable과 f_id를 받아오기 위한 코드 ↓
+                TimeTable tmpTable = new TimeTable();
+                boolean tmpJungbok[] = new boolean[5 * 14 * 12];
+                ArrayList<Lesson> tmpLessons = new ArrayList<>();
+                ArrayList<String> tmpTimes = new ArrayList<>();
+                ArrayList<String> tmpClsroom = new ArrayList<>();
+                ArrayList<String> tmpF_id = new ArrayList<>();
+
+                ArrayList<String> ttKeyList = new ArrayList<>();
+                JSONObject frObj = null;
+                JSONObject ttObj = null;
+                ArrayList<JSONObject> lsObj = new ArrayList<>();
+
+                try{
+                    frObj = new JSONObject(jsonStr);
+                    String ttValue = frObj.getString("timetable");
+                    ttObj = new JSONObject(ttValue);
+                    Iterator i = ttObj.keys();
+                    while(i.hasNext()){
+                        String b = i.next().toString();
+                        Log.d("timetable_key_search", b);
+                        ttKeyList.add(b);
+                    }
+                } catch(JSONException e){
+                    e.printStackTrace();
+                }
+                */
+
+                thisFr.setId(jsonObj.get("_id").toString());
+                thisFr.setPw(jsonObj.get("pwd").toString());
+                thisFr.setName(jsonObj.get("name").toString());
+                //thisFr.setTable(jsonObj.get("timetable"));
+                //thisFr.setFrList(jsonObj.get("f_id"));
+
                 bufrd.close();
                 fr.close();
             } catch(Exception e){
                 e.printStackTrace();
             }
-        }else{
+        }else{  // 파일이 없다.
+            isCurAcc = false;
             Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
         }
 
@@ -246,7 +223,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1000 && resultCode == RESULT_OK){
-            Toast.makeText(this, "AccountActivity가 정상적으로 종료됨.", Toast.LENGTH_LONG).show();
+            isCurAcc = data.getBooleanExtra("isCuaAcc", false);
+            Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
     }
 }

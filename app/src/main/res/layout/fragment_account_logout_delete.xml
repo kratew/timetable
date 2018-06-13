@@ -57,13 +57,12 @@
             app:layout_constraintTop_toBottomOf="@+id/logoutBtn"
             app:layout_constraintVertical_bias="0.068" />
 
-        <EditText
+        <TextView
             android:id="@+id/curId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="textPersonName"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="60sp"

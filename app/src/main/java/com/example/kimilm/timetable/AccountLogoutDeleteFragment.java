@@ -1,7 +1,6 @@
 package com.example.kimilm.timetable;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,14 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
 
 public class AccountLogoutDeleteFragment extends Fragment {
 
-    EditText curIdText;
+    String curAccIdData;
+    TextView curIdText;
     Button logoutBtn;
     Button deleteAccBtn;
-    String curId;
+    boolean isCurAcc;
 
     public AccountLogoutDeleteFragment() {
 
@@ -32,22 +35,26 @@ public class AccountLogoutDeleteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_logout_delete, container, false);
 
-        curIdText = (EditText)view.findViewById(R.id.curId);
+        curIdText = (TextView)view.findViewById(R.id.curId);
         logoutBtn = (Button)view.findViewById(R.id.logoutBtn);
         deleteAccBtn = (Button)view.findViewById(R.id.deleteAccBtn);
 
-        /*
-        ──────────────────────────────────────────────────────────────────────────────────
-        현재 디바이스의 계정 정보를 가져와서 아이디를 curId에 받은 후 curIdText에 뿌리는 코드!!!
-        ──────────────────────────────────────────────────────────────────────────────────
-         */
+        curIdText.setText(curAccIdData); //현재 디바이스의 계정 정보를 가져와서 아이디를 curId에 받은 후 curIdText에 뿌리는 코드
 
-        // 로그아웃 버튼 누르면 -> 로그인 AccountLoginFragment로 변환. ↓
+        // 로그아웃 버튼 누르면 -> 현재 디바이스의 계정 정보 삭제 && 로그인 AccountLoginFragment로 변환. ↓
         logoutBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
+                files.delete(); // 파일을 디바이스에서 삭제.
+                if(files.exists() == true){
+                    Toast.makeText(getActivity(), "파일이 안지워짐!", Toast.LENGTH_LONG).show();
+                }
                 AccountActivity accountActivity = (AccountActivity) getActivity();
                 accountActivity.onFragmentChanged(0);
+                isCurAcc = false;
+                onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc);
+                getActivity().finish();
             }
         });
 
@@ -55,13 +62,44 @@ public class AccountLogoutDeleteFragment extends Fragment {
         deleteAccBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
+                files.delete(); // 파일을 디바이스에서 삭제.
                 /*
-                ────────────────────────────────────────────────────────
-                현재 계정을 디바이스에서도 제거하고 서버에서도 삭제하는 코드!!
-                ────────────────────────────────────────────────────────
+                ────────────────────────────────
+                현재 계정을 서버에서 삭제하는 코드!!
+                ────────────────────────────────
                 */
+                isCurAcc = false;
+                onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc);
+                getActivity().finish();
             }
         });
         return view;
+    }
+
+    public interface OnCurAccCheckSetListener{
+        void OnCurAccCheckSet(boolean isCurAcc);
+    }
+    private OnCurAccCheckSetListener onCurAccCheckSetListener;
+
+    // MainActivity -> AccountActivity -> 이 프래그먼트 현재 디바이스에 있는 아이디 데이터 전달받은거 ↓
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(getActivity() != null && getActivity() instanceof AccountActivity){
+            curAccIdData = ((AccountActivity)getActivity()).getData();
+        }
+        if(context instanceof OnCurAccCheckSetListener){
+            onCurAccCheckSetListener = (OnCurAccCheckSetListener) context;
+        } else{
+            throw new RuntimeException(context.toString()
+                    + " must implement OnCreateAccountSetListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onCurAccCheckSetListener = null;
     }
 }
