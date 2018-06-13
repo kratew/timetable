@@ -1,12 +1,22 @@
 package com.example.kimilm.timetable;
 
+import android.Manifest;
 import android.app.Application;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.Toast;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -172,6 +182,57 @@ public class TimeTable extends Application
             temp = (Integer.parseInt(time) - 1) * 12;
 
             return new int [] { temp, temp + 11 };
+        }
+    }
+
+    // 강의 추가 또는 삭제시 로컬 파일에 저장
+    public static void saveTable ()
+    {
+        if(ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED)
+        {
+            Toast.makeText(fragment.getActivity(), "저장소 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(fragment.getActivity(), new String [] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
+        }
+
+        String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "MyFolder";
+
+        File file = new File(folderPath + File.separator + "saveTable.json");
+
+        ArrayList<BasicDBObject> lessonObjList = new ArrayList<>();
+
+        for(int i = 0; i < lessons.size(); ++i)
+        {
+            BasicDBObjectBuilder objBuilder = BasicDBObjectBuilder.start("_id", lessons.get(i).code)
+                    .add("title", lessons.get(i).title)
+                    .add("classify", lessons.get(i).classify)
+                    .add("credit", lessons.get(i).credit)
+                    .add("times", lessons.get(i).times)
+                    .add("prof", lessons.get(i).prof)
+                    .add("classroom", lessons.get(i).classroom);
+
+            lessonObjList.add((BasicDBObject)objBuilder.get());
+        }
+
+        BasicDBObjectBuilder tableBuilder = BasicDBObjectBuilder
+                .start("jungbok", jungBok).add("lessons", lessonObjList);
+
+        BasicDBObject timeTableObj = new BasicDBObject("timetable1", tableBuilder.get());
+
+        try
+        {
+            FileWriter output = new FileWriter(file);
+
+            output.write(timeTableObj.toJson());
+
+            output.close();
+
+            Toast.makeText(fragment.getContext(), "강의 저장 성공", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Toast.makeText(fragment.getContext(), "강의 저장 실패", Toast.LENGTH_SHORT).show();
         }
     }
 }

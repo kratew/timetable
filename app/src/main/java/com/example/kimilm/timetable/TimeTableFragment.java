@@ -35,6 +35,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -44,10 +48,13 @@ import org.bson.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class TimeTableFragment extends Fragment implements View.OnClickListener{
@@ -398,12 +405,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return 0;
     }
 
-    // 강의 추가 또는 삭제시 로컬 파일에 저장
-    public void saveTable (View v)
-    {
-        
-    }
-
     public void popInsertLessonFragment (View v)
     {
         //프래그먼트 생성하고 강의 정보 넘김
@@ -432,6 +433,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+        // Delete Function
         ((ImageView)view.findViewById(R.id.lessonDelete)).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -445,6 +447,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                     frameLayout.removeView(frameLayout.findViewById(Integer.parseInt(
                             ((TextView)view.findViewById(R.id.lessonCode)).getText().toString() + i)));
                 }
+
+                TimeTable.saveTable();
 
                 modalBottomSheet.dismiss();
             }
