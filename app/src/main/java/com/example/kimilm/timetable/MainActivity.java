@@ -12,11 +12,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        thisFr = new Friend();
         container = (RelativeLayout) findViewById(R.id.container);
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));  // viewPager에 Adapter 설정
@@ -103,21 +108,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 curAccId = jsonObj.getString("_id");
-                Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
                 /*
-                // JSON으로 넘어온 timetable과 f_id를 받아오기 위한 코드 ↓
-                TimeTable tmpTable = new TimeTable();
-                boolean tmpJungbok[] = new boolean[5 * 14 * 12];
-                ArrayList<Lesson> tmpLessons = new ArrayList<>();
-                ArrayList<String> tmpTimes = new ArrayList<>();
-                ArrayList<String> tmpClsroom = new ArrayList<>();
-                ArrayList<String> tmpF_id = new ArrayList<>();
-
-                ArrayList<String> ttKeyList = new ArrayList<>();
-                JSONObject frObj = null;
-                JSONObject ttObj = null;
-                ArrayList<JSONObject> lsObj = new ArrayList<>();
-
+                JSONObject timetableJsonObj = new JSONObject();
+                JSONArray lessonsJsonArr = new JSONArray();
+                JSONObject lessonsJsonObj = new JSONObject();
+                String tt = jsonObj.getString("timetable");
+                timetableJsonObj = new JSONObject(tt);
+                lessonsJsonObj.put("lessons", timetableJsonObj.toJSONArray("lessons"));
+                lessonsJsonArr.put
+                */
+                /*
                 try{
                     frObj = new JSONObject(jsonStr);
                     String ttValue = frObj.getString("timetable");
@@ -132,12 +133,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     e.printStackTrace();
                 }
                 */
+                //tmpTable.setJungBok();
 
                 thisFr.setId(jsonObj.get("_id").toString());
                 thisFr.setPw(jsonObj.get("pwd").toString());
                 thisFr.setName(jsonObj.get("name").toString());
-                //thisFr.setTable(jsonObj.get("timetable"));
-                //thisFr.setFrList(jsonObj.get("f_id"));
 
                 bufrd.close();
                 fr.close();
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
         ───────────────────────────────────────────────────────────────────────────────────
          */
-    }
+    } // end of onCreate()
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -223,7 +223,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1000 && resultCode == RESULT_OK){
-            isCurAcc = data.getBooleanExtra("isCuaAcc", false);
+            isCurAcc = data.getBooleanExtra("isCurAcc", true);
+            if(data.getIntExtra("btnType", 0) <3) {
+                thisFr.setId(data.getStringExtra("newId"));
+                curAccId = data.getStringExtra("newId");
+            }else if(data.getIntExtra("btnType", 0) > 2){
+                thisFr = new Friend();
+            }
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
     }

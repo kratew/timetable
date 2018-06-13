@@ -25,6 +25,22 @@ public class TimeTable
         //며용
     }
 
+    public boolean[] getJungBok() {
+        return jungBok;
+    }
+
+    public void setJungBok(boolean[] jungBok) {
+        this.jungBok = jungBok;
+    }
+
+    public ArrayList<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(ArrayList<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
     //false -> 강의 추가 실패, true -> 강의 추가 성공
     public boolean addLesson (Lesson lesson)
     {

@@ -19,6 +19,14 @@ public class Friend {
         this.frList = new ArrayList<String>(frList);
     }
 
+    public Friend() {
+        frList = new ArrayList<String>();
+    }
+
+    public Friend(String id) {
+        Id = id;
+    }
+
     public String getId() {
         return Id;
     }

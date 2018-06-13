@@ -6,6 +6,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.mongodb.util.JSON;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedWriter;
@@ -66,12 +70,62 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         JSONObject obj = new JSONObject();
         Friend fr_new = new Friend(inputId, inputPw, inputName, new TimeTable(), new ArrayList<String>());
 
+        //──────────────────────────────────────────────────────────────────────────────────────────────────
+        /* 완전한 Friend 인스턴스를 만들어보기 위한 코드
+        TimeTable tt = new TimeTable();
+        int i;
+        boolean jbchk[] = new boolean[5 * 14 * 12];
+        ArrayList<Lesson> ttl = new ArrayList<>();
+
+        for(i = 0; i < 5*14*12; i++) { jbchk[i] = false; }
+        ArrayList<String> ttt = new ArrayList<>();
+        ttt.add("10");
+        ttt.add("20");
+        ttt.add("30");
+        ArrayList<String> ttcr = new ArrayList<>();
+        ttcr.add("aa");
+        ttcr.add("bb");
+        Lesson l1 = new Lesson("111","AA","x","3",ttt,"Q",ttcr, 121212);
+        Lesson l2 = new Lesson("222","BB","y","2",ttt,"W",ttcr, 232323);
+        Lesson l3 = new Lesson("333","CC","z","1",ttt,"E",ttcr, 343434);
+        ttl.add(l1);
+        ttl.add(l2);
+        ttl.add(l3);
+
+        tt.setJungBok(jbchk);
+        tt.setLessons(ttl);
+
+        JSONObject tmp = new JSONObject();
+        JSONArray lstimes = new JSONArray();
+        lstimes.put(jbchk[0]);
+
+
+        ArrayList<String> f_list = new ArrayList<>();
+        f_list.add("hhh");
+        f_list.add("iii");
+        f_list.add("jjj");
+
+        fr_new.setTable(tt);
+        fr_new.setFrList(f_list);
+
+        try {
+            int j;
+            for(j = 0; j < 5 * 14 * 12; j++) {
+                JSONArray ttjb = new JSONArray();
+                ttjb.put(j, jbchk[j]);
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        JSONObject ttObj = new JSONObject();
+        */
+        //──────────────────────────────────────────────────────────────────────────────────────────────────────
         try {
             obj.put("_id", fr_new.getId());
             obj.put("pwd", fr_new.getPw());
             obj.put("name", fr_new.getName());
-            obj.put("timetable", null);
-            obj.put("f_id", null);
+            obj.put("timetable", fr_new.getTable());
+            obj.put("f_id", fr_new.getFrList());
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -105,6 +159,8 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
         isCurAcc = true;
         Intent retIntent = new Intent(this, MainActivity.class);
+        retIntent.putExtra("btnType", btnType);
+        retIntent.putExtra("newId", inputId);
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
         finish();
@@ -122,7 +178,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         ────────────────────────────────────────────────────────────────────────
          */
 
-        isCurAcc = true;
+        isCurAcc = true;// 서버에 아이디가 존재하면 true, 없으면 false. 아이디가 있을때, 없을때 코드 나누기.
         Intent retIntent = new Intent(this, MainActivity.class);
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
@@ -136,7 +192,10 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
     // AccountLogoutDeleteFragment에서 로그아웃/계정삭제 버튼이 눌렸을때 바뀐 isCurAcc를 받아오는 코드. ↓
     @Override
-    public void OnCurAccCheckSet(boolean isCurAcc) {
-        this.isCurAcc = isCurAcc;
+    public void OnCurAccCheckSet(boolean isCurAcc, int btnType) {
+        Intent retIntent = new Intent(this, MainActivity.class);
+        retIntent.putExtra("btnType", btnType);
+        retIntent.putExtra("isCurAcc", isCurAcc);
+        setResult(RESULT_OK, retIntent);
     }
 }

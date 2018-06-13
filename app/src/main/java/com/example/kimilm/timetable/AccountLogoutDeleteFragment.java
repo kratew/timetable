@@ -20,6 +20,7 @@ public class AccountLogoutDeleteFragment extends Fragment {
     Button logoutBtn;
     Button deleteAccBtn;
     boolean isCurAcc;
+    int btnType;
 
     public AccountLogoutDeleteFragment() {
 
@@ -47,13 +48,11 @@ public class AccountLogoutDeleteFragment extends Fragment {
             public void onClick(View view) {
                 File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
                 files.delete(); // 파일을 디바이스에서 삭제.
-                if(files.exists() == true){
-                    Toast.makeText(getActivity(), "파일이 안지워짐!", Toast.LENGTH_LONG).show();
-                }
                 AccountActivity accountActivity = (AccountActivity) getActivity();
                 accountActivity.onFragmentChanged(0);
                 isCurAcc = false;
-                onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc);
+                btnType = 3;
+                onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc, btnType);
                 getActivity().finish();
             }
         });
@@ -70,22 +69,24 @@ public class AccountLogoutDeleteFragment extends Fragment {
                 ────────────────────────────────
                 */
                 isCurAcc = false;
-                onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc);
+                btnType = 4;
+                onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc, btnType);
                 getActivity().finish();
             }
         });
         return view;
     }
 
+    // 로그아웃, 계정삭제 버튼이 눌리면 AccountActivity에 isCurAcc = false를 전달하는 코드. ↓
     public interface OnCurAccCheckSetListener{
-        void OnCurAccCheckSet(boolean isCurAcc);
+        void OnCurAccCheckSet(boolean isCurAcc, int btnType);
     }
     private OnCurAccCheckSetListener onCurAccCheckSetListener;
 
-    // MainActivity -> AccountActivity -> 이 프래그먼트 현재 디바이스에 있는 아이디 데이터 전달받은거 ↓
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        // MainActivity -> AccountActivity -> 이 프래그먼트 현재 디바이스에 있는 아이디 데이터 전달받은거 ↓
         if(getActivity() != null && getActivity() instanceof AccountActivity){
             curAccIdData = ((AccountActivity)getActivity()).getData();
         }
@@ -102,4 +103,5 @@ public class AccountLogoutDeleteFragment extends Fragment {
         super.onDetach();
         onCurAccCheckSetListener = null;
     }
+
 }
