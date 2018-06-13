@@ -1,14 +1,21 @@
 package com.example.kimilm.timetable;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         fragmentAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
+        TimeTable.fragmentStatePagerAdapter = fragmentAdapter;
+
         container = (RelativeLayout)findViewById(R.id.container);
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPager.setAdapter(fragmentAdapter);  // viewPager에 Adapter 설정
@@ -38,10 +47,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         //getSupportActionBar().setElevation(0);  // 액션바 그림자 제거.
     }
 
-
     /* OnTabSelectedListener의 콜백 메소드.
-     - TabLayout의 탭 버튼을 사용자가 터치했을 때 이벤트를 처리하기 위한 콜백 메소드로,
-       탭 버튼과 ViewPager 화면 조정을 setCurrentItem() 메소드로 처리.*/
+         - TabLayout의 탭 버튼을 사용자가 터치했을 때 이벤트를 처리하기 위한 콜백 메소드로,
+           탭 버튼과 ViewPager 화면 조정을 setCurrentItem() 메소드로 처리.*/
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
@@ -55,16 +63,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
-//    나중에 시도할것 뷰페이져 다시 그리기
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        fragmentAdapter.notifyDataSetChanged();
-//    }
-
     /* TabLayout과 연동하기 위한 ViewPager의 Adapter 클래스 선언 */
-    class MyPagerAdapter extends FragmentPagerAdapter {
+    class MyPagerAdapter extends FragmentStatePagerAdapter {
         List<Fragment> fragments=new ArrayList<>();//fragments ArrayList
 
         //탭 버튼 문자열 배열
@@ -100,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         @Override
         public CharSequence getPageTitle(int position) {
             return title[position];
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+                return POSITION_NONE;   // notifyDataSetChanged
         }
     }
 }

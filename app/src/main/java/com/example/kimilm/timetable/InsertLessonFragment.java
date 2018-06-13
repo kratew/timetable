@@ -43,7 +43,7 @@ public class InsertLessonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.insert_lesson_modal_bottom_sheet, container, false);
+        View view = inflater.inflate(R.layout.fragment_insert_lesson, container, false);
 
         insertExit = view.findViewById(R.id.insertExit);
         insertSearch = view.findViewById(R.id.insertSearch);
@@ -102,6 +102,7 @@ public class InsertLessonFragment extends Fragment
 
         FragmentManager fManager = getFragmentManager();
         FragmentTransaction fTransaction = fManager.beginTransaction();
+        fTransaction.addToBackStack(null);
         fTransaction.replace(R.id.coordinator, searchLessonFragment).commit();
     }
 }

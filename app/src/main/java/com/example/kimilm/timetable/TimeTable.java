@@ -3,6 +3,9 @@ package com.example.kimilm.timetable;
 import android.app.Application;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,11 +17,7 @@ import java.util.Arrays;
 public class TimeTable extends Application
 {
     public static TimeTableFragment fragment;
-
-//    public TimeTable (TimeTableFragment fragment) {
-//        this();
-//        this.fragment = fragment;
-//    }
+    public static FragmentStatePagerAdapter fragmentStatePagerAdapter;
 
     @Override
     public void onCreate() {
@@ -44,6 +43,14 @@ public class TimeTable extends Application
     //false -> 강의 추가 실패, true -> 강의 추가 성공
     public static boolean addLesson (Lesson lesson)
     {
+        for (int i = 0; i < lessons.size(); ++i)
+        {
+            if(lessons.get(i).title.contains(lesson.title))
+            {
+                return false;
+            }
+        }
+
         for (int i = 0; i < lesson.times.size(); ++i)
         {
             if (isJungBok(lesson.times.get(i)))
@@ -51,14 +58,6 @@ public class TimeTable extends Application
                 return false;
             }
         }
-
-//        for (int i = 0; i < lesson.times.size(); ++i)
-//        {
-//            if (isJungBok(lesson.times.get(i)))
-//            {
-//                setJungBok(lesson.times.get(i), true);
-//            }
-//        }
 
         for (int i = 0; i < lesson.times.size(); ++i)
         {
@@ -70,14 +69,22 @@ public class TimeTable extends Application
         return true;
     }
 
-    public static void delLesson (Lesson lesson)
+    //학수번호로 lesson 삭제
+    public static void delLesson (String code)
     {
+        Lesson lesson = null;
+
+        for(int i = 0; i < lessons.size(); ++i)
+        {
+            if(code.equals(lessons.get(i).code))
+            {
+                lesson = lessons.get(i);
+            }
+        }
+
         for (int i = 0; i < lesson.times.size(); ++i)
         {
-            if (isJungBok(lesson.times.get(i)))
-            {
-                setJungBok(lesson.times.get(i), false);
-            }
+            setJungBok(lesson.times.get(i), false);
         }
 
         lessons.remove(lesson);
@@ -86,7 +93,6 @@ public class TimeTable extends Application
     //리턴이 true면 중복임
     private static boolean isJungBok (String times)
     {
-        boolean jFlag = false;
         int day;
         int [] setTime;
 
@@ -97,11 +103,11 @@ public class TimeTable extends Application
         {
             if(jungBok[i])
             {
-                jFlag = true;
+                return true;
             }
         }
 
-        return jFlag;
+        return false;
     }
 
     private static void setJungBok (String times, boolean set)

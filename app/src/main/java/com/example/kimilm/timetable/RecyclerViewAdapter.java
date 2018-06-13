@@ -69,7 +69,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
                         }
                         else
                         {
-                            Toast.makeText(v.getContext(), "강의 시간이 중복됩니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(v.getContext(), "강의가 중복됩니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

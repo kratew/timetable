@@ -3,7 +3,6 @@ package com.example.kimilm.timetable;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -59,16 +58,15 @@ public class SearchLessonFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         thread = new Thread();
-        View view = inflater.inflate(R.layout.search_lesson_modal_bottom_sheet, container, false);
+        View view = inflater.inflate(R.layout.fragment_search_lesson, container, false);
 
         prefix = view.findViewById(R.id.prefix);
         searchBack = view.findViewById(R.id.searchBack);
         toSearch = view.findViewById(R.id.toSearch);
         recyclerView = view.findViewById(R.id.search_modal_recyclerView);
 
+        //UI 밀림 방지
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-
-        출처: http://superwony.tistory.com/4 [개발자 키우기]
 
         searchDocument = new ArrayList<>();
 

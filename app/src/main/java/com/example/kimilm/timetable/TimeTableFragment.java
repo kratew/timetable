@@ -1,6 +1,7 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,9 +10,9 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -19,9 +20,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +27,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,11 +44,10 @@ import org.bson.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.Serializable;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class TimeTableFragment extends Fragment implements View.OnClickListener{
@@ -88,6 +85,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_time_table, container, false);
 
         frameLayout = (FrameLayout)view.findViewById(R.id.frame);
+
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
 
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
@@ -120,7 +118,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-
         /*  ▼ NullPointerException 에러 발생!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ActionBar actionBar = ((MainActivity)getActivity()).getActionBar(); // 액션바의 그림자 제거
         actionBar.setElevation(0);
@@ -137,6 +134,12 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         }.start();
 
+
+        //
+        //
+        // temp!!
+        //
+        //
         //insertLesson
         View v = view.findViewById(R.id.mon);
         v.setOnClickListener(new View.OnClickListener()
@@ -163,13 +166,9 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         {
             @Override
             public void onClick(View v) {
-                BottomSheet(R.layout.info_lesson_modal_bottom_sheet);
+                BottomSheet(R.layout.modal_bottom_sheet_info_lesson, v);
             }
         });
-
-//        프래그먼트 매니저를 전달해야할텐데..
-//        Intent intent = new Intent();
-//        intent.putExtra("FragmentManager", (Serializable) getFragmentManager());
 
         return view;
     }
@@ -216,48 +215,65 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return timeTable;
     }
 
+
+    //강의 띄우기
     public void showTable (Lesson lesson)
     {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        Button [] btn = new Button[lesson.times.size()];
+        View [] view = new View[lesson.times.size()];
+
+        int r = (int)(Math.random() * 255);
+        int g = (int)(Math.random() * 255);
+        int b = (int)(Math.random() * 255);
 
         for(int i = 0; i < lesson.times.size(); ++i)
         {
-            LinearLayout wrapBtn = new LinearLayout(getContext());
+            LinearLayout wrapLayout = new LinearLayout(getContext());
 
-            wrapBtn.setLayoutParams(layoutParams);
+            wrapLayout.setLayoutParams(layoutParams);
 
-            btn[i] = new Button(getContext());
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams( setBtnWidth(lesson.times.get(i).substring(0, 1)),
-                                                                                    setBtnHeight(lesson.times.get(i).substring(1)));
+            view[i] = inflater.inflate(R.layout.lesson_view, wrapLayout,true);
 
-            btnParams.setMargins(setBtnLeftMargin(lesson.times.get(i).substring(0, 1)),
+            LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(setBtnWidth(lesson.times.get(i).substring(0, 1)),
+                    setBtnHeight(lesson.times.get(i).substring(1)));
+
+            viewParams.setMargins(setBtnLeftMargin(lesson.times.get(i).substring(0, 1)),
                     setBtnTopMargin(lesson.times.get(i).substring(1)), 0, 0);
 
-            btn[i].setLayoutParams(btnParams);
+            view[i].setLayoutParams(viewParams);
 
-            btn[i].setOnClickListener(new View.OnClickListener()
+            view[i].setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v) {
-                    infoLesson(v);
+                    BottomSheet(R.layout.modal_bottom_sheet_info_lesson, v);
                 }
             });
 
-            btn[i].setBackgroundColor(getResources().getColor(R.color.color8));
+            //랜덤 컬러
+            view[i].setBackgroundColor(Color.rgb(r, g, b));
 
-            wrapBtn.addView(btn[i]);
+            ((TextView)(view[i].findViewById(R.id.floatTitle))).setText(lesson.title);
+            ((TextView)(view[i].findViewById(R.id.floatClassRoom))).setText(lesson.classroom.toString().replace("[", "").replace("]", ""));
+            ((TextView)(view[i].findViewById(R.id.floatProf))).setText(lesson.prof);
 
-            frameLayout.addView(wrapBtn);
+            ((TextView)(view[i].findViewById(R.id.floatClassify))).setText(lesson.classify);
+            ((TextView)(view[i].findViewById(R.id.floatCredit))).setText(lesson.credit);
+            ((TextView)(view[i].findViewById(R.id.floatCode))).setText(lesson.code);
+            ((TextView)(view[i].findViewById(R.id.floatTimes))).setText(lesson.times.toString().replace("[", "").replace("]", ""));
+            ((TextView)(view[i].findViewById(R.id.floatCount))).setText(String.valueOf(lesson.times.size()));
+
+            //동적 뷰 제거 위해
+            wrapLayout.setId(Integer.parseInt(lesson.code + i));
+
+            frameLayout.addView(wrapLayout);
         }
 
-        btn[0].setEllipsize(TextUtils.TruncateAt.END);
-        btn[0].setSingleLine(true);
-        btn[0].setTextColor(Color.WHITE);
-        btn[0].setText(lesson.title);
+        ((LinearLayout)view[0].findViewById(R.id.floatLessonTexts)).setVisibility(View.VISIBLE);
     }
 
 //    time.substring(0, 1)
@@ -311,17 +327,19 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             {
                 case "A":
                     return getActivity().findViewById(R.id.time1).getTop()
-                            + getActivity().findViewById(R.id.time1).getHeight() * (30 / 60);
+                            + Math.round(getActivity().findViewById(R.id.time1).getHeight() * 0.5f);
                 case "B":
                     return getActivity().findViewById(R.id.time3).getTop();
+
                 case "C":
                     return getActivity().findViewById(R.id.time4).getTop()
-                            + getActivity().findViewById(R.id.time4).getHeight() * (30 / 60);
+                            + Math.round(getActivity().findViewById(R.id.time4).getHeight() * 0.5f);
                 case "D":
                     return getActivity().findViewById(R.id.time6).getTop();
+
                 case "E":
                     return getActivity().findViewById(R.id.time7).getTop()
-                            + getActivity().findViewById(R.id.time7).getHeight() * (30 / 60);
+                            + Math.round(getActivity().findViewById(R.id.time7).getHeight() * 0.5f);
             }
         }
         //1 ~ 14 교시
@@ -336,7 +354,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             {
                 int resId = getResources().getIdentifier("time" + Integer.parseInt(time), "id", getActivity().getPackageName());
                 return getActivity().findViewById(resId).getTop()
-                        + getActivity().findViewById(resId).getHeight() * ((30 - (Integer.parseInt(time) - 9) * 5) / 60);
+                        + (int)Math.floor(getActivity().findViewById(resId).getHeight() / 60f * (30 - ((Integer.parseInt(time) - 9) * 5)));
             }
         }
         return 0;
@@ -352,18 +370,19 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             switch(time)
             {
                 case "A":
-                    return getActivity().findViewById(R.id.time1).getHeight()
-                            + getActivity().findViewById(R.id.time1).getHeight() * (30 / 60);
+                    return Math.round(getActivity().findViewById(R.id.time1).getHeight() * 1.5f);
+
                 case "B":
-                    return getActivity().findViewById(R.id.time3).getHeight();
+                    return Math.round(getActivity().findViewById(R.id.time3).getHeight() * 1.5f);
+
                 case "C":
-                    return getActivity().findViewById(R.id.time4).getHeight()
-                            + getActivity().findViewById(R.id.time4).getHeight() * (30 / 60);
+                    return Math.round(getActivity().findViewById(R.id.time4).getHeight() * 1.5f);
+
                 case "D":
-                    return getActivity().findViewById(R.id.time6).getHeight();
+                    return Math.round(getActivity().findViewById(R.id.time6).getHeight() * 1.5f);
+
                 case "E":
-                    return getActivity().findViewById(R.id.time7).getHeight()
-                            + getActivity().findViewById(R.id.time7).getHeight() * (30 / 60);
+                    return Math.round(getActivity().findViewById(R.id.time7).getHeight() * 1.5f);
             }
         }
         //1 ~ 14 교시
@@ -377,8 +396,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             else
             {
                 int resId = getResources().getIdentifier("time" + Integer.parseInt(time), "id", getActivity().getPackageName());
-                return getActivity().findViewById(resId).getHeight()
-                        - getActivity().findViewById(resId).getHeight() * (5 / 60);
+                return (int)Math.ceil(getActivity().findViewById(resId).getHeight() * 11 / 12.0);
             }
         }
         return 0;
@@ -387,11 +405,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     public void saveTable (View v)
     {
 
-    }
-
-    public void infoLesson (View v)
-    {
-        BottomSheet(R.layout.info_lesson_modal_bottom_sheet);
     }
 
     public void popInsertLessonFragment (View v)
@@ -406,28 +419,54 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         FragmentManager fManager = getFragmentManager();
 
         FragmentTransaction fTransaction = fManager.beginTransaction();
+        fTransaction.addToBackStack(null);
         fTransaction.replace(R.id.coordinator, insertLessonFragment).commit();
     }
 
-    public void BottomSheet(int layoutId)
+    public void BottomSheet(int layoutId, View parent)
     {
-        View view = getLayoutInflater().inflate(layoutId, null);
+        final View view = getLayoutInflater().inflate(layoutId, null);
+
+        ((ImageView)view.findViewById(R.id.lessonExit)).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                modalBottomSheet.dismiss();
+            }
+        });
+
+        ((ImageView)view.findViewById(R.id.lessonDelete)).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                TimeTable.delLesson(((TextView)view.findViewById(R.id.lessonCode)).getText().toString());
+
+                int count = Integer.parseInt(((TextView)view.findViewById(R.id.lessonCount)).getText().toString());
+
+                for(int i = 0; i < count; ++i)
+                {
+                    frameLayout.removeView(frameLayout.findViewById(Integer.parseInt(
+                            ((TextView)view.findViewById(R.id.lessonCode)).getText().toString() + i)));
+                }
+
+                modalBottomSheet.dismiss();
+            }
+        });
+
+        ((TextView)view.findViewById(R.id.lessonTitle)).setText(((TextView)parent.findViewById(R.id.floatTitle)).getText());
+        ((TextView)view.findViewById(R.id.lessonProf)).setText(((TextView)parent.findViewById(R.id.floatProf)).getText());
+        ((TextView)view.findViewById(R.id.lessonTime)).setText(((TextView)parent.findViewById(R.id.floatTimes)).getText());
+        ((TextView)view.findViewById(R.id.lessonCredit)).setText(((TextView)parent.findViewById(R.id.floatCredit)).getText());
+        ((TextView)view.findViewById(R.id.lessonClassify)).setText(((TextView)parent.findViewById(R.id.floatClassify)).getText());
+        ((TextView)view.findViewById(R.id.lessonClassroom)).setText(((TextView)parent.findViewById(R.id.floatClassRoom)).getText());
+        ((TextView)view.findViewById(R.id.lessonCode)).setText(((TextView)parent.findViewById(R.id.floatCode)).getText());
+        ((TextView)view.findViewById(R.id.lessonCount)).setText(((TextView)parent.findViewById(R.id.floatCount)).getText());
 
         modalBottomSheet = new BottomSheetDialog(getActivity());
 
         modalBottomSheet.setContentView(view);
 
         modalBottomSheet.show();
-    }
-
-    public void exitLesson (View v)
-    {
-
-    }
-
-    public void deleteLesson (View v)
-    {
-
     }
 
     //권한 체크변경
@@ -480,13 +519,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     }   // 이미지를 저장하는 코드의 끝 ↑
 
     // 이하는 몽고디비
-    public static Document selectLesson(ArrayList<Document> document)
-    {
-        //some logic
-
-        return document.get(3);
-    }
-
     public static ArrayList<String> toSubString (String str)
     {
         ArrayList strArray = new ArrayList<>();

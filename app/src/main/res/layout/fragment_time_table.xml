@@ -16,7 +16,7 @@
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:color/white">
 
 
@@ -281,19 +281,19 @@
             </GridLayout>
 
             <!--<com.bowyer.app.fabtransitionlayout.BottomSheetLayout-->
-                <!--android:id="@+id/bottom_sheet"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_gravity="bottom"-->
-                <!--app:ft_container_gravity="center"-->
-                <!--app:ft_color="@color/primary" >-->
+            <!--android:id="@+id/bottom_sheet"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--app:ft_container_gravity="center"-->
+            <!--app:ft_color="@color/primary" >-->
 
-                <!--<ListView-->
-                    <!--android:id="@+id/list_menu"-->
-                    <!--android:background="@color/primary"-->
-                    <!--android:divider="@null"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content" />-->
+            <!--<ListView-->
+            <!--android:id="@+id/list_menu"-->
+            <!--android:background="@color/primary"-->
+            <!--android:divider="@null"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
             <!--</com.bowyer.app.fabtransitionlayout.BottomSheetLayout>-->
 
         </FrameLayout>
