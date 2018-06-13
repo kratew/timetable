@@ -10,11 +10,16 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AccountActivity extends AppCompatActivity implements AccountCreateFragment.OnCreateAccountSetListener, AccountLoginFragment.OnLoginAccSetListener{
 
@@ -59,9 +64,9 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
     public void onCreateAccountSet(int btnType, String inputId, String inputPw, String inputName) {
 
         // 가져온 정보를 디바이스에 저장하는 코드 ↓
-
         JSONObject obj = new JSONObject();
         Friend fr_new = new Friend(inputId, inputPw, inputName, new TimeTable(), new ArrayList<String>());
+
         try {
             obj.put("_id", fr_new.getId());
             obj.put("pwd", fr_new.getPw());
@@ -72,23 +77,69 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         catch (JSONException e){
             e.printStackTrace();
         }
+        File file = new File("data/data/com.example.kimilm.timetable/files/AccInDevice.json");
+        FileWriter fw = null;
+        BufferedWriter bufwr = null;
+        try {
+            fw = new FileWriter(file);
+            bufwr = new BufferedWriter(fw);
+            bufwr.write(obj.optString("_id"));
+            bufwr.write(obj.optString("pwd"));
+            bufwr.write(obj.optString("name"));
+            bufwr.write(obj.optString("timetable"));
+            bufwr.write(obj.optString("f_id"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        try{
+            if(bufwr != null){
+                bufwr.close();
+            }
+            if(fw != null){
+                fw.close();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        /*
         FileOutputStream fos = null;
         try{
-            fos = openFileOutput("AccInDevice.json", MODE_PRIVATE);
-            fos.write(obj.toString().getBytes());
+            fos = openFileOutput("AccInDevice.txt", MODE_PRIVATE);
+            fos.write(fr_new.getId().getBytes());
             fos.close();
         } catch(FileNotFoundException e){
             e.printStackTrace();
         } catch(IOException e){
             e.printStackTrace();
         }
-        Toast.makeText(this, obj.get("_id"), Toast.LENGTH_LONG).show();
-        File files = new File("data/data/package/files/AccInDevice.json");
+        */
+
+        // 저장한 파일을 읽어오는 코드 ↓
+        File files = new File("data/data/com.example.kimilm.timetable/files/AccInDevice.json");
         if(files.exists()==true){
-            Toast.makeText(this, "파일이 존재함!!", Toast.LENGTH_LONG).show();
+            FileReader fr = null;
+            BufferedReader bufrd = null;
+
+            int [] ch = new int[1000];
+            int i = 0;
+
+            try{
+                fr = new FileReader(files);
+                bufrd = new BufferedReader(fr);
+
+                while((ch[i] = bufrd.read()) != -1){
+                    i++;
+                }
+
+                Toast.makeText(this, Arrays.toString(ch), Toast.LENGTH_LONG).show();
+                bufrd.close();
+                fr.close();
+            } catch(Exception e){
+                e.printStackTrace();
+            }
         }else{
             Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
-
         }
 
         /*

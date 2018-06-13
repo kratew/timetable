@@ -1,8 +1,6 @@
 package com.example.kimilm.timetable;
 
 
-import com.example.kimilm.timetable.TimeTable;
-
 import java.util.ArrayList;
 
 public class Friend {
@@ -19,14 +17,6 @@ public class Friend {
         Name = name;
         this.table = table;
         this.frList = new ArrayList<String>(frList);
-    }
-
-    public ArrayList<String> getFrList() {
-        return frList;
-    }
-
-    public void setFrList(ArrayList<String> frList) {
-        this.frList = frList;
     }
 
     public String getId() {
@@ -49,6 +39,10 @@ public class Friend {
         return table;
     }
 
+    public ArrayList<String> getFrList() {
+        return frList;
+    }
+
     public void setId(String id) {
         Id = id;
     }
@@ -67,5 +61,9 @@ public class Friend {
 
     public void setTable(TimeTable table) {
         this.table = table;
+    }
+
+    public void setFrList(ArrayList<String> frList) {
+        this.frList = frList;
     }
 }

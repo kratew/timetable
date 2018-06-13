@@ -24,9 +24,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
@@ -142,7 +144,41 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             e.printStackTrace();
         }
         */
+
+        // 저장한 파일을 읽어오는 코드 ↓
+        File files = new File("data/data/com.example.kimilm.timetable/files/AccInDevice.json");
+        if(files.exists()==true){
+            FileReader fr = null;
+            BufferedReader bufrd = null;
+
+            int [] ch = new int[1000];
+            int i = 0;
+
+            try{
+                fr = new FileReader(files);
+                bufrd = new BufferedReader(fr);
+
+                while((ch[i] = bufrd.read()) != -1){
+                    i++;
+                }
+
+                Toast.makeText(this, Arrays.toString(ch), Toast.LENGTH_LONG).show();
+                bufrd.close();
+                fr.close();
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
+        }
+
+        /*
+        ───────────────────────────────────────────────────────────────────────────────────
+        이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
+        ───────────────────────────────────────────────────────────────────────────────────
+         */
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // onOptionsItemSelected() Required. 이벤트가 toggle에서 발생한거라면 메뉴 이벤트 로직에서 벗어나게 처리.
@@ -210,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1000 && resultCode == RESULT_OK){
-
+            Toast.makeText(this, "AccountActivity가 정상적으로 종료됨.", Toast.LENGTH_LONG).show();
         }
     }
 }
