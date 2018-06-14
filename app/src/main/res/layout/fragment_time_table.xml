@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,7 +16,7 @@
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:color/white">
 
 
@@ -62,72 +64,72 @@
 
                 <!--time-->
                 <TextView
-                    android:id="@+id/am9"
+                    android:id="@+id/time1"
                     style="@style/time"
                     android:text="9" />
 
                 <TextView
-                    android:id="@+id/am10"
+                    android:id="@+id/time2"
                     style="@style/time"
                     android:text="10" />
 
                 <TextView
-                    android:id="@+id/am11"
+                    android:id="@+id/time3"
                     style="@style/time"
                     android:text="11" />
 
                 <TextView
-                    android:id="@+id/pm12"
+                    android:id="@+id/time4"
                     style="@style/time"
                     android:text="12" />
 
                 <TextView
-                    android:id="@+id/pm1"
+                    android:id="@+id/time5"
                     style="@style/time"
                     android:text="1" />
 
                 <TextView
-                    android:id="@+id/pm2"
+                    android:id="@+id/time6"
                     style="@style/time"
                     android:text="2" />
 
                 <TextView
-                    android:id="@+id/pm3"
+                    android:id="@+id/time7"
                     style="@style/time"
                     android:text="3" />
 
                 <TextView
-                    android:id="@+id/pm4"
+                    android:id="@+id/time8"
                     style="@style/time"
                     android:text="4" />
 
                 <TextView
-                    android:id="@+id/pm5"
+                    android:id="@+id/time9"
                     style="@style/time"
                     android:text="5" />
 
                 <TextView
-                    android:id="@+id/pm6"
+                    android:id="@+id/time10"
                     style="@style/time"
                     android:text="6" />
 
                 <TextView
-                    android:id="@+id/pm7"
+                    android:id="@+id/time11"
                     style="@style/time"
                     android:text="7" />
 
                 <TextView
-                    android:id="@+id/pm8"
+                    android:id="@+id/time12"
                     style="@style/time"
                     android:text="8" />
 
                 <TextView
-                    android:id="@+id/pm9"
+                    android:id="@+id/time13"
                     style="@style/time"
                     android:text="9" />
 
                 <TextView
-                    android:id="@+id/pm10"
+                    android:id="@+id/time14"
                     style="@style/time"
                     android:background="@drawable/bolder_right"
                     android:text="10" />
@@ -278,6 +280,7 @@
 
             </GridLayout>
 
+<<<<<<< HEAD
         </FrameLayout>
     </ScrollView>
 
@@ -294,6 +297,37 @@
         app:close_on_click="true"
         app:size_main_button="@integer/omfm_fab_size_normal"
         />
+=======
+            <!--<com.bowyer.app.fabtransitionlayout.BottomSheetLayout-->
+            <!--android:id="@+id/bottom_sheet"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--app:ft_container_gravity="center"-->
+            <!--app:ft_color="@color/primary" >-->
+
+            <!--<ListView-->
+            <!--android:id="@+id/list_menu"-->
+            <!--android:background="@color/primary"-->
+            <!--android:divider="@null"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+            <!--</com.bowyer.app.fabtransitionlayout.BottomSheetLayout>-->
+
+        </FrameLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/faButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/add"
+        app:backgroundTint="@android:color/background_light"
+        app:fabSize="auto"
+        app:rippleColor="#FFFFFF" />
+>>>>>>> kimilm_task
 
 </android.support.design.widget.CoordinatorLayout>
 
