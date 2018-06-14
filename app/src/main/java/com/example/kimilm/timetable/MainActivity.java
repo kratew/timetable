@@ -109,14 +109,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 curAccId = jsonObj.getString("_id");
                 //Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
+
                 /*
                 JSONObject timetableJsonObj = new JSONObject();
                 JSONArray lessonsJsonArr = new JSONArray();
                 JSONObject lessonsJsonObj = new JSONObject();
                 String tt = jsonObj.getString("timetable");
                 timetableJsonObj = new JSONObject(tt);
-                lessonsJsonObj.put("lessons", timetableJsonObj.toJSONArray("lessons"));
-                lessonsJsonArr.put
+
+                Toast.makeText(this, "TimeTable이 JSONObject로 들어갔다!!", Toast.LENGTH_LONG).show();
                 */
                 /*
                 try{

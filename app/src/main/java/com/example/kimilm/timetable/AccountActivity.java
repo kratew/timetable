@@ -37,8 +37,11 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         // 기존 디바이스 계정 정보가 있으면 AccountLogoutDeleteFragment를, 없으면 AccountLoginFragment를 가져오는 코드 ↓
         Intent isCurAccIntent = getIntent();    // MainActivity에서 isCurAcc과 curAccId를 받음.
         isCurAcc = isCurAccIntent.getBooleanExtra("isCurAcc", false);
-        curAccId = isCurAccIntent.getStringExtra("curAccId");
-        Toast.makeText(this, isCurAcc + curAccId, Toast.LENGTH_LONG);
+        if(isCurAcc == true){
+            curAccId = isCurAccIntent.getStringExtra("curAccId");
+            Toast.makeText(this, isCurAcc + curAccId, Toast.LENGTH_LONG);
+        }else{Toast.makeText(this, isCurAcc+"", Toast.LENGTH_LONG);}
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if(isCurAcc == true) {
@@ -48,7 +51,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         }else{
             fragmentTransaction.replace(R.id.fragment_lay, new AccountLoginFragment());
             fragmentTransaction.commit();
-            Toast.makeText(this, "현재 디바이스에 계정 정보가 없음.", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "현재 디바이스에 계정 정보가 없음.", Toast.LENGTH_LONG).show();
         }
     }
 

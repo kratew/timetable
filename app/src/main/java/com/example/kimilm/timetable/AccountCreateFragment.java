@@ -51,7 +51,6 @@ public class AccountCreateFragment extends Fragment {
                 createId = inputId.getText().toString();
                 createPw = inputPw.getText().toString();
                 createName = inputName.getText().toString();
-
                 onCreateAccountSetListener.onCreateAccountSet(btnType, createId, createPw, createName);
             }
         });
