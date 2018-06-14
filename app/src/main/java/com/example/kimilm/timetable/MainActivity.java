@@ -1,5 +1,6 @@
 package com.example.kimilm.timetable;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
@@ -87,57 +90,66 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         });
 
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
+        String tableFilePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "MyFolder" + File.separator + "saveTable.json";
         File files = new File(getFilesDir(), "AccInDevice.json");
-        if(files.exists()==true){   // 만약 이미 존재하느 파일이 있으면 파일 불러오기.
+        File files2 = new File(tableFilePath, "saveTable.json");
+        if(files.exists()==true){   // 만약 이미 존재하는 파일이 있으면 파일 불러오기.
             isCurAcc = true;
             FileReader fr = null;
             BufferedReader bufrd = null;
-            char ch;
+            String ch;
             try{
+                // AccInDevice.json에서 데이터 가져오는 코드 ↓
                 String jsonStr = new String();
                 fr = new FileReader(files);
                 bufrd = new BufferedReader(fr);
 
-                while((ch = (char)bufrd.read()) != -1){
-                    jsonStr += String.valueOf(ch);
-                    if(ch == '}'){
-                        break;
-                    }
+                while((ch = bufrd.readLine()) != null){
+                    jsonStr += ch;
                 }
 
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 curAccId = jsonObj.getString("_id");
-                //Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
+                ArrayList<String> tmpFList = new ArrayList<>();
 
-                /*
-                JSONObject timetableJsonObj = new JSONObject();
-                JSONArray lessonsJsonArr = new JSONArray();
-                JSONObject lessonsJsonObj = new JSONObject();
-                String tt = jsonObj.getString("timetable");
-                timetableJsonObj = new JSONObject(tt);
-
-                Toast.makeText(this, "TimeTable이 JSONObject로 들어갔다!!", Toast.LENGTH_LONG).show();
-                */
-                /*
-                try{
-                    frObj = new JSONObject(jsonStr);
-                    String ttValue = frObj.getString("timetable");
-                    ttObj = new JSONObject(ttValue);
-                    Iterator i = ttObj.keys();
-                    while(i.hasNext()){
-                        String b = i.next().toString();
-                        Log.d("timetable_key_search", b);
-                        ttKeyList.add(b);
-                    }
-                } catch(JSONException e){
-                    e.printStackTrace();
+                for(int i = 0; i < jsonObj.getJSONArray("f_list").length(); i++){   // JSONException 발생!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    tmpFList.add(jsonObj.getJSONArray("f_list").get(i).toString());
                 }
-                */
-                //tmpTable.setJungBok();
 
                 thisFr.setId(jsonObj.get("_id").toString());
                 thisFr.setPw(jsonObj.get("pwd").toString());
                 thisFr.setName(jsonObj.get("name").toString());
+                thisFr.setFrList(tmpFList);
+
+                // saveTable.json에서 데이터 가져오는 코드 ↓
+                if(files2.exists() == true) {
+                    JSONObject tableObj = new JSONObject();
+                    String tableStr = new String();
+                    fr = new FileReader(files2);
+                    bufrd = new BufferedReader(fr);
+                    while ((ch = bufrd.readLine()) != null) {
+                        tableStr += ch;
+                    }
+                    tableObj = new JSONObject(tableStr);
+
+                    for (int i = 0; i < 5 * 14 * 12; i++) { // Activity -> TimeTable 에 jungBok 넣는 코드.
+                        TimeTable.jungBok[i] = tableObj.getJSONArray("jungbok").getBoolean(i);
+                    }
+
+                    for (int i = 0; i < tableObj.getJSONArray("lessons").length(); i++) {// Activity -> TimeTable에 lessons 넣는 코드.
+                        JSONObject tmp = tableObj.getJSONArray("lessons").getJSONObject(i);
+                        ArrayList<String> timesTmp = new ArrayList<>();
+                        ArrayList<String> crTmp = new ArrayList<>();
+                        for (int j = 0; j < tmp.getJSONArray("times").length(); j++) {
+                            timesTmp.add(tmp.getJSONArray("times").getString(j));
+                        }
+                        for (int n = 0; n < tmp.getJSONArray("classroom").length(); n++) {
+                            crTmp.add(tmp.getJSONArray("classroom").getString(n));
+                        }
+                        TimeTable.lessons.add(new Lesson(tmp.getString("code"), tmp.getString("title"), tmp.getString("classify"), tmp.getString("credit"), timesTmp, tmp.getString("prof"), crTmp, tmp.getInt("color")));
+                    }
+                }
 
                 bufrd.close();
                 fr.close();
@@ -231,6 +243,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 curAccId = data.getStringExtra("newId");
             }else if(data.getIntExtra("btnType", 0) > 2){
                 thisFr = new Friend();
+                if(TimeTable.lessons.size() > 0){   // Application -> TimeTable에 올라가 있는 모든 lesson 삭제.
+                    ArrayList<String> codes = new ArrayList<>();
+                    for(int i = 0; i < TimeTable.lessons.size(); i++){
+                        codes.add(TimeTable.lessons.get(i).code);
+                        TimeTable.delLesson(codes.get(i));
+                    }
+                }
             }
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }

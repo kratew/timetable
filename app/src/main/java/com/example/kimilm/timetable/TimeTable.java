@@ -32,6 +32,18 @@ public class TimeTable extends Application
 
     public static TimeTableFragment fragment;
 
+    //월-금, 9시-22시, 5분 단위로 중복 검사
+    public static boolean jungBok [] = new boolean[5 * 14 * 12];
+
+    //각 시간표별 강의 입력
+    static ArrayList<Lesson> lessons = new ArrayList<>();
+
+    public TimeTable ()
+    {
+        Arrays.fill(jungBok, false);
+        lessons = new ArrayList<>();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -59,18 +71,6 @@ public class TimeTable extends Application
             }
         }
     }
-
-    //월-금, 9시-22시, 5분 단위로 중복 검사
-    private static boolean jungBok [] = new boolean[5 * 14 * 12];
-
-    //각 시간표별 강의 입력
-    static ArrayList<Lesson> lessons = new ArrayList<>();
-
-    public TimeTable ()
-    {
-        Arrays.fill(jungBok, false);
-    }
-
 
     //저장된 강의 정보 가져올 때 사용 (예정)
     public TimeTable (TimeTable timeTable)

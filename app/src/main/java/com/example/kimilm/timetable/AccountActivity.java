@@ -16,6 +16,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AccountActivity extends AppCompatActivity implements AccountCreateFragment.OnCreateAccountSetListener, AccountLoginFragment.OnLoginAccSetListener, AccountLogoutDeleteFragment.OnCurAccCheckSetListener{
 
@@ -73,62 +74,12 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         JSONObject obj = new JSONObject();
         Friend fr_new = new Friend(inputId, inputPw, inputName, new TimeTable(), new ArrayList<String>());
 
-        //──────────────────────────────────────────────────────────────────────────────────────────────────
-        /* 완전한 Friend 인스턴스를 만들어보기 위한 코드
-        TimeTable tt = new TimeTable();
-        int i;
-        boolean jbchk[] = new boolean[5 * 14 * 12];
-        ArrayList<Lesson> ttl = new ArrayList<>();
-
-        for(i = 0; i < 5*14*12; i++) { jbchk[i] = false; }
-        ArrayList<String> ttt = new ArrayList<>();
-        ttt.add("10");
-        ttt.add("20");
-        ttt.add("30");
-        ArrayList<String> ttcr = new ArrayList<>();
-        ttcr.add("aa");
-        ttcr.add("bb");
-        Lesson l1 = new Lesson("111","AA","x","3",ttt,"Q",ttcr, 121212);
-        Lesson l2 = new Lesson("222","BB","y","2",ttt,"W",ttcr, 232323);
-        Lesson l3 = new Lesson("333","CC","z","1",ttt,"E",ttcr, 343434);
-        ttl.add(l1);
-        ttl.add(l2);
-        ttl.add(l3);
-
-        tt.setJungBok(jbchk);
-        tt.setLessons(ttl);
-
-        JSONObject tmp = new JSONObject();
-        JSONArray lstimes = new JSONArray();
-        lstimes.put(jbchk[0]);
-
-
-        ArrayList<String> f_list = new ArrayList<>();
-        f_list.add("hhh");
-        f_list.add("iii");
-        f_list.add("jjj");
-
-        fr_new.setTable(tt);
-        fr_new.setFrList(f_list);
-
-        try {
-            int j;
-            for(j = 0; j < 5 * 14 * 12; j++) {
-                JSONArray ttjb = new JSONArray();
-                ttjb.put(j, jbchk[j]);
-            }
-        }catch(JSONException e){
-            e.printStackTrace();
-        }
-        JSONObject ttObj = new JSONObject();
-        */
-        //──────────────────────────────────────────────────────────────────────────────────────────────────────
         try {
             obj.put("_id", fr_new.getId());
             obj.put("pwd", fr_new.getPw());
             obj.put("name", fr_new.getName());
-            obj.put("timetable", fr_new.getTable());
-            obj.put("f_id", fr_new.getFrList());
+            obj.put("timetable", new TimeTable());
+            obj.put("f_list", new ArrayList<>());
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -154,11 +105,15 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
             e.printStackTrace();
         }
 
-        /*
+        if(TimeTable.lessons.isEmpty() == false){
+            // 계정을 생성하기 전에 이미 무계정으로 만든 시간표가 존재하면,
+            // 이 데이터들을 새로 만든 계정 정보와 함께 서버로 보낸다.
+            /*
         ────────────────────────────────────────────────────────────────
         이 메소드에서 받은 정보들로 서버에 계정정보를 저장하는 코드 추가 요망!!!
         ────────────────────────────────────────────────────────────────
          */
+        }
 
         isCurAcc = true;
         Intent retIntent = new Intent(this, MainActivity.class);
@@ -173,7 +128,14 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
     // AccountLoginFragment에서 정보를 가져와서 로그인을 하는 코드 ↓
     @Override
     public void onLoginAccSet(int btnType, String loginId, String loginPw) {
-
+        // 로그인 하기 전에 이미 무계정으로 만든 시간표가 있으면, 삭제. ↓
+        if(TimeTable.lessons.size() > 0){
+            ArrayList<String> codes = new ArrayList<>();
+            for(int i = 0; i < TimeTable.lessons.size(); i++){
+                codes.add(TimeTable.lessons.get(i).code);
+                TimeTable.delLesson(codes.get(i));
+            }
+        }
 
         /*
         ────────────────────────────────────────────────────────────────────────

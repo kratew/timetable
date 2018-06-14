@@ -2,6 +2,7 @@ package com.example.kimilm.timetable;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -47,7 +48,10 @@ public class AccountLogoutDeleteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
+                File files2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + File.separator + "MyFolder" + File.separator + "saveTable.json", "saveTable.json");
                 files.delete(); // 파일을 디바이스에서 삭제.
+                files2.delete();
                 AccountActivity accountActivity = (AccountActivity) getActivity();
                 accountActivity.onFragmentChanged(0);
                 isCurAcc = false;
@@ -62,7 +66,10 @@ public class AccountLogoutDeleteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
+                File files2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + File.separator + "MyFolder" + File.separator + "saveTable.json", "saveTable.json");
                 files.delete(); // 파일을 디바이스에서 삭제.
+                files2.delete();
                 /*
                 ────────────────────────────────
                 현재 계정을 서버에서 삭제하는 코드!!
