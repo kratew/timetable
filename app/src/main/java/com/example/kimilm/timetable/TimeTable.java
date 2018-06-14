@@ -16,6 +16,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +27,37 @@ import java.util.Arrays;
 
 public class TimeTable extends Application
 {
+    static String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + File.separator + "MyFolder" + File.separator + "saveTable.json";
+
     public static TimeTableFragment fragment;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        File file = new File(filePath);
+
+        if(!file.exists())
+        {
+            try {
+                FileReader fileReader = new FileReader(file);
+
+                String json = null;
+
+                while(fileReader.read() != 0)
+                {
+//                    json += fileReader.read();        //얘 다시 볼것
+                }
+
+                BasicDBObject timetableObject = BasicDBObject.parse(json);
+            }
+            catch (Exception e)
+            {
+                Toast.makeText(fragment.getContext(), "getTable", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
     }
 
     //월-금, 9시-22시, 5분 단위로 중복 검사
@@ -185,7 +212,7 @@ public class TimeTable extends Application
         }
     }
 
-    // 강의 추가 또는 삭제시 로컬 파일에 저장
+    // 강의 추가 또는 삭제시 로컬 파일에 저장 -> DBO 파일 리턴으로 바꿀 것
     public static void saveTable ()
     {
         if(ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED ||
@@ -195,9 +222,7 @@ public class TimeTable extends Application
             ActivityCompat.requestPermissions(fragment.getActivity(), new String [] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
         }
 
-        String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "MyFolder";
-
-        File file = new File(folderPath + File.separator + "saveTable.json");
+        File file = new File(filePath);
 
         ArrayList<BasicDBObject> lessonObjList = new ArrayList<>();
 
@@ -217,7 +242,7 @@ public class TimeTable extends Application
         BasicDBObjectBuilder tableBuilder = BasicDBObjectBuilder
                 .start("jungbok", jungBok).add("lessons", lessonObjList);
 
-        BasicDBObject timeTableObj = new BasicDBObject("timetable1", tableBuilder.get());
+        BasicDBObject timeTableObj = new BasicDBObject("timetable", tableBuilder.get());
 
         try
         {
@@ -226,13 +251,10 @@ public class TimeTable extends Application
             output.write(timeTableObj.toJson());
 
             output.close();
-
-            Toast.makeText(fragment.getContext(), "강의 저장 성공", Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            Toast.makeText(fragment.getContext(), "강의 저장 실패", Toast.LENGTH_SHORT).show();
         }
     }
 }
