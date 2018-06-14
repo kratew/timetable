@@ -35,20 +35,17 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-<<<<<<< HEAD
     implementation 'com.github.dekoservidoni:omfm:1.1.1'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.51'
     implementation files('mongo-java-driver-3.7.1-javadoc.jar')
     implementation files('mongo-java-driver-3.7.1.jar')
     //implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-=======
     implementation 'com.allattentionhere:fabulousfilter:0.0.2'
     implementation 'com.bowyer.app:fabtransitionlayout:0.4.0'
     implementation 'com.github.ozodrukh:CircularReveal:1.3.1'
     implementation 'com.github.ksoichiro:android-observablescrollview:1.5.1'
     implementation files('mongo-java-driver-3.7.1-javadoc.jar')
     implementation files('mongo-java-driver-3.7.1.jar')
->>>>>>> kimilm_task
 }
 //Program type already present: org.hamcrest.core.DescribedAs
 //Message{kind=ERROR, text=Program type already present: org.hamcrest.core.DescribedAs, sources=[Unknown source file], tool name=Optional.of(D8)}

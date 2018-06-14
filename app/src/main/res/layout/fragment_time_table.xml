@@ -280,7 +280,6 @@
 
             </GridLayout>
 
-<<<<<<< HEAD
         </FrameLayout>
     </ScrollView>
 
@@ -297,7 +296,7 @@
         app:close_on_click="true"
         app:size_main_button="@integer/omfm_fab_size_normal"
         />
-=======
+
             <!--<com.bowyer.app.fabtransitionlayout.BottomSheetLayout-->
             <!--android:id="@+id/bottom_sheet"-->
             <!--android:layout_width="match_parent"-->
@@ -313,21 +312,6 @@
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content" />-->
             <!--</com.bowyer.app.fabtransitionlayout.BottomSheetLayout>-->
-
-        </FrameLayout>
-    </ScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/faButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/add"
-        app:backgroundTint="@android:color/background_light"
-        app:fabSize="auto"
-        app:rippleColor="#FFFFFF" />
->>>>>>> kimilm_task
 
 </android.support.design.widget.CoordinatorLayout>
 

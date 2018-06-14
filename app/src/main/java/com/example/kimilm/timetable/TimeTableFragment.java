@@ -1,10 +1,7 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
-<<<<<<< HEAD
-=======
 import android.content.Context;
->>>>>>> kimilm_task
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,23 +10,15 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
-<<<<<<< HEAD
-=======
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
->>>>>>> kimilm_task
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-<<<<<<< HEAD
-import android.os.Bundle;
-=======
->>>>>>> kimilm_task
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,39 +31,22 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-<<<<<<< HEAD
-=======
 import android.widget.ImageView;
 import android.widget.LinearLayout;
->>>>>>> kimilm_task
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-<<<<<<< HEAD
 import com.dekoservidoni.omfm.OneMoreFabMenu;
-=======
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-
 import org.bson.Document;
->>>>>>> kimilm_task
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class TimeTableFragment extends Fragment implements View.OnClickListener{
@@ -82,17 +54,13 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
     GridLayout gridLayout;
-<<<<<<< HEAD
     OneMoreFabMenu fab;
-=======
-    FloatingActionButton fab;
     ScrollView scrollView;
 
     ArrayList<Document> documents;
 
     BottomSheetDialog modalBottomSheet;
 
->>>>>>> kimilm_task
     Animation visib;
     Animation invisib;
     boolean checker; // fab.setVisibility(View.VISIBLE)가 최하단이 아닌 모든 스크롤 위치에서 작동하기 때문에 이를 막기 위한 변수.
@@ -149,16 +117,9 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        /*  ▼ NullPointerException 에러 발생!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ActionBar actionBar = ((MainActivity)getActivity()).getActionBar(); // 액션바의 그림자 제거
-        actionBar.setElevation(0);
-        */
-
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
-<<<<<<< HEAD
         setHasOptionsMenu(true);
-=======
         documents = new ArrayList<>();
 
         new Thread() {
@@ -204,7 +165,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
->>>>>>> kimilm_task
         return view;
     }
 
@@ -583,12 +543,9 @@ public boolean onOptionsItemSelected(MenuItem item) {
             ActivityCompat.requestPermissions(getActivity(), new String [] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
         }
 
-<<<<<<< HEAD
         /*화면 크기를 초과한 이미지는 BuildDrawingCache() 사용시 이미지를 읽어오지 못하는 문제가 있어서 Canvas 클래스 사용함*/
         //레이아웃 크기와 동일한 비트맵 생성
 
-=======
->>>>>>> kimilm_task
         Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);

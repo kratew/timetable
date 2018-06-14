@@ -1,45 +1,25 @@
 package com.example.kimilm.timetable;
-
-<<<<<<< HEAD
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-=======
-import android.content.Context;
-import android.content.Intent;
-import android.os.SystemClock;
->>>>>>> kimilm_task
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-<<<<<<< HEAD
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-=======
-import android.util.AttributeSet;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
->>>>>>> kimilm_task
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,30 +29,24 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     RelativeLayout container;
     ViewPager viewPager;
     TabLayout tabLayout;
-<<<<<<< HEAD
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     LinearLayout account_window;
     Friend thisFr;
     boolean isCurAcc;
     String curAccId;
-=======
     MyPagerAdapter fragmentAdapter;
->>>>>>> kimilm_task
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
         thisFr = new Friend();
         container = (RelativeLayout) findViewById(R.id.container);
-=======
         fragmentAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
         container = (RelativeLayout)findViewById(R.id.container);
->>>>>>> kimilm_task
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPager.setAdapter(fragmentAdapter);  // viewPager에 Adapter 설정
 
@@ -175,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
         }
 
-<<<<<<< HEAD
         /*
         ───────────────────────────────────────────────────────────────────────────────────
         이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
@@ -192,8 +165,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         return super.onOptionsItemSelected(item);
     }
 
-=======
->>>>>>> kimilm_task
     /* OnTabSelectedListener의 콜백 메소드.
          - TabLayout의 탭 버튼을 사용자가 터치했을 때 이벤트를 처리하기 위한 콜백 메소드로,
            탭 버튼과 ViewPager 화면 조정을 setCurrentItem() 메소드로 처리.*/

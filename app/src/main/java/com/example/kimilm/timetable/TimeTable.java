@@ -173,13 +173,9 @@ public class TimeTable extends Application
         return false;
     }
 
-<<<<<<< HEAD
     // 추가된 강의 자리에 boolean = ture;
-    private void setJungBok (String times, boolean set)
-=======
     //강의 추가 또는 삭제시 중복 배열 세팅
     private static void setJungBok (String times, boolean set)
->>>>>>> kimilm_task
     {
         int day;
         int [] setTime;
