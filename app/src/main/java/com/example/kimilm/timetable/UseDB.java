@@ -126,9 +126,10 @@ public class UseDB {
 
 		BasicDBObject inQuery = new BasicDBObject("$in", id);
 		BasicDBObject query = new BasicDBObject("_id", inQuery);
-		BasicDBObject field = new BasicDBObject("timetable", 1);
+		BasicDBObject nameField = new BasicDBObject("name", 1);
+		BasicDBObject tableField = new BasicDBObject("timetable", 1);
 
-		MongoCursor<Document> cursor = collection.find(query).projection(field).iterator();
+		MongoCursor<Document> cursor = collection.find(query).projection(nameField).projection(tableField).iterator();
 
 		if (cursor.hasNext())
 		{
