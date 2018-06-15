@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             }
         }else{  // 파일이 없다.
             isCurAcc = false;
-            Toast.makeText(this, "파일이 없음!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "r파일이 없음!!", Toast.LENGTH_LONG).show();
         }
 
         /*
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
         ───────────────────────────────────────────────────────────────────────────────────
          */
-    } // end of onCreate()
+    } // end of onCreate();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

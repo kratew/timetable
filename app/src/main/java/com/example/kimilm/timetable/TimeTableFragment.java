@@ -129,13 +129,6 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         }.start();
 
-
-        //
-        //
-        // temp!!
-        //
-        //
-        //insertLesson
         View v = view.findViewById(R.id.mon);
         v.setOnClickListener(new View.OnClickListener()
         {
@@ -155,15 +148,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        //temp Insert Lesson
-        v = view.findViewById(R.id.wed);
-        v.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                BottomSheet(R.layout.modal_bottom_sheet_info_lesson, v);
-            }
-        });
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -175,16 +160,39 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         super.onResume();
         getActivity().invalidateOptionsMenu();
     }
+
+    MenuItem item1;
+    MenuItem item2;
+    MenuItem item3;
+
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
 
-/*
-        MenuItem item1 = menu.findItem(R.id.option1);
-        MenuItem item2 = menu.findItem(R.id.option2);
-        MenuItem item3 = menu.findItem(R.id.option3);
+        item1 = menu.findItem(R.id.option1);
+        item2 = menu.findItem(R.id.option2);
+        item3 = menu.findItem(R.id.option3);
 
+//        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                popInsertLessonFragment();
+//                return false;
+//            }
+//        });
+//
+//        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                toImage();
+//                return false;
+//            }
+//        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+/*
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -218,29 +226,32 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                     }
 */
 
-@Override
-public boolean onOptionsItemSelected(MenuItem item) {
-    int curId = item.getItemId();
-    switch(curId){
-        case R.id.option1:
-            Toast.makeText(getActivity(), "강의추가 선택됨!", Toast.LENGTH_LONG).show();
-            return false;
-            case R.id.option2:
-                Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
-                return false;
-                case R.id.option3:
-                    Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
-                    return false;
-                    default:
-                        break;
-                }
-                return false;
-            }
 
-            @Override
-            public void onOptionsMenuClosed(Menu menu) {
-                super.onOptionsMenuClosed(menu);
-            }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item)
+//    {
+//        int curId = item.getItemId();
+//        switch(curId)
+//        {
+//            case R.id.option1:
+//                popInsertLessonFragment();
+//                return false;
+//            case R.id.option2:
+//                toImage();
+//                return false;
+//            case R.id.option3:
+//                Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
+//                return false;
+//            default:
+//                break;
+//        }
+//    return false;
+//    }
+
+    @Override
+    public void onOptionsMenuClosed(Menu menu) {
+        super.onOptionsMenuClosed(menu);
+    }
 
     @Override
     public void onClick(View v) {

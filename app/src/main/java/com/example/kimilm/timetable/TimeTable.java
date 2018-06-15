@@ -2,6 +2,7 @@ package com.example.kimilm.timetable;
 
 import android.Manifest;
 import android.app.Application;
+import android.graphics.Color;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -12,14 +13,19 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DB;
+import com.mongodb.DBObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by kimilm on 2018. 5. 1..
@@ -32,45 +38,70 @@ public class TimeTable extends Application
 
     public static TimeTableFragment fragment;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        File file = new File(filePath);
-
-        if(!file.exists())
-        {
-            try {
-                FileReader fileReader = new FileReader(file);
-
-                String json = null;
-
-                while(fileReader.read() != 0)
-                {
-//                    json += fileReader.read();        //얘 다시 볼것
-                }
-
-                BasicDBObject timetableObject = BasicDBObject.parse(json);
-            }
-            catch (Exception e)
-            {
-                Toast.makeText(fragment.getContext(), "getTable", Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-        }
-    }
-
     //월-금, 9시-22시, 5분 단위로 중복 검사
     private static boolean jungBok [] = new boolean[5 * 14 * 12];
 
     //각 시간표별 강의 입력
     static ArrayList<Lesson> lessons = new ArrayList<>();
 
+    private boolean sFlag = true;
+
     public TimeTable ()
     {
         Arrays.fill(jungBok, false);
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        File file = new File(filePath);
+
+        if(file.exists() && sFlag)
+        {
+            sFlag = false;
+
+            try {
+                String temp = new String();
+
+                StringBuffer buffer = new StringBuffer();
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+
+                while ((temp = reader.readLine()) != null){
+                    buffer.append(temp);
+                }
+
+                BasicDBObject timetableObject = BasicDBObject.parse(buffer.toString());
+
+                lessons.clear();
+
+                int i = 0;
+                for(Object obj : (BasicDBList)(timetableObject.get("jungbok")))
+                {
+                    jungBok[i++] = Boolean.getBoolean(obj.toString());
+                }
+
+                ArrayList<String> [] strArray = new ArrayList[2];
+
+                for(BasicDBObject dbo : (List<BasicDBObject>)timetableObject.get("lessons"))
+                {
+                    strArray[0] = TimeTableFragment.toSubString(dbo.get("times").toString());
+                    strArray[1] = TimeTableFragment.toSubString(dbo.get("classroom").toString());
+
+                    lessons.add(new Lesson(dbo.get("_id").toString(), dbo.get("title").toString(),
+                            dbo.get("classify").toString(), dbo.get("credit").toString(),
+                            strArray[0], dbo.get("prof").toString(),
+                            strArray[1], Color.BLUE));
+                }
+
+                reader.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
     //저장된 강의 정보 가져올 때 사용 (예정)
     public TimeTable (TimeTable timeTable)
@@ -259,7 +290,11 @@ public class TimeTable extends Application
         BasicDBObjectBuilder tableBuilder = BasicDBObjectBuilder
                 .start("jungbok", jungBok).add("lessons", lessonObjList);
 
-        BasicDBObject timeTableObj = new BasicDBObject("timetable", tableBuilder.get());
+//                BasicDBObjectBuilder tableBuilder = BasicDBObjectBuilder.start("lessons", lessonObjList);
+
+        BasicDBObject timeTableObj = (BasicDBObject)tableBuilder.get();
+
+        //        BasicDBObject timeTableObj = new BasicDBObject("timetable", tableBuilder.get());
 
         try
         {

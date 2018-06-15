@@ -294,8 +294,7 @@
         app:content_options="@menu/fragment_time_table_fab_items"
         app:label_text_color="@android:color/black"
         app:close_on_click="true"
-        app:size_main_button="@integer/omfm_fab_size_normal"
-        />
+        app:size_main_button="@integer/omfm_fab_size_normal" />
 
             <!--<com.bowyer.app.fabtransitionlayout.BottomSheetLayout-->
             <!--android:id="@+id/bottom_sheet"-->
