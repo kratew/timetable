@@ -12,13 +12,12 @@
     <item
         android:id="@+id/option1"
         android:icon="@drawable/add"
-        android:title="강의추가"
-        android:onClick="popInsertLessonFragment"/>
+        android:title="강의추가" />
 
     <item
         android:id="@+id/option2"
         android:icon="@drawable/save"
-        android:title="toImage" />
+        android:title="이미지로 저장" />
 
     <item
         android:id="@+id/option3"

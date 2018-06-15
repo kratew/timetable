@@ -28,41 +28,41 @@ public class DBLogin {
     //user collection
     public static MongoCollection<Document> collection = db.getCollection("user");
 	
-	public static void main (String [] args)
-	{
-        String id = "kratew";
-        String pwd = "1234";
-		
-        //db User Search
-		Document document = searchUser(id, pwd);
-		
-		if (document != null)
-			System.out.println(document.toJson());
-		else
-			System.out.println("no User!");
-		
-		Friend fri = parseToFriend(document);
-		
-		System.out.println(fri.Id);
-		System.out.println(fri.Pw);
-		System.out.println(fri.Name);
-		System.out.println(fri.frList);
-		
-		//wrong pwd
-		pwd = "123";
-		
-		document = searchUser(id, pwd);
-		
-		if (document != null)
-			System.out.println(document.toJson());
-		else
-			System.out.println("no User!");
-		
-		mongoClient.close();
-	}
+//	public static void main (String [] args)
+//	{
+//        String id = "kratew";
+//        String pwd = "1234";
+//
+//        //db User Search
+//		Document document = searchUser(id, pwd);
+//
+//		if (document != null)
+//			System.out.println(document.toJson());
+//		else
+//			System.out.println("no User!");
+//
+//		Friend fri = parseToFriend(document);
+//
+//		System.out.println(fri.Id);
+//		System.out.println(fri.Pw);
+//		System.out.println(fri.Name);
+//		System.out.println(fri.frList);
+//
+//		//wrong pwd
+//		pwd = "123";
+//
+//		document = searchUser(id, pwd);
+//
+//		if (document != null)
+//			System.out.println(document.toJson());
+//		else
+//			System.out.println("no User!");
+//
+//		mongoClient.close();
+//	}
 	
 	//Search User
-	public static Document searchUser (String id, String pwd)
+	public static void searchUser (Document loginDoc, String id, String pwd)
 	{
         // id && pwd make query
         ArrayList<BasicDBObject> queryObj = new ArrayList<>();
@@ -76,10 +76,12 @@ public class DBLogin {
         
         if (cursor.hasNext())
         {
-        		return new Document(cursor.next());
+			loginDoc = new Document(cursor.next());
         }
-        
-        return null;
+		else
+		{
+			loginDoc = null;
+		}
 	}
 	
 	public static Friend parseToFriend (Document document)

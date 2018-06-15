@@ -1,9 +1,11 @@
 package com.example.kimilm.timetable;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Friend {
+public class Friend implements Serializable
+{
     String Id; // 아이디
     String Pw;
     String Name; // 이름
@@ -12,7 +14,7 @@ public class Friend {
     ArrayList<String> frList;  // 새로 추가한 친구의 아이디를 저장하는 어레이리스트
 
     public Friend(String id, String pw, String name, TimeTable table, ArrayList<String> frList) {
-    		Id = id;
+        Id = id;
         Pw = pw;
         Name = name;
         this.table = table;
@@ -72,6 +74,6 @@ public class Friend {
     }
 
     public void setFrList(ArrayList<String> frList) {
-        this.frList = frList;
+        this.frList = new ArrayList<String>(frList);
     }
 }

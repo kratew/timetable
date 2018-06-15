@@ -58,8 +58,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // MainActivity에 NavigationDrawer 설정하는 코드 ↓
         toggle=new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // ActionBar에서 기본 홈 버튼을 사용 가능.
+
         toggle.syncState(); // ActionBarDrawerToggle의 상태를 sync
+
         // NavigationView에 이벤트 설정.
         NavigationView navigationView=(NavigationView)findViewById(R.id.main_drawer_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -67,18 +70,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id=item.getItemId();
 
-                if(id==R.id.nav_account){   // 계정설정 클릭시 AccountActivity로 날아감.
+                if(id==R.id.nav_account)
+                {   // 계정설정 클릭시 AccountActivity로 날아감.
                     Intent myIntent = new Intent(getApplicationContext(), AccountActivity.class);
                     myIntent.putExtra("isCurAcc", isCurAcc); // 디바이스에 계정 정보가 있으면 true, 없으면 false를 전달함.
-                    if(isCurAcc == true){   // 디바이스 계정정보가 있으면 그 id를 전달.
+
+                    if(isCurAcc == true)
+                    {   // 디바이스 계정정보가 있으면 그 id를 전달.
                         myIntent.putExtra("curAccId", curAccId);
                     }
                     startActivityForResult(myIntent, 1000);
                     drawer.closeDrawer(Gravity.LEFT);
-                }else if(id==R.id.nav_contact_mail){
+                }
+                else if(id==R.id.nav_contact_mail)
+                {
                     Toast.makeText(getApplicationContext(), "B", Toast.LENGTH_LONG).show();
                     drawer.closeDrawer(Gravity.LEFT);
-                }else if(id==R.id.nav_contact_phone){
+                }
+                else if(id==R.id.nav_contact_phone)
+                {
                     Toast.makeText(getApplicationContext(), "C", Toast.LENGTH_LONG).show();
                     drawer.closeDrawer(Gravity.LEFT);
                 }
@@ -88,25 +98,34 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
         File files = new File(getFilesDir(), "AccInDevice.json");
-        if(files.exists()==true){   // 만약 이미 존재하느 파일이 있으면 파일 불러오기.
+
+        if(files.exists()==true)
+        {   // 만약 이미 존재하느 파일이 있으면 파일 불러오기.
             isCurAcc = true;
             FileReader fr = null;
             BufferedReader bufrd = null;
             char ch;
-            try{
+            try
+            {
                 String jsonStr = new String();
+
                 fr = new FileReader(files);
                 bufrd = new BufferedReader(fr);
 
-                while((ch = (char)bufrd.read()) != -1){
+                while((ch = (char)bufrd.read()) != -1)
+                {
                     jsonStr += String.valueOf(ch);
-                    if(ch == '}'){
-                        break;
-                    }
+
+                    //이러면 전체 제이슨이 안 읽히지 않나..?ㅠㅠ
+//                    if(ch == '}')
+//                    {
+//                        break;
+//                    }
                 }
 
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 curAccId = jsonObj.getString("_id");
+
                 //Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
 
                 /*
@@ -141,10 +160,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
                 bufrd.close();
                 fr.close();
-            } catch(Exception e){
+            }
+            catch(Exception e)
+            {
                 e.printStackTrace();
             }
-        }else{  // 파일이 없다.
+        }
+        else
+        {  // 파일이 없다.
             isCurAcc = false;
             Toast.makeText(this, "r파일이 없음!!", Toast.LENGTH_LONG).show();
         }
@@ -222,16 +245,24 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1000 && resultCode == RESULT_OK){
+
+        if(requestCode == 1000 && resultCode == RESULT_OK)
+        {
             isCurAcc = data.getBooleanExtra("isCurAcc", true);
-            if(data.getIntExtra("btnType", 0) <3) {
+
+            if(data.getIntExtra("btnType", 0) < 3)
+            {
                 thisFr.setId(data.getStringExtra("newId"));
                 curAccId = data.getStringExtra("newId");
-            }else if(data.getIntExtra("btnType", 0) > 2){
+            }
+            else if(data.getIntExtra("btnType", 0) > 2)
+            {
                 thisFr = new Friend();
             }
+
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
     }

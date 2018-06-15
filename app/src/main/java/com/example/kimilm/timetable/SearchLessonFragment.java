@@ -41,8 +41,6 @@ public class SearchLessonFragment extends Fragment
     String key;
     ArrayList<Document> searchDocument;
 
-    Thread thread;
-
     public SearchLessonFragment() {
 
     }
@@ -57,7 +55,6 @@ public class SearchLessonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        thread = new Thread();
         View view = inflater.inflate(R.layout.fragment_search_lesson, container, false);
 
         prefix = view.findViewById(R.id.prefix);
