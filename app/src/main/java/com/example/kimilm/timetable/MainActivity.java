@@ -50,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     int pageState;
     boolean pagechk;
 
+    ArrayList<String> fr_id;
+    ArrayList<String> fr_name;
+    ArrayList<ArrayList<Lesson>> fr_lesson;
+
+    String fr_id_str;
+    Object obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,10 +199,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     } // end of onCreate()
 
     //옵션메뉴 띄우기 ↓
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.d("$$onCreate()", "pagechk : "+pagechk);
+        Log.d("$onPrepareOptionsMenu", "pagechk : "+pagechk);
         Log.d("$$onPrepareOptionsMenu","Activated!");
         if(pageState == 0 && pagechk == true){
             MenuInflater inflater = getMenuInflater();//MenuInflater 반환
@@ -238,6 +243,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             switch (item.getItemId()) {
                 case R.id.option1:
                     Toast.makeText(this, "친구 추가", Toast.LENGTH_LONG).show();
+                    Intent frIntent = new Intent(this, FriendAddActivity.class);
+                    startActivityForResult(frIntent, 1001);
+
+                    ArrayList<FriendsItem> fr= new ArrayList<>();
+                    Fragment transFragment = (FriendsFragment)fragmentAdapter.fragments.get(1);
+
                     break;
                 case R.id.option2:
                     Toast.makeText(this, "친구 삭제", Toast.LENGTH_LONG).show();
@@ -345,6 +356,65 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             }
 
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
+        }else if(requestCode == 1001 && resultCode == RESULT_OK){
+            // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
+            fr_id_str = data.getStringExtra("frId").toString();
+
+            func();
+            if(fr_id != null){
+            FriendsFragment frfg = new FriendsFragment();
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.container, frfg);
+            ft.commit();
+        }
+    }
+
+//    public Object getData(){
+//        return obj;
+//    }
+}
+
+// 친구 아이디를 검색하는 코드 ↓
+    public void func()
+    {
+        final ArrayList<Document> searchDoc = new ArrayList<>();
+        final ArrayList<String> userSearch = new ArrayList<>();
+        userSearch.add(fr_id_str);
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    UseDB.searchFriendTable(searchDoc, userSearch);
+                }
+            }
+        };
+
+        thread.start();
+
+        try { thread.join(); } catch (Exception e) {}
+
+
+        if(searchDoc == null)
+        {
+            //음슴
+        }
+
+
+        for(Document doc : searchDoc)
+        {
+            fr_id.add(doc.getString("_id"));
+            fr_name.add(doc.getString("name"));
+
+            ArrayList<Lesson> tempLesson = new ArrayList<>();
+
+            for(Document lessonDoc : ((ArrayList<Document>)(((Document)(doc.get("timetable"))).get("lessons", ArrayList.class))))
+            {
+                tempLesson.add(TimeTableFragment.parseLesson(lessonDoc));
+            }
+
+            fr_lesson.add(tempLesson);
         }
     }
 }
