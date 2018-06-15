@@ -11,6 +11,7 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
     public RecyclerViewAdapter(List<Lesson> list) {
         this.list = list;
     }
+
+
 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -66,7 +69,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
                         if(TimeTable.addLesson(lesson))
                         {
                             TimeTable.saveTable ();
-                            TimeTable.fragment.showTable(lesson);
+                            TimeTable.fragment.showTable(lesson, false);
+
+                            new Thread()
+                            {
+                                @Override
+                                public void run() {
+                                    UseDB.uploadTimeTable(MainActivity.isCurAcc, MainActivity.thisFr.getId());
+                                }
+                            }.start();
                         }
                         else
                         {

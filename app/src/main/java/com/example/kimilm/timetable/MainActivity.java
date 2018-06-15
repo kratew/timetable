@@ -16,10 +16,13 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import org.bson.Document;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,9 +35,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     LinearLayout account_window;
-    Friend thisFr;
-    boolean isCurAcc;
-    String curAccId;
+    public static Friend thisFr;
+    public static boolean isCurAcc;
+    public static String curAccId;
+
     MyPagerAdapter fragmentAdapter;
 
     @Override
@@ -100,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         File files = new File(getFilesDir(), "AccInDevice.json");
 
         if(files.exists()==true)
-        {   // 만약 이미 존재하느 파일이 있으면 파일 불러오기.
+        {   // 만약 이미 존재하는 파일이 있으면 파일 불러오기.
             isCurAcc = true;
             FileReader fr = null;
             BufferedReader bufrd = null;
@@ -116,47 +120,26 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 {
                     jsonStr += String.valueOf(ch);
 
-                    //이러면 전체 제이슨이 안 읽히지 않나..?ㅠㅠ
-//                    if(ch == '}')
-//                    {
-//                        break;
-//                    }
-                }
-
-                JSONObject jsonObj = new JSONObject(jsonStr);
-                curAccId = jsonObj.getString("_id");
-
-                //Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
-
-                /*
-                JSONObject timetableJsonObj = new JSONObject();
-                JSONArray lessonsJsonArr = new JSONArray();
-                JSONObject lessonsJsonObj = new JSONObject();
-                String tt = jsonObj.getString("timetable");
-                timetableJsonObj = new JSONObject(tt);
-
-                Toast.makeText(this, "TimeTable이 JSONObject로 들어갔다!!", Toast.LENGTH_LONG).show();
-                */
-                /*
-                try{
-                    frObj = new JSONObject(jsonStr);
-                    String ttValue = frObj.getString("timetable");
-                    ttObj = new JSONObject(ttValue);
-                    Iterator i = ttObj.keys();
-                    while(i.hasNext()){
-                        String b = i.next().toString();
-                        Log.d("timetable_key_search", b);
-                        ttKeyList.add(b);
+                    if(ch == '}')
+                    {
+                        break;
                     }
-                } catch(JSONException e){
-                    e.printStackTrace();
                 }
-                */
-                //tmpTable.setJungBok();
+
+//                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                //몽고디비 Document 객체에서 어레이를 바로 뺄 수 있는 방법을 찾음
+                Document jsonObj = Document.parse(jsonStr);
+
+                curAccId = jsonObj.getString("_id");
 
                 thisFr.setId(jsonObj.get("_id").toString());
                 thisFr.setPw(jsonObj.get("pwd").toString());
                 thisFr.setName(jsonObj.get("name").toString());
+
+                //그 결과
+                thisFr.setFrList((ArrayList<String>)(jsonObj.get("f_id", ArrayList.class)));
+//                thisFr.setFrList(TimeTableFragment.toSubString(jsonObj.getJSONArray("f_id").toString()));
 
                 bufrd.close();
                 fr.close();
@@ -169,15 +152,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         else
         {  // 파일이 없다.
             isCurAcc = false;
-            Toast.makeText(this, "r파일이 없음!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "계정 파일이 없음", Toast.LENGTH_LONG).show();
         }
-
-        /*
-        ───────────────────────────────────────────────────────────────────────────────────
-        이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
-        ───────────────────────────────────────────────────────────────────────────────────
-         */
-    } // end of onCreate();
+    } // end of onCreate()
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -208,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     class MyPagerAdapter extends FragmentStatePagerAdapter {
         List<Fragment> fragments=new ArrayList<>();//fragments ArrayList
 
-        //탭 버튼 문자열 배열
+        //탭 버튼 문자열 배열 -> 사용 안
         String title[]=new String[]{"", ""};
 
         //Adapter 생성자
@@ -251,16 +228,30 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         if(requestCode == 1000 && resultCode == RESULT_OK)
         {
+            //변경 이후 세팅
             isCurAcc = data.getBooleanExtra("isCurAcc", true);
 
+            if(!isCurAcc)
+            {
+                Toast.makeText(this, "계정이 없습니다.", Toast.LENGTH_SHORT);
+                return;
+            }
+
+            //1 : createBtn  2 : loginBtn
             if(data.getIntExtra("btnType", 0) < 3)
             {
-                thisFr.setId(data.getStringExtra("newId"));
-                curAccId = data.getStringExtra("newId");
+                Friend getFriend = (Friend) data.getSerializableExtra("friendInfo");
+                thisFr.setId(getFriend.getId());
+                thisFr.setPw(getFriend.getPw());
+                thisFr.setName(getFriend.getName());
+                thisFr.setFrList(getFriend.getFrList());
+                curAccId = getFriend.getName();
             }
+            //3 : logoutBtn  4 : deleteBtn
             else if(data.getIntExtra("btnType", 0) > 2)
             {
                 thisFr = new Friend();
+                TimeTable.resetData();
             }
 
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();

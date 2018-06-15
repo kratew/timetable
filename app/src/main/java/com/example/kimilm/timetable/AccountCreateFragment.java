@@ -78,10 +78,4 @@ public class AccountCreateFragment extends Fragment {
         super.onDetach();
         onCreateAccountSetListener = null;
     }
-
-
-
-
-
-
 }

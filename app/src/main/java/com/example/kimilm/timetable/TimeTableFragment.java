@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -48,7 +49,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class TimeTableFragment extends Fragment implements View.OnClickListener{
+public class TimeTableFragment extends Fragment
+{
 
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
@@ -72,7 +74,11 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
+
+
 
     @Nullable
     @Override
@@ -88,7 +94,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
         fab = (OneMoreFabMenu)view.findViewById(R.id.faButton);
-        fab.setOnClickListener(this);
+//        fab.setOnClickListener(this);
         visib = AnimationUtils.loadAnimation(getActivity(), R.anim.visib);
         invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
 
@@ -153,18 +159,17 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
     }
 
     // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
-
     @Override
     public void onResume() {
         super.onResume();
         getActivity().invalidateOptionsMenu();
+
+        Toast.makeText(getActivity(), "TimeTableFragment", Toast.LENGTH_SHORT).show();
     }
 
     MenuItem item1;
     MenuItem item2;
     MenuItem item3;
-
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -174,103 +179,12 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         item2 = menu.findItem(R.id.option2);
         item3 = menu.findItem(R.id.option3);
 
-//        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                popInsertLessonFragment();
-//                return false;
-//            }
-//        });
-//
-//        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                toImage();
-//                return false;
-//            }
-//        });
-
         super.onCreateOptionsMenu(menu, inflater);
-/*
-        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "13243546576454", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-
-        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "13243546576454", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-        item3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "SDYRTHEGRWSV", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-*/
     }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuI
-                        Toast.makeText(getActivity(), "비교시간표 변경 선택됨!", Toast.LENGTH_LONG).show();
-                        return false;tem item) {
-                        return super.onOptionsItemSelected(item);
-                    }
-*/
-
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item)
-//    {
-//        int curId = item.getItemId();
-//        switch(curId)
-//        {
-//            case R.id.option1:
-//                popInsertLessonFragment();
-//                return false;
-//            case R.id.option2:
-//                toImage();
-//                return false;
-//            case R.id.option3:
-//                Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
-//                return false;
-//            default:
-//                break;
-//        }
-//    return false;
-//    }
 
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
-    }
-
-    @Override
-    public void onClick(View v) {
-        /* Snackbar : 간단한 문자열 메시지를 사용자에게 잠깐 보여줄 목적으로 사용
-           - Toast 메시지와 비슷하지만, 사용자의 이벤트 처리가 가능하기 때문에 많이 사용
-           - Snackbar.make(스넥바가 뜨게될 View, 사용자에게 보일 문자열 메시지, 스넥바가 화면에 뜨는 시간)
-           - setAction() 메서드를 사용하면, Snackbar에서 사용자 이벤트를 처리할 수 있음
-           - setAction(Action문자열, 이벤트 핸들러)
-           - 사용자가 Action문자열을 클릭하면, 두 번째 매개변수인 OnClickListener()를 구현한 이벤트 핸들러가 실행
-        */
-        Snackbar.make(v,"Snackbar with Action", Snackbar.LENGTH_LONG).setActionTextColor(Color.YELLOW).setAction("현재 시간?", new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
-                SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy", Locale.US);
-                String getTime = dateformat.format(date);
-                Toast.makeText(getActivity(), getTime, Toast.LENGTH_LONG).show();
-            }
-        }).show();
     }
 
     //화면 사이즈에 맞게 변환
@@ -285,18 +199,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         gridLayout.setLayoutParams(params);
     }
 
-    public TimeTable getTable (View v)
-    {
-        TimeTable timeTable = new TimeTable();
-
-        //로그인 혹은 로컬 디비에 저장되어있는 시간표를 불러온다.
-
-        return timeTable;
-    }
-
-
     //강의 띄우기
-    public void showTable (Lesson lesson)
+    public void showTable (Lesson lesson, boolean cFlag)
     {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -333,13 +237,19 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
                 }
             });
 
-            //랜덤 컬러
-            view[i].setBackgroundColor(Color.rgb(r, g, b));
+            // cFlag가 false라면 랜덤 컬러
+            if (!cFlag)
+            {
+                //랜덤 컬러
+                view[i].setBackgroundColor(Color.rgb(r, g, b));
+            }
 
+            //보여지는 부분
             ((TextView)(view[i].findViewById(R.id.floatTitle))).setText(lesson.title);
             ((TextView)(view[i].findViewById(R.id.floatClassRoom))).setText(lesson.classroom.toString().replace("[", "").replace("]", ""));
             ((TextView)(view[i].findViewById(R.id.floatProf))).setText(lesson.prof);
 
+            //감추고 정보를 가지고 있음
             ((TextView)(view[i].findViewById(R.id.floatClassify))).setText(lesson.classify);
             ((TextView)(view[i].findViewById(R.id.floatCredit))).setText(lesson.credit);
             ((TextView)(view[i].findViewById(R.id.floatCode))).setText(lesson.code);
@@ -355,7 +265,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         ((LinearLayout)view[0].findViewById(R.id.floatLessonTexts)).setVisibility(View.VISIBLE);
     }
 
-//    time.substring(0, 1)
+    // 좌우 위치
     public int setBtnLeftMargin(String time)
     {
         switch(time)
@@ -374,7 +284,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return 0;
     }
 
-//    time.substring(0, 1)
+    // 너비
     public int setBtnWidth(String time)
     {
         switch(time)
@@ -393,7 +303,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return 0;
     }
 
-//    time.substring(1)
+    // 상하 위치
     public int setBtnTopMargin(String time)
     {
         //A, B, C, D, E 교시
@@ -436,7 +346,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return 0;
     }
 
-    //    time.substring(1)
+    // 높이
     public int setBtnHeight(String time)
     {
         //A, B, C, D, E 교시
@@ -477,6 +387,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         return 0;
     }
 
+    // 강의 추가 화면
     public void popInsertLessonFragment (View v)
     {
         //프래그먼트 생성하고 강의 정보 넘김
@@ -493,10 +404,12 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         fTransaction.replace(R.id.coordinator, insertLessonFragment).commit();
     }
 
+    //강의 정보 화면
     public void BottomSheet(int layoutId, View parent)
     {
         final View view = getLayoutInflater().inflate(layoutId, null);
 
+        // 바텀시트 제거
         ((ImageView)view.findViewById(R.id.lessonExit)).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -505,7 +418,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        // Delete Function
+        // 강의 삭제 온클릭
         ((ImageView)view.findViewById(R.id.lessonDelete)).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -522,10 +435,19 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 
                 TimeTable.saveTable();
 
+                new Thread()
+                {
+                    @Override
+                    public void run() {
+                        UseDB.uploadTimeTable(MainActivity.isCurAcc, MainActivity.thisFr.getId());
+                    }
+                }.start();
+
                 modalBottomSheet.dismiss();
             }
         });
 
+        // 정보 세팅
         ((TextView)view.findViewById(R.id.lessonTitle)).setText(((TextView)parent.findViewById(R.id.floatTitle)).getText());
         ((TextView)view.findViewById(R.id.lessonProf)).setText(((TextView)parent.findViewById(R.id.floatProf)).getText());
         ((TextView)view.findViewById(R.id.lessonTime)).setText(((TextView)parent.findViewById(R.id.floatTimes)).getText());
@@ -542,8 +464,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         modalBottomSheet.show();
     }
 
-    //권한 체크변경
-    //시간표를 이미지로 저장하는 코드 ↓
+    //시간표를 이미지로 저장
     public void toImage (View v)
     {
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED ||
@@ -592,40 +513,9 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             e.printStackTrace();
             Toast.makeText(getActivity(), "이미지 저장 실패", Toast.LENGTH_SHORT).show();
         }
-    }   // 이미지를 저장하는 코드의 끝 ↑
+    }
 
     // 이하는 몽고디비
-    public static ArrayList<String> toSubString (String str)
-    {
-        ArrayList strArray = new ArrayList<>();
-
-        str = str.replace("[", "").replace("]", "");
-
-        String [] subStr = str.split(", ");
-
-        for (String token : subStr)
-        {
-            strArray.add(token);
-        }
-
-        return strArray;
-    }
-
-    public static Lesson insertLesson(Document document)
-    {
-        ArrayList<String> [] strArray = new ArrayList[2];
-
-        String code = document.get("_id").toString();
-        String title = document.get("title").toString();
-        String classify = document.get("classify").toString();
-        String credit = document.get("credit").toString();
-        strArray[0] = toSubString(document.get("times").toString());
-        String prof = document.get("prof").toString();
-        strArray[1] = toSubString(document.get("classroom").toString());
-
-        return new Lesson(code, title, classify, credit, strArray[0], prof, strArray[1], 0);
-    }
-
     public static void mongo (ArrayList<Document> document, String key, String value)
     {
         document.clear();
@@ -658,5 +548,32 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         }
 
         mongoClient.close();
+    }
+
+    // 몽고디비 String Array -> ArrayList 변환
+    // 다른 방법을 찾아서 안 씀. 혹시 모르니 남겨둔다
+    public static ArrayList<String> toSubString (String str)
+    {
+        ArrayList strArray = new ArrayList<>();
+
+        str = str.replace("[", "").replace("]", "");
+
+        String [] subStr = str.split(", ");
+
+        for (String token : subStr)
+        {
+            strArray.add(token);
+        }
+
+        return strArray;
+    }
+
+    // Document -> Lesson 변환
+    public static Lesson parseLesson(Document document)
+    {
+        return new Lesson(document.getString("_id"), document.getString("title"),
+                document.getString("classify"), document.get("credit").toString(),
+                (ArrayList<String>)(document.get("times", ArrayList.class)), document.getString("prof"),
+                (ArrayList<String>)(document.get("classroom", ArrayList.class)), Color.BLACK);
     }
 }
