@@ -3,49 +3,40 @@ package com.example.kimilm.timetable;
 import android.graphics.drawable.Drawable;
 
 public class FriendsItem {
-    private Drawable Photo;
+    boolean chk;
     private String Name;
-    private String PhoneNum;
-    private String Major;
-    private String Club;
+    private String id;
+    private TimeTable table;
 
-    public void setPhoto(Drawable photo){
-        this.Photo = Photo;
+    public boolean isChk() {
+        return chk;
     }
 
-    public void setName(String Name){
-        this.Name = Name;
+    public void setChk(boolean chk) {
+        this.chk = chk;
     }
 
-    public void setPhoneNum(String PhoneNum){
-        this.PhoneNum = PhoneNum;
+    public String getName() {
+        return Name;
     }
 
-    public void setMajor(String Major){
-        this.Major = Major;
+    public void setName(String name) {
+        Name = name;
     }
 
-    public void setClub(String Club){
-        this.Club = Club;
+    public String getId() {
+        return id;
     }
 
-    public Drawable getPhoto(){
-        return this.Photo;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getName(String Name){
-        return this.Name;
+    public TimeTable getTable() {
+        return table;
     }
 
-    public String getPhoneNum(String PhoneNum){
-        return this.PhoneNum;
-    }
-
-    public String getMajor(String Major) {
-        return this.Major;
-    }
-
-    public String getClub(String Club){
-        return this.Club;
+    public void setTable(TimeTable table) {
+        this.table = table;
     }
 }

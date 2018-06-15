@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import org.json.JSONObject;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     MyPagerAdapter fragmentAdapter;
     int pageState;
     boolean pagechk;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,33 +136,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 curAccId = jsonObj.getString("_id");
-                //Toast.makeText(this, curAccId, Toast.LENGTH_LONG).show();
-
-                /*
-                JSONObject timetableJsonObj = new JSONObject();
-                JSONArray lessonsJsonArr = new JSONArray();
-                JSONObject lessonsJsonObj = new JSONObject();
-                String tt = jsonObj.getString("timetable");
-                timetableJsonObj = new JSONObject(tt);
-
-                Toast.makeText(this, "TimeTable이 JSONObject로 들어갔다!!", Toast.LENGTH_LONG).show();
-                */
-                /*
-                try{
-                    frObj = new JSONObject(jsonStr);
-                    String ttValue = frObj.getString("timetable");
-                    ttObj = new JSONObject(ttValue);
-                    Iterator i = ttObj.keys();
-                    while(i.hasNext()){
-                        String b = i.next().toString();
-                        Log.d("timetable_key_search", b);
-                        ttKeyList.add(b);
-                    }
-                } catch(JSONException e){
-                    e.printStackTrace();
-                }
-                */
-                //tmpTable.setJungBok();
 
                 thisFr.setId(jsonObj.get("_id").toString());
                 thisFr.setPw(jsonObj.get("pwd").toString());
@@ -180,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
         ───────────────────────────────────────────────────────────────────────────────────
          */
+
     } // end of onCreate();
 
     //옵션메뉴 띄우기 ↓
@@ -254,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-
     }
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
