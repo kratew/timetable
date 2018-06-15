@@ -2,6 +2,7 @@ package com.example.kimilm.timetable;
 
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.bson.Document;
@@ -119,11 +120,12 @@ public class UseDB {
 	}
 
 	//친구 타임테이블
-	public static void searchFriendTable(ArrayList<Document> doc, String id)
+	public static void searchFriendTable(ArrayList<Document> doc, ArrayList<String> id)
 	{
 		doc.clear();
 
-		BasicDBObject query = new BasicDBObject("_id", id);
+		BasicDBObject inQuery = new BasicDBObject("$in", id);
+		BasicDBObject query = new BasicDBObject("_id", inQuery);
 		BasicDBObject field = new BasicDBObject("timetable", 1);
 
 		MongoCursor<Document> cursor = collection.find(query).projection(field).iterator();
@@ -138,38 +140,17 @@ public class UseDB {
 		}
 	}
 
-	//삭!제!
+	//삭!제!		테스트 아직 못함
 	public static void deleteAccount (String id)
 	{
+		BasicDBObject query = new BasicDBObject("_id", id);
 
+		collection.deleteOne(query);
 	}
 
 	public static Friend parseToFriend (Document document)
 	{
-		String id = document.getString("_id");
-		String pwd = document.getString("pwd");
-		String name = document.getString("name");
-//		TimeTable timeTable = getTable(document.getString("timetable"));
-		ArrayList<String> fList = toSubString(document.get("f_id").toString());
-		
-//		return new Friend(id, pwd, name, timeTable, fList);
-		return new Friend(id, pwd, name, fList);
-	}
-	
-	public static ArrayList<String> toSubString (String str)
-	{
-		ArrayList strArray = new ArrayList<>();
-		
-		str = str.replace("[", "");
-		str = str.replace("]", "");
-		
-		String [] subStr = str.split(", ");
-		
-		for (String token : subStr)
-		{
-			strArray.add(token);
-		}
-		
-		return strArray;
+		return new Friend(document.getString("_id"), document.getString("pwd"),
+				document.getString("name"), (ArrayList<String>)(document.get("f_id", ArrayList.class)));
 	}
 }
