@@ -41,8 +41,6 @@ public class SearchLessonFragment extends Fragment
     String key;
     ArrayList<Document> searchDocument;
 
-    Thread thread;
-
     public SearchLessonFragment() {
 
     }
@@ -51,22 +49,20 @@ public class SearchLessonFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        thread = new Thread();
         View view = inflater.inflate(R.layout.fragment_search_lesson, container, false);
 
         prefix = view.findViewById(R.id.prefix);
         searchBack = view.findViewById(R.id.searchBack);
         toSearch = view.findViewById(R.id.toSearch);
         recyclerView = view.findViewById(R.id.search_modal_recyclerView);
-
-        //UI 밀림 방지
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         searchDocument = new ArrayList<>();
 
@@ -118,6 +114,8 @@ public class SearchLessonFragment extends Fragment
 
     public void searchBack (View v)
     {
+        KeyboardUtils.hideKeyboard(getContext());
+
         InsertLessonFragment insertLessonFragment = new InsertLessonFragment();
         insertLessonFragment.setArguments(getArguments());
 
@@ -159,7 +157,7 @@ public class SearchLessonFragment extends Fragment
 
         for(Document doc : searchDocument)
         {
-            list.add(TimeTableFragment.insertLesson(doc));
+            list.add(TimeTableFragment.parseLesson(doc));
         }
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(list);
@@ -176,18 +174,7 @@ class KeyboardUtils
 {
     public static void hideKeyboard(Context context)
     {
-        try
-        {
-            ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-            if ((((Activity) context).getCurrentFocus() != null) && (((Activity) context).getCurrentFocus().getWindowToken() != null))
-            {
-                ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(((Activity) context).getCurrentFocus().getWindowToken(), 0);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(((Activity) context).getCurrentFocus().getWindowToken(), 0);
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
 }

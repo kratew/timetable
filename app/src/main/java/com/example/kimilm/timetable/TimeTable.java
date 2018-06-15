@@ -1,6 +1,7 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.graphics.Color;
 import android.os.Environment;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.mongodb.BasicDBList;
@@ -18,7 +20,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
-
+import org.bson.Document;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -44,8 +46,6 @@ public class TimeTable extends Application
     //각 시간표별 강의 입력
     static ArrayList<Lesson> lessons = new ArrayList<>();
 
-    private boolean sFlag = true;
-
     public TimeTable ()
     {
         Arrays.fill(jungBok, false);
@@ -57,46 +57,26 @@ public class TimeTable extends Application
 
         File file = new File(filePath);
 
-        if(file.exists() && sFlag)
+        if(file.exists())
         {
-            sFlag = false;
-
-            try {
+            try
+            {
                 String temp = new String();
 
                 StringBuffer buffer = new StringBuffer();
                 BufferedReader reader = new BufferedReader(new FileReader(file));
 
-                while ((temp = reader.readLine()) != null){
+                while ((temp = reader.readLine()) != null) {
                     buffer.append(temp);
                 }
 
-                BasicDBObject timetableObject = BasicDBObject.parse(buffer.toString());
-
-                lessons.clear();
-
-                int i = 0;
-                for(Object obj : (BasicDBList)(timetableObject.get("jungbok")))
-                {
-                    jungBok[i++] = Boolean.getBoolean(obj.toString());
-                }
-
-                ArrayList<String> [] strArray = new ArrayList[2];
-
-                for(BasicDBObject dbo : (List<BasicDBObject>)timetableObject.get("lessons"))
-                {
-                    strArray[0] = TimeTableFragment.toSubString(dbo.get("times").toString());
-                    strArray[1] = TimeTableFragment.toSubString(dbo.get("classroom").toString());
-
-                    lessons.add(new Lesson(dbo.get("_id").toString(), dbo.get("title").toString(),
-                            dbo.get("classify").toString(), dbo.get("credit").toString(),
-                            strArray[0], dbo.get("prof").toString(),
-                            strArray[1], Color.BLUE));
-                }
-
                 reader.close();
+
+                Document timetableObject = Document.parse(buffer.toString());
+
+                setTimeTable(timetableObject);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 e.printStackTrace();
             }
@@ -107,6 +87,31 @@ public class TimeTable extends Application
     public TimeTable (TimeTable timeTable)
     {
 
+    }
+
+    public static void setTimeTable (Document doc)
+    {
+        lessons.clear();
+
+        int i = 0;
+
+        if(doc == null)
+        {
+            return;
+        }
+
+        for(Boolean obj : (List<Boolean>)doc.get("jungbok", List.class))
+        {
+            jungBok[i++] = obj.booleanValue();
+        }
+
+        for(Document dbo : (List<Document>)doc.get("lessons", List.class))
+        {
+            lessons.add(new Lesson(dbo.getString("_id"), dbo.getString("title"),
+                    dbo.getString("classify"), dbo.getString("credit").toString(),
+                    (ArrayList<String>)(dbo.get("times", ArrayList.class)), dbo.getString("prof"),
+                    (ArrayList<String>)(dbo.get("classroom", ArrayList.class)), Color.BLUE));
+        }
     }
 
     public boolean[] getJungBok() {
@@ -172,6 +177,8 @@ public class TimeTable extends Application
             if(code.equals(lessons.get(i).code))
             {
                 lesson = lessons.get(i);
+
+                break;
             }
         }
 
@@ -260,18 +267,9 @@ public class TimeTable extends Application
         }
     }
 
-    // 강의 추가 또는 삭제시 로컬 파일에 저장 -> DBO 파일 리턴으로 바꿀 것
-    public static void saveTable ()
+    //테이블 변환
+    public static BasicDBObject mkTableDBObject ()
     {
-        if(ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED)
-        {
-            Toast.makeText(fragment.getActivity(), "저장소 권한이 없습니다.", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(fragment.getActivity(), new String [] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
-        }
-
-        File file = new File(filePath);
-
         ArrayList<BasicDBObject> lessonObjList = new ArrayList<>();
 
         for(int i = 0; i < lessons.size(); ++i)
@@ -290,11 +288,22 @@ public class TimeTable extends Application
         BasicDBObjectBuilder tableBuilder = BasicDBObjectBuilder
                 .start("jungbok", jungBok).add("lessons", lessonObjList);
 
-//                BasicDBObjectBuilder tableBuilder = BasicDBObjectBuilder.start("lessons", lessonObjList);
+        return new BasicDBObject((BasicDBObject)tableBuilder.get());
+    }
 
-        BasicDBObject timeTableObj = (BasicDBObject)tableBuilder.get();
+    // 강의 추가 또는 삭제시 로컬 파일에 저장
+    public static void saveTable ()
+    {
+        if(ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != fragment.getActivity().getPackageManager().PERMISSION_GRANTED)
+        {
+            Toast.makeText(fragment.getActivity(), "저장소 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(fragment.getActivity(), new String [] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
+        }
 
-        //        BasicDBObject timeTableObj = new BasicDBObject("timetable", tableBuilder.get());
+        File file = new File(filePath);
+
+        BasicDBObject timeTableObj = mkTableDBObject();
 
         try
         {
@@ -308,5 +317,11 @@ public class TimeTable extends Application
         {
             e.printStackTrace();
         }
+    }
+
+    public static void resetData ()
+    {
+        Arrays.fill(jungBok, false);
+        lessons = new ArrayList<Lesson>();
     }
 }

@@ -43,16 +43,20 @@ public class AccountLogoutDeleteFragment extends Fragment {
         curIdText.setText(curAccIdData); //현재 디바이스의 계정 정보를 가져와서 아이디를 curId에 받은 후 curIdText에 뿌리는 코드
 
         // 로그아웃 버튼 누르면 -> 현재 디바이스의 계정 정보 삭제 && 로그인 AccountLoginFragment로 변환. ↓
-        logoutBtn.setOnClickListener(new View.OnClickListener(){
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
+
                 files.delete(); // 파일을 디바이스에서 삭제.
+
                 AccountActivity accountActivity = (AccountActivity) getActivity();
                 accountActivity.onFragmentChanged(0);
+
                 isCurAcc = false;
                 btnType = 3;
                 onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc, btnType);
+
                 getActivity().finish();
             }
         });
@@ -63,14 +67,18 @@ public class AccountLogoutDeleteFragment extends Fragment {
             public void onClick(View view) {
                 File files = new File(getActivity().getFilesDir(), "AccInDevice.json");
                 files.delete(); // 파일을 디바이스에서 삭제.
-                /*
-                ────────────────────────────────
-                현재 계정을 서버에서 삭제하는 코드!!
-                ────────────────────────────────
-                */
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        UseDB.deleteAccount(MainActivity.thisFr.getId());
+                    }
+                }.start();
+
                 isCurAcc = false;
                 btnType = 4;
                 onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc, btnType);
+
                 getActivity().finish();
             }
         });

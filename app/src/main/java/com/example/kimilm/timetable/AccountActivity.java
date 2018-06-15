@@ -9,9 +9,11 @@ import android.widget.Toast;
 
 import com.mongodb.util.JSON;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -25,8 +27,11 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
     boolean isCurAcc;
     String curAccId;
 
+    ArrayList<Document> loginDoc = new ArrayList<>();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
@@ -37,30 +42,46 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         // 기존 디바이스 계정 정보가 있으면 AccountLogoutDeleteFragment를, 없으면 AccountLoginFragment를 가져오는 코드 ↓
         Intent isCurAccIntent = getIntent();    // MainActivity에서 isCurAcc과 curAccId를 받음.
         isCurAcc = isCurAccIntent.getBooleanExtra("isCurAcc", false);
-        if(isCurAcc == true){
+
+        if(isCurAcc == true)
+        {
             curAccId = isCurAccIntent.getStringExtra("curAccId");
             Toast.makeText(this, isCurAcc + curAccId, Toast.LENGTH_LONG);
-        }else{Toast.makeText(this, isCurAcc+"", Toast.LENGTH_LONG);}
+        }
+        else
+        {
+            Toast.makeText(this, isCurAcc+"", Toast.LENGTH_LONG);
+        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if(isCurAcc == true) {
+
+        if(isCurAcc == true)
+        {
             fragmentTransaction.replace(R.id.fragment_lay, new AccountLogoutDeleteFragment());
             fragmentTransaction.commit();
             //Toast.makeText(this, "현재 디바이스에 계정 정보가 있음.", Toast.LENGTH_LONG).show();
-        }else{
+        }
+        else
+        {
             fragmentTransaction.replace(R.id.fragment_lay, new AccountLoginFragment());
             fragmentTransaction.commit();
             //Toast.makeText(this, "현재 디바이스에 계정 정보가 없음.", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void onFragmentChanged(int index) {  // 프래그먼트 간 변환 인덱스.
-        if (index == 0) {
+    public void onFragmentChanged(int index)
+    {  // 프래그먼트 간 변환 인덱스.
+        if (index == 0)
+        {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_lay, frlogin).commit();
-        } else if (index == 1) {
+        }
+        else if (index == 1)
+        {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_lay, frcreate).commit();
-        } else if (index == 2){
+        }
+        else if (index == 2)
+        {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_lay, frlogoutdelacc).commit();
         }
     }
@@ -69,96 +90,90 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
     @Override
     public void onCreateAccountSet(int btnType, String inputId, String inputPw, String inputName) {
 
-        // 가져온 정보를 디바이스에 저장하는 코드 ↓
+    public void saveAccount(Friend friend)
+    {
         JSONObject obj = new JSONObject();
-        Friend fr_new = new Friend(inputId, inputPw, inputName, new TimeTable(), new ArrayList<String>());
 
-        //──────────────────────────────────────────────────────────────────────────────────────────────────
-        /* 완전한 Friend 인스턴스를 만들어보기 위한 코드
-        TimeTable tt = new TimeTable();
-        int i;
-        boolean jbchk[] = new boolean[5 * 14 * 12];
-        ArrayList<Lesson> ttl = new ArrayList<>();
-
-        for(i = 0; i < 5*14*12; i++) { jbchk[i] = false; }
-        ArrayList<String> ttt = new ArrayList<>();
-        ttt.add("10");
-        ttt.add("20");
-        ttt.add("30");
-        ArrayList<String> ttcr = new ArrayList<>();
-        ttcr.add("aa");
-        ttcr.add("bb");
-        Lesson l1 = new Lesson("111","AA","x","3",ttt,"Q",ttcr, 121212);
-        Lesson l2 = new Lesson("222","BB","y","2",ttt,"W",ttcr, 232323);
-        Lesson l3 = new Lesson("333","CC","z","1",ttt,"E",ttcr, 343434);
-        ttl.add(l1);
-        ttl.add(l2);
-        ttl.add(l3);
-
-        tt.setJungBok(jbchk);
-        tt.setLessons(ttl);
-
-        JSONObject tmp = new JSONObject();
-        JSONArray lstimes = new JSONArray();
-        lstimes.put(jbchk[0]);
-
-
-        ArrayList<String> f_list = new ArrayList<>();
-        f_list.add("hhh");
-        f_list.add("iii");
-        f_list.add("jjj");
-
-        fr_new.setTable(tt);
-        fr_new.setFrList(f_list);
-
-        try {
-            int j;
-            for(j = 0; j < 5 * 14 * 12; j++) {
-                JSONArray ttjb = new JSONArray();
-                ttjb.put(j, jbchk[j]);
-            }
-        }catch(JSONException e){
+        try
+        {
+            obj.put("_id", friend.getId());
+            obj.put("pwd", friend.getPw());
+            obj.put("name", friend.getName());
+            obj.put("f_id", friend.getFrList());
+        }
+        catch (JSONException e)
+        {
             e.printStackTrace();
         }
-        JSONObject ttObj = new JSONObject();
-        */
-        //──────────────────────────────────────────────────────────────────────────────────────────────────────
-        try {
-            obj.put("_id", fr_new.getId());
-            obj.put("pwd", fr_new.getPw());
-            obj.put("name", fr_new.getName());
-            obj.put("timetable", fr_new.getTable());
-            obj.put("f_id", fr_new.getFrList());
-        }
-        catch (JSONException e){
-            e.printStackTrace();
-        }
+
         File file = new File(getFilesDir(), "AccInDevice.json");
         FileWriter fw = null;
         BufferedWriter bufwr = null;
-        try {
+
+        try
+        {
             fw = new FileWriter(file);
             bufwr = new BufferedWriter(fw);
             bufwr.write(obj.toString());
-        }catch(Exception e){
-            e.printStackTrace();
         }
-        try{
-            if(bufwr != null){
-                bufwr.close();
-            }
-            if(fw != null){
-                fw.close();
-            }
-        }catch(Exception e){
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
 
-        /*
-        ────────────────────────────────────────────────────────────────
-        이 메소드에서 받은 정보들로 서버에 계정정보를 저장하는 코드 추가 요망!!!
-        ────────────────────────────────────────────────────────────────
-         */
+        try
+        {
+            if(bufwr != null)
+            {
+                bufwr.close();
+            }
+            if(fw != null)
+            {
+                fw.close();
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    // 유저 정보 등록에 성공했는가
+    boolean insertSuccess = false;
+
+    // AccountCreateFragment에서 정보를 가져와서 새로운 계정을 만들고 서버에 저장하는 코드 ↓
+    @Override
+    public void onCreateAccountSet(int btnType, String inputId, String inputPw, String inputName)
+    {
+        final String id = inputId;
+        final String pwd = inputPw;
+        final String name = inputName;
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    insertSuccess = UseDB.insertUser(id, pwd, name);
+                }
+            }
+        };
+
+        thread.start();
+
+        try { thread.join(); } catch (Exception e) {}
+
+        //실패
+        if(!insertSuccess)
+        {
+            Toast.makeText(TimeTable.fragment.getActivity(), "사용자가 이미 존재합니다", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        // 디바이스에도 저장
+        Friend fr_new = new Friend(inputId, inputPw, inputName, new ArrayList<String>());
+
+        saveAccount(fr_new);
 
         isCurAcc = true;
         Intent retIntent = new Intent(this, MainActivity.class);
@@ -172,19 +187,53 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
     // AccountLoginFragment에서 정보를 가져와서 로그인을 하는 코드 ↓
     @Override
-    public void onLoginAccSet(int btnType, String loginId, String loginPw) {
+    public void onLoginAccSet(int btnType, String loginId, String loginPw)
+    {
+        final String id = loginId;
+        final String pwd = loginPw;
 
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    UseDB.searchUser(loginDoc, id, pwd);
+                }
+            }
+        };
 
-        /*
-        ────────────────────────────────────────────────────────────────────────
-        이 메소드에서 받은 정보들로 서버에서 정보를 찾아서 로그인 하는 코드 추가 요망!!!
-        ────────────────────────────────────────────────────────────────────────
-         */
+        thread.start();
 
-        isCurAcc = true;// 서버에 아이디가 존재하면 true, 없으면 false. 아이디가 있을때, 없을때 코드 나누기.
+        try { thread.join(); } catch (Exception e) {}
+
+        //메인으로 보낼 데이터
         Intent retIntent = new Intent(this, MainActivity.class);
+
+        // 서버에 아이디가 존재하면 true, 없으면 false. 아이디가 있을때, 없을때 코드 나누기.
+        if(loginDoc.get(0) != null)
+        {
+            isCurAcc = true;
+
+            Friend dbUserData = new Friend();
+
+            dbUserData.setId(loginDoc.get(0).getString("_id"));
+            dbUserData.setPw(loginDoc.get(0).getString("pwd"));
+            dbUserData.setName(loginDoc.get(0).getString("name"));
+
+            //TimeTable을 어플리케이션으로 띄워둠, 전역변수처럼 사용하려고
+            TimeTable.setTimeTable((Document)loginDoc.get(0).get("table"));
+
+            dbUserData.setFrList((ArrayList<String>)(loginDoc.get(0).get("f_id", ArrayList.class)));
+
+            retIntent.putExtra("friendInfo", dbUserData);
+        }
+        else
+        {
+            isCurAcc = false;
+        }
+
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
+
         finish();
     }
 
@@ -195,7 +244,8 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
     // AccountLogoutDeleteFragment에서 로그아웃/계정삭제 버튼이 눌렸을때 바뀐 isCurAcc를 받아오는 코드. ↓
     @Override
-    public void OnCurAccCheckSet(boolean isCurAcc, int btnType) {
+    public void OnCurAccCheckSet(boolean isCurAcc, int btnType)
+    {
         Intent retIntent = new Intent(this, MainActivity.class);
         retIntent.putExtra("btnType", btnType);
         retIntent.putExtra("isCurAcc", isCurAcc);

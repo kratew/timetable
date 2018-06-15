@@ -65,22 +65,29 @@ public class AccountLoginFragment extends Fragment {
     }
 
     // AccountActivity로 데이터를 보내기 위한 인터페이스 생성 ↓
-    public interface OnLoginAccSetListener{
+    public interface OnLoginAccSetListener
+    {
         void onLoginAccSet(int btnType, String loginId, String loginPw);
     }
+
     private OnLoginAccSetListener onLoginAccSetListener;
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if(context instanceof OnLoginAccSetListener){
+        if(context instanceof OnLoginAccSetListener)
+        {
             onLoginAccSetListener = (OnLoginAccSetListener) context;
-        } else{
+        }
+        else
+        {
             throw new RuntimeException(context.toString()
                     + " must implement OnCreateAccountSetListener");
         }
     }
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         onLoginAccSetListener = null;
     }

@@ -6,14 +6,22 @@
     <item
         android:id="@+id/option1"
         android:icon="@drawable/add"
+<<<<<<< HEAD
         android:title="강의추가"
         app:showAsAction="always"/>
+=======
+        android:title="강의추가" />
+>>>>>>> origin/for_DB
 
     <item
         android:id="@+id/option2"
         android:icon="@drawable/save"
+<<<<<<< HEAD
         android:title="toImage"
         app:showAsAction="always"/>
+=======
+        android:title="이미지로 저장" />
+>>>>>>> origin/for_DB
 
     <item
         android:id="@+id/option3"

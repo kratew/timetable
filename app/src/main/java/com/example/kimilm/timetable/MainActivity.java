@@ -23,10 +23,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import org.bson.Document;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,9 +42,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     LinearLayout account_window;
-    Friend thisFr;
-    boolean isCurAcc;
-    String curAccId;
+    public static Friend thisFr;
+    public static boolean isCurAcc;
+    public static String curAccId;
+
     MyPagerAdapter fragmentAdapter;
     int pageState;
     boolean pagechk;
@@ -87,8 +91,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // MainActivity에 NavigationDrawer 설정하는 코드 ↓
         toggle=new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // ActionBar에서 기본 홈 버튼을 사용 가능.
+
         toggle.syncState(); // ActionBarDrawerToggle의 상태를 sync
+
         // NavigationView에 이벤트 설정.
         NavigationView navigationView=(NavigationView)findViewById(R.id.main_drawer_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -96,18 +103,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id=item.getItemId();
 
-                if(id==R.id.nav_account){   // 계정설정 클릭시 AccountActivity로 날아감.
+                if(id==R.id.nav_account)
+                {   // 계정설정 클릭시 AccountActivity로 날아감.
                     Intent myIntent = new Intent(getApplicationContext(), AccountActivity.class);
                     myIntent.putExtra("isCurAcc", isCurAcc); // 디바이스에 계정 정보가 있으면 true, 없으면 false를 전달함.
-                    if(isCurAcc == true){   // 디바이스 계정정보가 있으면 그 id를 전달.
+
+                    if(isCurAcc == true)
+                    {   // 디바이스 계정정보가 있으면 그 id를 전달.
                         myIntent.putExtra("curAccId", curAccId);
                     }
                     startActivityForResult(myIntent, 1000);
                     drawer.closeDrawer(Gravity.LEFT);
-                }else if(id==R.id.nav_contact_mail){
+                }
+                else if(id==R.id.nav_contact_mail)
+                {
                     Toast.makeText(getApplicationContext(), "B", Toast.LENGTH_LONG).show();
                     drawer.closeDrawer(Gravity.LEFT);
-                }else if(id==R.id.nav_contact_phone){
+                }
+                else if(id==R.id.nav_contact_phone)
+                {
                     Toast.makeText(getApplicationContext(), "C", Toast.LENGTH_LONG).show();
                     drawer.closeDrawer(Gravity.LEFT);
                 }
@@ -117,39 +131,59 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
         File files = new File(getFilesDir(), "AccInDevice.json");
-        if(files.exists()==true){   // 만약 이미 존재하느 파일이 있으면 파일 불러오기.
+
+        if(files.exists()==true)
+        {   // 만약 이미 존재하는 파일이 있으면 파일 불러오기.
             isCurAcc = true;
             FileReader fr = null;
             BufferedReader bufrd = null;
             char ch;
-            try{
+            try
+            {
                 String jsonStr = new String();
+
                 fr = new FileReader(files);
                 bufrd = new BufferedReader(fr);
 
-                while((ch = (char)bufrd.read()) != -1){
+                while((ch = (char)bufrd.read()) != -1)
+                {
                     jsonStr += String.valueOf(ch);
-                    if(ch == '}'){
+
+                    if(ch == '}')
+                    {
                         break;
                     }
                 }
 
-                JSONObject jsonObj = new JSONObject(jsonStr);
+//                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                //몽고디비 Document 객체에서 어레이를 바로 뺄 수 있는 방법을 찾음
+                Document jsonObj = Document.parse(jsonStr);
+
                 curAccId = jsonObj.getString("_id");
 
                 thisFr.setId(jsonObj.get("_id").toString());
                 thisFr.setPw(jsonObj.get("pwd").toString());
                 thisFr.setName(jsonObj.get("name").toString());
 
+                //그 결과
+                thisFr.setFrList((ArrayList<String>)(jsonObj.get("f_id", ArrayList.class)));
+//                thisFr.setFrList(TimeTableFragment.toSubString(jsonObj.getJSONArray("f_id").toString()));
+
                 bufrd.close();
                 fr.close();
-            } catch(Exception e){
+            }
+            catch(Exception e)
+            {
                 e.printStackTrace();
             }
-        }else{  // 파일이 없다.
-            isCurAcc = false;
-            Toast.makeText(this, "r파일이 없음!!", Toast.LENGTH_LONG).show();
         }
+        else
+        {  // 파일이 없다.
+            isCurAcc = false;
+            Toast.makeText(this, "계정 파일이 없음", Toast.LENGTH_LONG).show();
+        }
+<<<<<<< HEAD
 
         /*
         ───────────────────────────────────────────────────────────────────────────────────
@@ -158,6 +192,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
          */
 
     } // end of onCreate();
+=======
+    } // end of onCreate()
+>>>>>>> origin/for_DB
 
     //옵션메뉴 띄우기 ↓
 
@@ -241,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     class MyPagerAdapter extends FragmentStatePagerAdapter {
         List<Fragment> fragments=new ArrayList<>();//fragments ArrayList
 
-        //탭 버튼 문자열 배열
+        //탭 버튼 문자열 배열 -> 사용 안
         String title[]=new String[]{"", ""};
 
         //Adapter 생성자
@@ -278,16 +315,38 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1000 && resultCode == RESULT_OK){
+
+        if(requestCode == 1000 && resultCode == RESULT_OK)
+        {
+            //변경 이후 세팅
             isCurAcc = data.getBooleanExtra("isCurAcc", true);
-            if(data.getIntExtra("btnType", 0) <3) {
-                thisFr.setId(data.getStringExtra("newId"));
-                curAccId = data.getStringExtra("newId");
-            }else if(data.getIntExtra("btnType", 0) > 2){
-                thisFr = new Friend();
+
+            if(!isCurAcc)
+            {
+                Toast.makeText(this, "계정이 없습니다.", Toast.LENGTH_SHORT);
+                return;
             }
+
+            //1 : createBtn  2 : loginBtn
+            if(data.getIntExtra("btnType", 0) < 3)
+            {
+                Friend getFriend = (Friend) data.getSerializableExtra("friendInfo");
+                thisFr.setId(getFriend.getId());
+                thisFr.setPw(getFriend.getPw());
+                thisFr.setName(getFriend.getName());
+                thisFr.setFrList(getFriend.getFrList());
+                curAccId = getFriend.getName();
+            }
+            //3 : logoutBtn  4 : deleteBtn
+            else if(data.getIntExtra("btnType", 0) > 2)
+            {
+                thisFr = new Friend();
+                TimeTable.resetData();
+            }
+
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
     }
