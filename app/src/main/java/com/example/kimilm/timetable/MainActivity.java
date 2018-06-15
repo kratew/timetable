@@ -1,4 +1,5 @@
 package com.example.kimilm.timetable;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -11,7 +12,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuBuilder;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     boolean isCurAcc;
     String curAccId;
     MyPagerAdapter fragmentAdapter;
+    int pageState;
+    boolean pagechk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);    // tabLayout을 ViewPager와 연동.
         tabLayout.addOnTabSelectedListener(this);   // tabLayout의 이벤트 핸들러 등록.
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {    // viewpager의 페이지가 넘어갈 때 마다 이를 감지하는 코드 ↓
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                pagechk = true;
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pageState = position;
+                Log.d("$$onPageSelected act", "position : " + position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        pagechk = true;    // 어플 실행 시 onPrepareOptionsMenu가 두 번 실행되지 않게 하기 위한 변수.
+        Log.d("$$onCreate()", "pagechk : "+pagechk);
 
         // MainActivity에 NavigationDrawer 설정하는 코드 ↓
         toggle=new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
@@ -156,18 +182,72 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
          */
     } // end of onCreate();
 
+    //옵션메뉴 띄우기 ↓
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.d("$$onCreate()", "pagechk : "+pagechk);
+        Log.d("$$onPrepareOptionsMenu","Activated!");
+        if(pageState == 0 && pagechk == true){
+            MenuInflater inflater = getMenuInflater();//MenuInflater 반환
+            inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
+            pagechk = false;
+            Log.d("$$tablemenu","activated");
+        }else if(pageState != 0 && pagechk == true) {
+            MenuInflater inflater = getMenuInflater();//MenuInflater 반환
+            inflater.inflate(R.menu.fragment_friends_items, menu);
+            pagechk = false;
+            Log.d("$$friendmenu","activated");
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // onOptionsItemSelected() Required. 이벤트가 toggle에서 발생한거라면 메뉴 이벤트 로직에서 벗어나게 처리.
-        if(toggle.onOptionsItemSelected(item)){
-            return false;
+        super.onOptionsItemSelected(item);
+        if(pageState == 0) {
+            switch (item.getItemId()) {
+                case R.id.option1:
+                    Toast.makeText(this, "강의추가", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.option2:
+                    Toast.makeText(this, "이미지로 저장", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.option3:
+                    Toast.makeText(this, "비교시간표 변경", Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
+        }else{
+            switch (item.getItemId()) {
+                case R.id.option1:
+                    Toast.makeText(this, "친구 추가", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.option2:
+                    Toast.makeText(this, "친구 삭제", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.option3:
+                    Toast.makeText(this, "시간표 비교", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.option4:
+                    Toast.makeText(this, "메세지 보내기", Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     /* OnTabSelectedListener의 콜백 메소드.
-         - TabLayout의 탭 버튼을 사용자가 터치했을 때 이벤트를 처리하기 위한 콜백 메소드로,
-           탭 버튼과 ViewPager 화면 조정을 setCurrentItem() 메소드로 처리.*/
+             - TabLayout의 탭 버튼을 사용자가 터치했을 때 이벤트를 처리하기 위한 콜백 메소드로,
+               탭 버튼과 ViewPager 화면 조정을 setCurrentItem() 메소드로 처리.*/
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
@@ -236,5 +316,3 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
     }
 }
-
-

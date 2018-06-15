@@ -19,6 +19,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.view.menu.MenuBuilder;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,12 +51,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class TimeTableFragment extends Fragment implements View.OnClickListener{
+public class TimeTableFragment extends Fragment /*implements View.OnClickListener*/{
 
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
     GridLayout gridLayout;
-    FloatingActionButton fab;
+    //FloatingActionButton fab;
     ScrollView scrollView;
 
     ArrayList<Document> documents;
@@ -87,8 +90,8 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
 
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
-        fab = (FloatingActionButton) view.findViewById(R.id.faButton);
-        fab.setOnClickListener(this);
+        //fab = (FloatingActionButton) view.findViewById(R.id.faButton);
+        //fab.setOnClickListener(this);
         visib = AnimationUtils.loadAnimation(getActivity(), R.anim.visib);
         invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
 
@@ -148,13 +151,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         });
 
         return view;
-    }
-
-    // Floating Action Button이 눌리면 ↓
-    @Override
-    public void onClick(View v) {
-
-    }
+    } // end of onCreateView()
 
     //화면 사이즈에 맞게 변환
     public void setGridLayoutHeight()
