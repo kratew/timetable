@@ -183,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             isCurAcc = false;
             Toast.makeText(this, "계정 파일이 없음", Toast.LENGTH_LONG).show();
         }
-<<<<<<< HEAD
 
         /*
         ───────────────────────────────────────────────────────────────────────────────────
@@ -191,10 +190,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         ───────────────────────────────────────────────────────────────────────────────────
          */
 
-    } // end of onCreate();
-=======
     } // end of onCreate()
->>>>>>> origin/for_DB
 
     //옵션메뉴 띄우기 ↓
 

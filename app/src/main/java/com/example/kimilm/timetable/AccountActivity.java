@@ -86,9 +86,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         }
     }
 
-    // AccountCreateFragment에서 정보를 가져와서 새로운 계정을 만들고 서버에 저장하는 코드 ↓
-    @Override
-    public void onCreateAccountSet(int btnType, String inputId, String inputPw, String inputName) {
+    //강의 정보를 로컬에 저장하는 코드
 
     public void saveAccount(Friend friend)
     {
@@ -177,8 +175,15 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
         isCurAcc = true;
         Intent retIntent = new Intent(this, MainActivity.class);
-        retIntent.putExtra("btnType", btnType);
-        retIntent.putExtra("newId", inputId);
+
+        Friend dbUserData = new Friend();
+
+        dbUserData.setId(inputId);
+        dbUserData.setPw(inputPw);
+        dbUserData.setName(inputName);
+
+        retIntent.putExtra("friendInfo", dbUserData);
+
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
         finish();

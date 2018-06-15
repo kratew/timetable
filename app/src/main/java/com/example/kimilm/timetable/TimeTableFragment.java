@@ -51,17 +51,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-<<<<<<< HEAD
 public class TimeTableFragment extends Fragment /*implements View.OnClickListener*/{
-=======
-public class TimeTableFragment extends Fragment
-{
->>>>>>> origin/for_DB
-
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
     GridLayout gridLayout;
-    //FloatingActionButton fab;
     ScrollView scrollView;
 
     ArrayList<Document> documents;
@@ -99,39 +92,32 @@ public class TimeTableFragment extends Fragment
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
 
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
-<<<<<<< HEAD
-        //fab = (FloatingActionButton) view.findViewById(R.id.faButton);
-        //fab.setOnClickListener(this);
-=======
-        fab = (OneMoreFabMenu)view.findViewById(R.id.faButton);
-//        fab.setOnClickListener(this);
->>>>>>> origin/for_DB
         visib = AnimationUtils.loadAnimation(getActivity(), R.anim.visib);
         invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
 
         checker = false;
 
-        //스크롤시 FloatingActionButton이 사라지는 코드
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {    // ScrollView에서 스크롤이 화면 최하단에 도달함을 감지하는 코드.
-            @Override
-            public void onScrollChanged() {
-                if (scrollView != null) {
-                    if (scrollView.getChildAt(0).getBottom() <= (scrollView.getHeight() + scrollView.getScrollY())) {
-                        // scroll view가 최하단에 도달함.
-                        //fab.setVisibility(View.INVISIBLE);
-                        //fab.startAnimation(invisib);
-                        checker = true;
-                    } else {
-                        // scroll view가 최하단이 아님.
-                        if(checker == true) {
-                            //fab.setVisibility(View.VISIBLE);
-                            //fab.startAnimation(visib);
-                            checker = false;
-                        }
-                    }
-                }
-            }
-        });
+//        //스크롤시 FloatingActionButton이 사라지는 코드
+//        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {    // ScrollView에서 스크롤이 화면 최하단에 도달함을 감지하는 코드.
+//            @Override
+//            public void onScrollChanged() {
+//                if (scrollView != null) {
+//                    if (scrollView.getChildAt(0).getBottom() <= (scrollView.getHeight() + scrollView.getScrollY())) {
+//                        // scroll view가 최하단에 도달함.
+//                        //fab.setVisibility(View.INVISIBLE);
+//                        //fab.startAnimation(invisib);
+//                        checker = true;
+//                    } else {
+//                        // scroll view가 최하단이 아님.
+//                        if(checker == true) {
+//                            //fab.setVisibility(View.VISIBLE);
+//                            //fab.startAnimation(visib);
+//                            checker = false;
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
@@ -165,10 +151,8 @@ public class TimeTableFragment extends Fragment
         });
 
         return view;
-<<<<<<< HEAD
     } // end of onCreateView()
-=======
-    }
+
 
     // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
     @Override
@@ -198,7 +182,6 @@ public class TimeTableFragment extends Fragment
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
     }
->>>>>>> origin/for_DB
 
     //화면 사이즈에 맞게 변환
     public void setGridLayoutHeight()
