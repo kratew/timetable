@@ -283,18 +283,16 @@
         </FrameLayout>
     </ScrollView>
 
-    <com.dekoservidoni.omfm.OneMoreFabMenu
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/faButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:color_main_button="@color/color4"
-        app:color_secondary_buttons="@color/color4"
-        app:content_options="@menu/fragment_time_table_fab_items"
-        app:label_text_color="@android:color/black"
-        app:close_on_click="true"
-        app:size_main_button="@integer/omfm_fab_size_normal" />
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/add"
+        app:fabSize="auto"
+        app:rippleColor="@color/color3"
+        app:backgroundTint="@color/color4"/>
 
             <!--<com.bowyer.app.fabtransitionlayout.BottomSheetLayout-->
             <!--android:id="@+id/bottom_sheet"-->

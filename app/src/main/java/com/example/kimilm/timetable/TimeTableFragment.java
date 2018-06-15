@@ -36,7 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.dekoservidoni.omfm.OneMoreFabMenu;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -54,7 +53,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
     GridLayout gridLayout;
-    OneMoreFabMenu fab;
+    FloatingActionButton fab;
     ScrollView scrollView;
 
     ArrayList<Document> documents;
@@ -88,7 +87,7 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
 
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
-        fab = (OneMoreFabMenu)view.findViewById(R.id.faButton);
+        fab = (FloatingActionButton) view.findViewById(R.id.faButton);
         fab.setOnClickListener(this);
         visib = AnimationUtils.loadAnimation(getActivity(), R.anim.visib);
         invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
@@ -148,130 +147,13 @@ public class TimeTableFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        setHasOptionsMenu(true);
-
         return view;
     }
 
-    // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().invalidateOptionsMenu();
-    }
-
-    MenuItem item1;
-    MenuItem item2;
-    MenuItem item3;
-
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
-
-        item1 = menu.findItem(R.id.option1);
-        item2 = menu.findItem(R.id.option2);
-        item3 = menu.findItem(R.id.option3);
-
-//        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                popInsertLessonFragment();
-//                return false;
-//            }
-//        });
-//
-//        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                toImage();
-//                return false;
-//            }
-//        });
-
-        super.onCreateOptionsMenu(menu, inflater);
-/*
-        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "13243546576454", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-
-        item2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "13243546576454", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-        item3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getActivity(), "SDYRTHEGRWSV", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-*/
-    }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuI
-                        Toast.makeText(getActivity(), "비교시간표 변경 선택됨!", Toast.LENGTH_LONG).show();
-                        return false;tem item) {
-                        return super.onOptionsItemSelected(item);
-                    }
-*/
-
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item)
-//    {
-//        int curId = item.getItemId();
-//        switch(curId)
-//        {
-//            case R.id.option1:
-//                popInsertLessonFragment();
-//                return false;
-//            case R.id.option2:
-//                toImage();
-//                return false;
-//            case R.id.option3:
-//                Toast.makeText(getActivity(), "이미지로 저장 선택됨!", Toast.LENGTH_LONG).show();
-//                return false;
-//            default:
-//                break;
-//        }
-//    return false;
-//    }
-
-    @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-    }
-
+    // Floating Action Button이 눌리면 ↓
     @Override
     public void onClick(View v) {
-        /* Snackbar : 간단한 문자열 메시지를 사용자에게 잠깐 보여줄 목적으로 사용
-           - Toast 메시지와 비슷하지만, 사용자의 이벤트 처리가 가능하기 때문에 많이 사용
-           - Snackbar.make(스넥바가 뜨게될 View, 사용자에게 보일 문자열 메시지, 스넥바가 화면에 뜨는 시간)
-           - setAction() 메서드를 사용하면, Snackbar에서 사용자 이벤트를 처리할 수 있음
-           - setAction(Action문자열, 이벤트 핸들러)
-           - 사용자가 Action문자열을 클릭하면, 두 번째 매개변수인 OnClickListener()를 구현한 이벤트 핸들러가 실행
-        */
-        Snackbar.make(v,"Snackbar with Action", Snackbar.LENGTH_LONG).setActionTextColor(Color.YELLOW).setAction("현재 시간?", new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
-                SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy", Locale.US);
-                String getTime = dateformat.format(date);
-                Toast.makeText(getActivity(), getTime, Toast.LENGTH_LONG).show();
-            }
-        }).show();
+
     }
 
     //화면 사이즈에 맞게 변환
