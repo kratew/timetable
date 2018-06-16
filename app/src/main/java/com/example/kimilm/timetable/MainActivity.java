@@ -50,8 +50,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     int pageState;
     boolean pagechk;
 
+<<<<<<< HEAD
     static boolean toPrintTable = true;
 
+=======
+    ArrayList<String> fr_id;
+    ArrayList<String> fr_name;
+    ArrayList<ArrayList<Lesson>> fr_lesson;
+
+    String fr_id_str;
+    Object obj;
+>>>>>>> newMaster
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,8 +196,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     } // end of onCreate()
 
     //옵션메뉴 띄우기 ↓
-
     @Override
+<<<<<<< HEAD
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         //여기가 최선이었다.
@@ -204,6 +213,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         toPrintTable = false;
 
         Log.d("$$onCreate() #\t#\t#\t#\t#", "pagechk : "+pagechk);
+=======
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.d("$onPrepareOptionsMenu", "pagechk : "+pagechk);
+>>>>>>> newMaster
         Log.d("$$onPrepareOptionsMenu","Activated!");
         if(pageState == 0 && pagechk == true)
         {
@@ -248,6 +261,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             switch (item.getItemId()) {
                 case R.id.option1:
                     Toast.makeText(this, "친구 추가", Toast.LENGTH_LONG).show();
+                    Intent frIntent = new Intent(this, FriendAddActivity.class);
+                    startActivityForResult(frIntent, 1001);
+
+                    ArrayList<FriendsItem> fr= new ArrayList<>();
+                    Fragment transFragment = (FriendsFragment)fragmentAdapter.fragments.get(1);
+
                     break;
                 case R.id.option2:
                     Toast.makeText(this, "친구 삭제", Toast.LENGTH_LONG).show();
@@ -369,8 +388,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
+        // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
+        else if(requestCode == 1001 && resultCode == RESULT_OK){
+            fr_id_str = data.getStringExtra("frId").toString();
+
+            findUser();
+
+            if(fr_id != null){
+            FriendsFragment frfg = new FriendsFragment();
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.container, frfg);
+            ft.commit();
+        }
     }
 
+<<<<<<< HEAD
     @Override
     protected void onStart() {
         super.onStart();
@@ -407,5 +440,54 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onPostResume();
 
         Log.d("Main", "============\tMainOnPostResume\t============");
+    }
+=======
+//    public Object getData(){
+//        return obj;
+//    }
+>>>>>>> newMaster
+}
+
+// 아이디로 친구 추가
+    public void findUser()
+    {
+        final ArrayList<Document> searchDoc = new ArrayList<>();
+        final ArrayList<String> userSearch = new ArrayList<>();
+        userSearch.add(fr_id_str);
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    UseDB.searchFriendTable(searchDoc, userSearch);
+                }
+            }
+        };
+
+        thread.start();
+
+        try { thread.join(); } catch (Exception e) {}
+
+
+        if(searchDoc == null)
+        {
+            //음슴
+        }
+
+
+        for(Document doc : searchDoc)
+        {
+            fr_id.add(doc.getString("_id"));
+            fr_name.add(doc.getString("name"));
+
+            ArrayList<Lesson> tempLesson = new ArrayList<>();
+
+            for(Document lessonDoc : ((ArrayList<Document>)(((Document)(doc.get("timetable"))).get("lessons", ArrayList.class))))
+            {
+                tempLesson.add(TimeTableFragment.parseLesson(lessonDoc));
+            }
+
+            fr_lesson.add(tempLesson);
+        }
     }
 }

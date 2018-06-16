@@ -2,11 +2,14 @@ package com.example.kimilm.timetable;
 
 import android.graphics.drawable.Drawable;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class FriendsItem {
     boolean chk;
     private String Name;
     private String id;
-    private TimeTable table;
+    private ArrayList<Lesson> table;
 
     public boolean isChk() {
         return chk;
@@ -32,11 +35,11 @@ public class FriendsItem {
         this.id = id;
     }
 
-    public TimeTable getTable() {
+    public ArrayList<Lesson> getTable() {
         return table;
     }
 
-    public void setTable(TimeTable table) {
-        this.table = table;
+    public void setTable(ArrayList<Lesson> lessons) {
+        this.table.addAll(lessons);
     }
 }

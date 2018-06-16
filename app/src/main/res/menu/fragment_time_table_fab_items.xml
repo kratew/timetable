@@ -12,7 +12,8 @@
     <item
         android:id="@+id/option2"
         android:icon="@drawable/save"
-        android:title="이미지로 저장" />
+        android:title="이미지로 저장"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/option3"
