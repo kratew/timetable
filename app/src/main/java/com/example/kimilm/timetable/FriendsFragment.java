@@ -55,43 +55,45 @@ public class FriendsFragment extends Fragment {
         if (container == null) {
             return null;
         }
+
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
+
         listView = (ListView) view.findViewById(R.id.listView);
+
         adapter = new ListViewAdapter();
+
         listView.setAdapter(adapter);
+
         EditText searchName = (EditText) view.findViewById(R.id.searchName);
+
         fr_id = new ArrayList<>();
 
         for(int i = 0; i < fr_id.size(); i++){  // 불러온 친구를 리스트뷰에 넣음.
             adapter.addItem(false, fr_name.get(i), fr_id.get(i));
         }
 
-
-        searchName.addTextChangedListener(new TextWatcher() {
+        searchName.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s)
+            {
                 String filterText = s.toString();
                 ((ListViewAdapter) listView.getAdapter()).getFilter().filter(filterText);
             }
         });
+
         return view;
     } // end of onCreateView()
-
-
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if(getActivity() != null && getActivity() instanceof MainActivity){
-//            mMyData = ((MainActivity)getActivity()).getData();
-//        }
-//    }
 }

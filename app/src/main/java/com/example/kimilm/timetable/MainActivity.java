@@ -356,11 +356,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             }
 
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
-        }else if(requestCode == 1001 && resultCode == RESULT_OK){
-            // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
+        }
+        // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
+        else if(requestCode == 1001 && resultCode == RESULT_OK){
             fr_id_str = data.getStringExtra("frId").toString();
 
-            func();
+            findUser();
+
             if(fr_id != null){
             FriendsFragment frfg = new FriendsFragment();
             FragmentManager fm = getSupportFragmentManager();
@@ -375,8 +377,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 //    }
 }
 
-// 친구 아이디를 검색하는 코드 ↓
-    public void func()
+// 아이디로 친구 추가
+    public void findUser()
     {
         final ArrayList<Document> searchDoc = new ArrayList<>();
         final ArrayList<String> userSearch = new ArrayList<>();
