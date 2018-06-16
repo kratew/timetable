@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.mongodb.BasicDBList;
@@ -72,7 +73,7 @@ public class TimeTable extends Application
 
                 reader.close();
 
-                Document timetableObject = Document.parse(buffer.toString());
+                Document timetableObject = Document.parse (buffer.toString());
 
                 setTimeTable(timetableObject);
             }
@@ -107,10 +108,7 @@ public class TimeTable extends Application
 
         for(Document dbo : (List<Document>)doc.get("lessons", List.class))
         {
-            lessons.add(new Lesson(dbo.getString("_id"), dbo.getString("title"),
-                    dbo.getString("classify"), dbo.getString("credit").toString(),
-                    (ArrayList<String>)(dbo.get("times", ArrayList.class)), dbo.getString("prof"),
-                    (ArrayList<String>)(dbo.get("classroom", ArrayList.class)), Color.BLUE));
+            lessons.add(TimeTableFragment.parseLesson(dbo, true));
         }
     }
 
@@ -280,7 +278,8 @@ public class TimeTable extends Application
                     .add("credit", lessons.get(i).credit)
                     .add("times", lessons.get(i).times)
                     .add("prof", lessons.get(i).prof)
-                    .add("classroom", lessons.get(i).classroom);
+                    .add("classroom", lessons.get(i).classroom)
+                    .add("color", lessons.get(i).color);
 
             lessonObjList.add((BasicDBObject)objBuilder.get());
         }

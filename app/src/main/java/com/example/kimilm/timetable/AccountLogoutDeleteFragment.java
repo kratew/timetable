@@ -56,8 +56,6 @@ public class AccountLogoutDeleteFragment extends Fragment {
                 isCurAcc = false;
                 btnType = 3;
                 onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc, btnType);
-
-                getActivity().finish();
             }
         });
 
@@ -78,8 +76,6 @@ public class AccountLogoutDeleteFragment extends Fragment {
                 isCurAcc = false;
                 btnType = 4;
                 onCurAccCheckSetListener.OnCurAccCheckSet(isCurAcc, btnType);
-
-                getActivity().finish();
             }
         });
         return view;

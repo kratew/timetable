@@ -68,8 +68,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
                     public void onClick(View v) {
                         if(TimeTable.addLesson(lesson))
                         {
+                            TimeTable.fragment.showTable(lesson, (byte)1);
+
+                            //저장
                             TimeTable.saveTable ();
-                            TimeTable.fragment.showTable(lesson, false);
 
                             new Thread()
                             {

@@ -76,7 +76,7 @@ public class InsertLessonFragment extends Fragment
 
         for(Document doc : documents)
         {
-            list.add(TimeTableFragment.parseLesson(doc));
+            list.add(TimeTableFragment.parseLesson(doc, false));
         }
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(list);
@@ -93,6 +93,7 @@ public class InsertLessonFragment extends Fragment
     public void insertExit (View v)
     {
         FragmentManager fManager = getFragmentManager();
+
         FragmentTransaction fTransaction = fManager.beginTransaction();
         fTransaction.hide(this).commit();
     }

@@ -1,5 +1,7 @@
 package com.example.kimilm.timetable;
 
+import android.support.annotation.ColorInt;
+
 import java.util.ArrayList;
 
 /**
@@ -18,6 +20,8 @@ public class Lesson
     String prof;      //교수
     ArrayList<String> classroom;       //강의실
         //비고 포함하지 않음
+
+    @ColorInt
     int color;     //시간표에 표시할 색상
 
     public Lesson ()
@@ -36,7 +40,7 @@ public class Lesson
     }
 
 
-    public Lesson (String code, String title, String classify, String credit, ArrayList<String> times, String prof, ArrayList<String> classroom, int color)
+    public Lesson (String code, String title, String classify, String credit, ArrayList<String> times, String prof, ArrayList<String> classroom, @ColorInt int color)
     {
         this();
 

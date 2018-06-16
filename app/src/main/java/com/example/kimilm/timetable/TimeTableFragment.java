@@ -1,6 +1,11 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,12 +15,16 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.menu.MenuBuilder;
@@ -51,7 +60,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class TimeTableFragment extends Fragment /*implements View.OnClickListener*/{
+public class TimeTableFragment extends Fragment
+{
 //    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
     GridLayout gridLayout;
@@ -60,6 +70,8 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
     ArrayList<Document> documents;
 
     BottomSheetDialog modalBottomSheet;
+
+    boolean isFirstRun = true;
 
     Animation visib;
     Animation invisib;
@@ -74,20 +86,23 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d("TimeTableFragment", "============\tFragmentOnCreate\t============");
+
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
-
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("TimeTableFragment", "============\tFragmentOnCreateView\t============");
+
         if(container == null){
             return null;
         }
         View view = inflater.inflate(R.layout.fragment_time_table, container, false);
 
-        frameLayout = (FrameLayout)view.findViewById(R.id.frame);
+        frameLayout = (FrameLayout) view.findViewById(R.id.frame);
 
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
 
@@ -96,28 +111,6 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
         invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
 
         checker = false;
-
-//        //스크롤시 FloatingActionButton이 사라지는 코드
-//        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {    // ScrollView에서 스크롤이 화면 최하단에 도달함을 감지하는 코드.
-//            @Override
-//            public void onScrollChanged() {
-//                if (scrollView != null) {
-//                    if (scrollView.getChildAt(0).getBottom() <= (scrollView.getHeight() + scrollView.getScrollY())) {
-//                        // scroll view가 최하단에 도달함.
-//                        //fab.setVisibility(View.INVISIBLE);
-//                        //fab.startAnimation(invisib);
-//                        checker = true;
-//                    } else {
-//                        // scroll view가 최하단이 아님.
-//                        if(checker == true) {
-//                            //fab.setVisibility(View.VISIBLE);
-//                            //fab.startAnimation(visib);
-//                            checker = false;
-//                        }
-//                    }
-//                }
-//            }
-//        });
 
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
@@ -153,16 +146,6 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
         return view;
     } // end of onCreateView()
 
-
-    // OneMoreFabMenu의 메뉴 아이템의 아이디를 가져오는 코드 ↓
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().invalidateOptionsMenu();
-
-        Toast.makeText(getActivity(), "TimeTableFragment", Toast.LENGTH_SHORT).show();
-    }
-
     MenuItem item1;
     MenuItem item2;
     MenuItem item3;
@@ -196,7 +179,7 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
     }
 
     //강의 띄우기
-    public void showTable (Lesson lesson, boolean cFlag)
+    public void showTable (Lesson lesson, byte cFlag)
     {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -233,11 +216,22 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
                 }
             });
 
-            // cFlag가 false라면 랜덤 컬러
-            if (!cFlag)
+            // 컬러 플래그
+            if (cFlag == 0)
             {
-                //랜덤 컬러
+                //0 -> 저장된 색
+                view[i].setBackgroundColor(lesson.getColor());
+            }
+            else if (cFlag == 1)
+            {
+                //1 -> 색 지정
                 view[i].setBackgroundColor(Color.rgb(r, g, b));
+                lesson.setColor(Color.rgb(r, g, b));
+            }
+            else
+            {
+                //2 -> 시간표 비교용 알파값
+                view[i].setBackgroundColor(Color.argb(100, 250, 200, 200));
             }
 
             //보여지는 부분
@@ -429,6 +423,7 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
                             ((TextView)view.findViewById(R.id.lessonCode)).getText().toString() + i)));
                 }
 
+                //저장
                 TimeTable.saveTable();
 
                 new Thread()
@@ -565,11 +560,68 @@ public class TimeTableFragment extends Fragment /*implements View.OnClickListene
     }
 
     // Document -> Lesson 변환
-    public static Lesson parseLesson(Document document)
+    public static Lesson parseLesson(Document document, boolean color)
     {
+        @ColorInt int setcolor = 0;
+
+        if(color)
+        {
+            setcolor = document.getInteger("color");
+        }
+
         return new Lesson(document.getString("_id"), document.getString("title"),
                 document.getString("classify"), document.get("credit").toString(),
                 (ArrayList<String>)(document.get("times", ArrayList.class)), document.getString("prof"),
-                (ArrayList<String>)(document.get("classroom", ArrayList.class)), Color.BLACK);
+                (ArrayList<String>)(document.get("classroom", ArrayList.class)), setcolor);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("TimeTableFragment", "============\tFragmentOnStart\t============");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
+
+        Log.d("TimeTableFragment", "============\tFragmentOnResume\t============");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("TimeTableFragment", "============\tFragmentOnAttach\t============");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("TimeTableFragment", "============\tFragmentOnPause\t============");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("TimeTableFragment", "============\tFragmentOnStop\t============");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("TimeTableFragment", "============\tFragmentOnDestroyView\t============");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("TimeTableFragment", "============\tFragmentOnDestroy\t============");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("TimeTableFragment", "============\tFragmentOnDetach\t============");
     }
 }

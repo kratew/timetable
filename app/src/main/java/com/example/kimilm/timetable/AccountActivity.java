@@ -168,7 +168,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
             return;
         }
 
-        // 디바이스에도 저장
+        // 디바이스에도 저장, 이 때 서버나 로컬에 저장할 시간표는 아직 없음
         Friend fr_new = new Friend(inputId, inputPw, inputName, new ArrayList<String>());
 
         saveAccount(fr_new);
@@ -186,6 +186,10 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
+
+        //시간표 그리기
+        MainActivity.toPrintTable = true;
+
         finish();
     }
 
@@ -225,14 +229,22 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
             dbUserData.setName(loginDoc.get(0).getString("name"));
 
             //TimeTable을 어플리케이션으로 띄워둠, 전역변수처럼 사용하려고
-            TimeTable.setTimeTable((Document)loginDoc.get(0).get("table"));
+            TimeTable.setTimeTable((Document)(loginDoc.get(0).get("timetable")));
 
             dbUserData.setFrList((ArrayList<String>)(loginDoc.get(0).get("f_id", ArrayList.class)));
 
             retIntent.putExtra("friendInfo", dbUserData);
+
+            //디바이스 저장
+            TimeTable.saveTable();
+            saveAccount(dbUserData);
+
+            //시간표 그리기
+            MainActivity.toPrintTable = true;
         }
         else
         {
+            Toast.makeText(getApplicationContext(), "해당 계정이 없습니다.", Toast.LENGTH_SHORT).show();
             isCurAcc = false;
         }
 
@@ -251,9 +263,18 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
     @Override
     public void OnCurAccCheckSet(boolean isCurAcc, int btnType)
     {
+        //데이터 리셋
+        TimeTable.resetData();
+        TimeTable.saveTable();
+
+        //시간표 초기화
+        MainActivity.fragmentAdapter.notifyDataSetChanged();
+
         Intent retIntent = new Intent(this, MainActivity.class);
         retIntent.putExtra("btnType", btnType);
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
+
+        finish();
     }
 }

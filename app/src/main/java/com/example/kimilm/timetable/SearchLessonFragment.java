@@ -157,7 +157,7 @@ public class SearchLessonFragment extends Fragment
 
         for(Document doc : searchDocument)
         {
-            list.add(TimeTableFragment.parseLesson(doc));
+            list.add(TimeTableFragment.parseLesson(doc, false));
         }
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(list);

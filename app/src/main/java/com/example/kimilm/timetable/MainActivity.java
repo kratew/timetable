@@ -46,14 +46,19 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     public static boolean isCurAcc;
     public static String curAccId;
 
-    MyPagerAdapter fragmentAdapter;
+    public static MyPagerAdapter fragmentAdapter;
     int pageState;
     boolean pagechk;
+
+    static boolean toPrintTable = true;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("Main", "============\tMainOnCreate\t============");
+
         setContentView(R.layout.activity_main);
 
         thisFr = new Friend();
@@ -86,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public void onPageScrollStateChanged(int state) {
             }
         });
-        pagechk = true;    // 어플 실행 시 onPrepareOptionsMenu가 두 번 실행되지 않게 하기 위한 변수.
-        Log.d("$$onCreate()", "pagechk : "+pagechk);
+
+        pagechk = false;    // 어플 실행 시 onPrepareOptionsMenu가 두 번 실행되지 않게 하기 위한 변수.
+        Log.d("$$onCreate() #\t#\t#\t#\t#", "pagechk : "+pagechk);
 
         // MainActivity에 NavigationDrawer 설정하는 코드 ↓
         toggle=new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
@@ -132,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
         File files = new File(getFilesDir(), "AccInDevice.json");
 
-        if(files.exists()==true)
+        if(files.exists())
         {   // 만약 이미 존재하는 파일이 있으면 파일 불러오기.
             isCurAcc = true;
             FileReader fr = null;
@@ -155,9 +161,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     }
                 }
 
-//                JSONObject jsonObj = new JSONObject(jsonStr);
-
-                //몽고디비 Document 객체에서 어레이를 바로 뺄 수 있는 방법을 찾음
                 Document jsonObj = Document.parse(jsonStr);
 
                 curAccId = jsonObj.getString("_id");
@@ -166,9 +169,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 thisFr.setPw(jsonObj.get("pwd").toString());
                 thisFr.setName(jsonObj.get("name").toString());
 
-                //그 결과
                 thisFr.setFrList((ArrayList<String>)(jsonObj.get("f_id", ArrayList.class)));
-//                thisFr.setFrList(TimeTableFragment.toSubString(jsonObj.getJSONArray("f_id").toString()));
 
                 bufrd.close();
                 fr.close();
@@ -183,27 +184,36 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             isCurAcc = false;
             Toast.makeText(this, "계정 파일이 없음", Toast.LENGTH_LONG).show();
         }
-
-        /*
-        ───────────────────────────────────────────────────────────────────────────────────
-        이 메소드에서 받은 정보들로 새로운 계정을 만들고 서버에 계정정보를 저장하는 코드 추가 요망!!!
-        ───────────────────────────────────────────────────────────────────────────────────
-         */
-
     } // end of onCreate()
 
     //옵션메뉴 띄우기 ↓
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.d("$$onCreate()", "pagechk : "+pagechk);
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        //여기가 최선이었다.
+        //ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ
+        if(toPrintTable)
+        {
+            Log.d("Draw #\t#\t#\t#\t#", "T\tI\tM\tE\tT\tA\tB\tL\tE\t" + toPrintTable);
+            for(Lesson lesson : TimeTable.lessons)
+            {
+                TimeTable.fragment.showTable(lesson, (byte)0);
+            }
+        }
+        toPrintTable = false;
+
+        Log.d("$$onCreate() #\t#\t#\t#\t#", "pagechk : "+pagechk);
         Log.d("$$onPrepareOptionsMenu","Activated!");
-        if(pageState == 0 && pagechk == true){
+        if(pageState == 0 && pagechk == true)
+        {
             MenuInflater inflater = getMenuInflater();//MenuInflater 반환
             inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
             pagechk = false;
             Log.d("$$tablemenu","activated");
-        }else if(pageState != 0 && pagechk == true) {
+        }
+        else if(pageState != 0 && pagechk == true)
+        {
             MenuInflater inflater = getMenuInflater();//MenuInflater 반환
             inflater.inflate(R.menu.fragment_friends_items, menu);
             pagechk = false;
@@ -271,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
+    public void dataChanged()
+    {
+        viewPager.getAdapter().notifyDataSetChanged();
+    }
+
     /* TabLayout과 연동하기 위한 ViewPager의 Adapter 클래스 선언 */
     class MyPagerAdapter extends FragmentStatePagerAdapter {
         List<Fragment> fragments=new ArrayList<>();//fragments ArrayList
@@ -284,6 +299,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             //프래그먼트를 생성하여 ArrayList에 add
             fragments.add(new TimeTableFragment());
             fragments.add(new FriendsFragment());
+
+            //
 
             TimeTable.fragment = (TimeTableFragment) fragments.get(0);
         }
@@ -309,6 +326,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         public CharSequence getPageTitle(int position) {
             return title[position];
         }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
     }
 
     @Override
@@ -316,20 +338,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.d("\t\t\t\t\tOnActivityResult!", "Where\tam\tI\t" + toPrintTable);
+
         if(requestCode == 1000 && resultCode == RESULT_OK)
         {
             //변경 이후 세팅
             isCurAcc = data.getBooleanExtra("isCurAcc", true);
 
-            if(!isCurAcc)
-            {
-                Toast.makeText(this, "계정이 없습니다.", Toast.LENGTH_SHORT);
-                return;
-            }
-
             //1 : createBtn  2 : loginBtn
             if(data.getIntExtra("btnType", 0) < 3)
             {
+                if(!isCurAcc)
+                {
+                    Toast.makeText(this, "계정이 없습니다.", Toast.LENGTH_SHORT);
+                    return;
+                }
+
                 Friend getFriend = (Friend) data.getSerializableExtra("friendInfo");
                 thisFr.setId(getFriend.getId());
                 thisFr.setPw(getFriend.getPw());
@@ -341,10 +365,47 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             else if(data.getIntExtra("btnType", 0) > 2)
             {
                 thisFr = new Friend();
-                TimeTable.resetData();
             }
 
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("Main", "============\tMainOnStart\t============");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Main", "============\tMainOnResume\t============");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("Main", "============\tMainOnPause\t============");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("Main", "============\tMainOnStop\t============");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Main", "============\tMainOnDestroy\t============");
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        Log.d("Main", "============\tMainOnPostResume\t============");
     }
 }
