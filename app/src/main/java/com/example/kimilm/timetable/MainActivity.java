@@ -1,6 +1,6 @@
 package com.example.kimilm.timetable;
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -13,25 +13,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuBuilder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.bson.Document;
-import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
@@ -48,29 +46,27 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     public static MyPagerAdapter fragmentAdapter;
     int pageState;
-    boolean pagechk;
+    static boolean pagechk;
 
-<<<<<<< HEAD
+
     static boolean toPrintTable = true;
 
-=======
-    ArrayList<String> fr_id;
-    ArrayList<String> fr_name;
-    ArrayList<ArrayList<Lesson>> fr_lesson;
-
-    String fr_id_str;
-    Object obj;
->>>>>>> newMaster
+    //================from new Master
+    ArrayList<String> fr_id = new ArrayList<>();
+    //================from new Master
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setStatusBarColor();
 
         Log.d("Main", "============\tMainOnCreate\t============");
 
         setContentView(R.layout.activity_main);
 
         thisFr = new Friend();
+
         container = (RelativeLayout) findViewById(R.id.container);
         fragmentAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
@@ -84,28 +80,32 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.setupWithViewPager(viewPager);    // tabLayout을 ViewPager와 연동.
         tabLayout.addOnTabSelectedListener(this);   // tabLayout의 이벤트 핸들러 등록.
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {    // viewpager의 페이지가 넘어갈 때 마다 이를 감지하는 코드 ↓
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {    // viewpager의 페이지가 넘어갈 때 마다 이를 감지하는 코드 ↓
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
                 pagechk = true;
             }
 
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(int position)
+            {
                 pageState = position;
                 Log.d("$$onPageSelected act", "position : " + position);
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
+            public void onPageScrollStateChanged(int state)
+            {
             }
         });
 
         pagechk = false;    // 어플 실행 시 onPrepareOptionsMenu가 두 번 실행되지 않게 하기 위한 변수.
-        Log.d("$$onCreate() #\t#\t#\t#\t#", "pagechk : "+pagechk);
+        Log.d("$$onCreate() #\t#\t#\t#\t#", "pagechk : "+ pagechk);
 
         // MainActivity에 NavigationDrawer 설정하는 코드 ↓
-        toggle=new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
+        toggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close); // Toggle 생성.
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // ActionBar에서 기본 홈 버튼을 사용 가능.
 
@@ -113,10 +113,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // NavigationView에 이벤트 설정.
         NavigationView navigationView=(NavigationView)findViewById(R.id.main_drawer_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
+        {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
                 int id=item.getItemId();
+
+                pagechk = true;
 
                 if(id==R.id.nav_account)
                 {   // 계정설정 클릭시 AccountActivity로 날아감.
@@ -145,11 +149,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         });
 
         // 디바이스 내에 계정 정보가 있으면 불러오는 코드 ↓
-        File files = new File(getFilesDir(), "AccInDevice.json");
+        File files = new File(TimeTable.folderPath + "AccInDevice.json");
 
         if(files.exists())
         {   // 만약 이미 존재하는 파일이 있으면 파일 불러오기.
-            isCurAcc = true;
             FileReader fr = null;
             BufferedReader bufrd = null;
             char ch;
@@ -171,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 }
 
                 Document jsonObj = Document.parse(jsonStr);
+
+                isCurAcc = true;
 
                 curAccId = jsonObj.getString("_id");
 
@@ -195,41 +200,54 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
     } // end of onCreate()
 
+    public void setStatusBarColor()
+    {
+        Window window = getWindow();
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        window.setStatusBarColor(getResources().getColor(R.color.color8));
+    }
+
     //옵션메뉴 띄우기 ↓
     @Override
-<<<<<<< HEAD
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+        Log.d("$onPrepareOptionsMenu", "pagechk : "+pagechk);
+
         //여기가 최선이었다.
-        //ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ
+        //시간표 그리기
         if(toPrintTable)
         {
             Log.d("Draw #\t#\t#\t#\t#", "T\tI\tM\tE\tT\tA\tB\tL\tE\t" + toPrintTable);
             for(Lesson lesson : TimeTable.lessons)
             {
-                TimeTable.fragment.showTable(lesson, (byte)0);
+                TimeTable.fragment.showTable(lesson, (byte)0, true);
             }
         }
         toPrintTable = false;
 
         Log.d("$$onCreate() #\t#\t#\t#\t#", "pagechk : "+pagechk);
-=======
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.d("$onPrepareOptionsMenu", "pagechk : "+pagechk);
->>>>>>> newMaster
         Log.d("$$onPrepareOptionsMenu","Activated!");
+
         if(pageState == 0 && pagechk == true)
         {
             MenuInflater inflater = getMenuInflater();//MenuInflater 반환
             inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
+
             pagechk = false;
+
             Log.d("$$tablemenu","activated");
         }
         else if(pageState != 0 && pagechk == true)
         {
             MenuInflater inflater = getMenuInflater();//MenuInflater 반환
             inflater.inflate(R.menu.fragment_friends_items, menu);
+
             pagechk = false;
+
             Log.d("$$friendmenu","activated");
         }
         return super.onPrepareOptionsMenu(menu);
@@ -242,38 +260,47 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-        if(pageState == 0) {
-            switch (item.getItemId()) {
+        if (toggle.onOptionsItemSelected(item)) { return true; }
+
+        if(pageState == 0)
+        {
+            switch (item.getItemId())
+            {
                 case R.id.option1:
-                    Toast.makeText(this, "강의추가", Toast.LENGTH_LONG).show();
+                    ((TimeTableFragment)(fragmentAdapter.fragments.get(0))).popInsertLessonFragment();
                     break;
+
                 case R.id.option2:
+                    ((TimeTableFragment)(fragmentAdapter.fragments.get(0))).toImage();
                     Toast.makeText(this, "이미지로 저장", Toast.LENGTH_LONG).show();
                     break;
+
                 case R.id.option3:
                     Toast.makeText(this, "비교시간표 변경", Toast.LENGTH_LONG).show();
                     break;
+
                 default:
                     break;
             }
-        }else{
-            switch (item.getItemId()) {
+        }
+        else
+        {
+            switch (item.getItemId())
+            {
                 case R.id.option1:
-                    Toast.makeText(this, "친구 추가", Toast.LENGTH_LONG).show();
                     Intent frIntent = new Intent(this, FriendAddActivity.class);
                     startActivityForResult(frIntent, 1001);
-
-                    ArrayList<FriendsItem> fr= new ArrayList<>();
-                    Fragment transFragment = (FriendsFragment)fragmentAdapter.fragments.get(1);
-
                     break;
+
                 case R.id.option2:
                     Toast.makeText(this, "친구 삭제", Toast.LENGTH_LONG).show();
+                    ((FriendsFragment)(fragmentAdapter.fragments.get(1))).removeFriend();
                     break;
+
                 case R.id.option3:
-                    Toast.makeText(this, "시간표 비교", Toast.LENGTH_LONG).show();
+                    ((FriendsFragment)(fragmentAdapter.fragments.get(1))).compareTable();
                     break;
+
                 case R.id.option4:
                     Toast.makeText(this, "메세지 보내기", Toast.LENGTH_LONG).show();
                     break;
@@ -281,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     break;
             }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     /* OnTabSelectedListener의 콜백 메소드.
@@ -353,22 +380,20 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        pagechk = true;
 
         Log.d("\t\t\t\t\tOnActivityResult!", "Where\tam\tI\t" + toPrintTable);
 
-        if(requestCode == 1000 && resultCode == RESULT_OK)
-        {
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
             //변경 이후 세팅
             isCurAcc = data.getBooleanExtra("isCurAcc", true);
 
             //1 : createBtn  2 : loginBtn
-            if(data.getIntExtra("btnType", 0) < 3)
-            {
-                if(!isCurAcc)
-                {
+            if (data.getIntExtra("btnType", 0) < 3) {
+                if (!isCurAcc) {
                     Toast.makeText(this, "계정이 없습니다.", Toast.LENGTH_SHORT);
                     return;
                 }
@@ -379,31 +404,66 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 thisFr.setName(getFriend.getName());
                 thisFr.setFrList(getFriend.getFrList());
                 curAccId = getFriend.getName();
+
+                ((FriendsFragment)(fragmentAdapter.fragments.get(1))).addUser(thisFr.frList);
             }
             //3 : logoutBtn  4 : deleteBtn
-            else if(data.getIntExtra("btnType", 0) > 2)
-            {
+            else if (data.getIntExtra("btnType", 0) > 2) {
                 thisFr = new Friend();
+
+                ((FriendsFragment)(fragmentAdapter.fragments.get(1))).resetAdapter();
             }
 
             Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
         // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
-        else if(requestCode == 1001 && resultCode == RESULT_OK){
-            fr_id_str = data.getStringExtra("frId").toString();
+        else if (requestCode == 1001 && resultCode == RESULT_OK)
+        {
+            fr_id.clear();
+            fr_id.add(data.getStringExtra("frId").toString());
 
-            findUser();
+            if (thisFr.getId().equals(fr_id.get(0)))
+            {
+                Toast.makeText(this, "본인 아이디는 추가할 수 없습니다.", Toast.LENGTH_LONG).show();
 
-            if(fr_id != null){
-            FriendsFragment frfg = new FriendsFragment();
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.container, frfg);
-            ft.commit();
+                return;
+            }
+
+            for (int i = 0; i < thisFr.frList.size(); ++i)
+            {
+                if (thisFr.frList.get(i).equals(fr_id.get(0)))
+                {
+                    Toast.makeText(this, "이미 존재하는 친구입니다.", Toast.LENGTH_LONG).show();
+
+                    return;
+                }
+            }
+
+            if (!((FriendsFragment) fragmentAdapter.fragments.get(1)).addUser(fr_id))
+            {
+                Toast.makeText(this, "찾는 친구가 없습니다.", Toast.LENGTH_LONG).show();
+
+                return;
+            }
+
+            //데이터 갱신
+            thisFr.frList.add(fr_id.get(0));
+
+            //친구 추가 디비 갱신
+            new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    UseDB.insertFriend(thisFr.getId(), fr_id.get(0));
+                }
+            }.start();
+
+            //파일도 갱신
+            AccountActivity.saveAccount(TimeTable.folderPath, thisFr);
         }
     }
 
-<<<<<<< HEAD
     @Override
     protected void onStart() {
         super.onStart();
@@ -414,6 +474,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     protected void onResume() {
         super.onResume();
+
+        pagechk = true;
+
         Log.d("Main", "============\tMainOnResume\t============");
     }
 
@@ -440,54 +503,5 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onPostResume();
 
         Log.d("Main", "============\tMainOnPostResume\t============");
-    }
-=======
-//    public Object getData(){
-//        return obj;
-//    }
->>>>>>> newMaster
-}
-
-// 아이디로 친구 추가
-    public void findUser()
-    {
-        final ArrayList<Document> searchDoc = new ArrayList<>();
-        final ArrayList<String> userSearch = new ArrayList<>();
-        userSearch.add(fr_id_str);
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                synchronized (this) {
-                    UseDB.searchFriendTable(searchDoc, userSearch);
-                }
-            }
-        };
-
-        thread.start();
-
-        try { thread.join(); } catch (Exception e) {}
-
-
-        if(searchDoc == null)
-        {
-            //음슴
-        }
-
-
-        for(Document doc : searchDoc)
-        {
-            fr_id.add(doc.getString("_id"));
-            fr_name.add(doc.getString("name"));
-
-            ArrayList<Lesson> tempLesson = new ArrayList<>();
-
-            for(Document lessonDoc : ((ArrayList<Document>)(((Document)(doc.get("timetable"))).get("lessons", ArrayList.class))))
-            {
-                tempLesson.add(TimeTableFragment.parseLesson(lessonDoc));
-            }
-
-            fr_lesson.add(tempLesson);
-        }
     }
 }

@@ -124,16 +124,19 @@ public class UseDB {
 	{
 		doc.clear();
 
-		BasicDBObject inQuery = new BasicDBObject("$in", id);
-		BasicDBObject query = new BasicDBObject("_id", inQuery);
-		BasicDBObject nameField = new BasicDBObject("name", 1);
-		BasicDBObject tableField = new BasicDBObject("timetable", 1);
+		Document inQuery = new Document("$in", id);
 
-		MongoCursor<Document> cursor = collection.find(query).projection(nameField).projection(tableField).iterator();
+		Document query = new Document("_id", inQuery);
+		Document proj = new Document("name", 1).append("timetable.lessons", 1);
+
+		MongoCursor<Document> cursor = collection.find(query).projection(proj).iterator();
 
 		if (cursor.hasNext())
 		{
-			doc.add(new Document(cursor.next()));
+			while(cursor.hasNext())
+			{
+				doc.add(new Document(cursor.next()));
+			}
 		}
 		else
 		{

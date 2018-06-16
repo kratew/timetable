@@ -36,6 +36,9 @@ import java.util.List;
 
 public class TimeTable extends Application
 {
+    static String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + File.separator + "MyFolder" + File.separator;
+
     static String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator + "MyFolder" + File.separator + "saveTable.json";
 
@@ -82,12 +85,6 @@ public class TimeTable extends Application
                 e.printStackTrace();
             }
         }
-    }
-
-    //저장된 강의 정보 가져올 때 사용 (예정)
-    public TimeTable (TimeTable timeTable)
-    {
-
     }
 
     public static void setTimeTable (Document doc)

@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AccountActivity" />
-        <activity android:name=".FriendAddActivity"></activity>
+        <activity android:name=".FriendAddActivity" />
+        <activity android:name=".CompareTable" />
     </application>
 
 </manifest>

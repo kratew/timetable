@@ -8,10 +8,12 @@
             android:title="계정 설정" />
 
         <item
+            android:visible="false"
             android:id="@+id/nav_contact_mail"
             android:icon="@drawable/save"
             android:title="Contact Mail" />
         <item
+            android:visible="false"
             android:id="@+id/nav_contact_phone"
             android:icon="@drawable/add"
             android:title="Contact Phone" />

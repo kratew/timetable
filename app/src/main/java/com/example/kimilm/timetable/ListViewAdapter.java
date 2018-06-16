@@ -1,23 +1,29 @@
 package com.example.kimilm.timetable;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import org.bson.Document;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /* 커스텀 어댑터 생성 - BaseAdapter
    - 어댑터가 필터링 기능을 지원하기 위해서는 Filterable 인터페이스를 구현하고,
      getFilter() 메소드를 Override하여 구현해야 함 */
-public class ListViewAdapter extends BaseAdapter implements Filterable {
+
+public class ListViewAdapter extends BaseAdapter implements Filterable
+{
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList. (원본 데이터 리스트)
     private ArrayList<FriendsItem> listViewItemList = new ArrayList<FriendsItem>();
 
@@ -38,12 +44,14 @@ public class ListViewAdapter extends BaseAdapter implements Filterable {
 
     // position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         //Context 참조
         final Context context = parent.getContext();
 
         // "listview_item" Layout을 inflate하여 convertView 참조
-        if (convertView == null) {
+        if (convertView == null)
+        {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.friends_item, parent, false);
         }
@@ -52,14 +60,27 @@ public class ListViewAdapter extends BaseAdapter implements Filterable {
         CheckBox chkBox = (CheckBox) convertView.findViewById(R.id.chkBox);
         TextView nameView = (TextView) convertView.findViewById(R.id.nameView);
         TextView idView = (TextView) convertView.findViewById(R.id.idView);
+        TextView holdTable = (TextView) convertView.findViewById(R.id.friendLessons);
 
         // Data Set(filteredItemList)에서 position에 위치한 데이터 참조
-        FriendsItem listViewItem = filteredItemList.get(position);
+        final FriendsItem listViewItem = filteredItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
-        //chkBox.isChecked(listViewItem.isChk());
+        chkBox.setChecked(listViewItem.isChk());
         nameView.setText(listViewItem.getName());
         idView.setText(listViewItem.getId());
+
+        chkBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("\t\t\t\t\t\t\t\tbtn", "\t\t\t\t\t\t\t\t\t\t\t\tChecked\t" + isChecked);
+
+                listViewItem.setChk(isChecked);
+
+                Log.d("\t\t\t\t\t\t\t\tbtn", "\t\t\t\t\t\tlistViewItem.setChk(isChecked)\t\t\t\t\tChecked\t" + listViewItem.isChk());
+            }
+        });
 
         //리스트뷰에 아이템 리턴
         return convertView;
@@ -78,12 +99,13 @@ public class ListViewAdapter extends BaseAdapter implements Filterable {
     }
 
     // 아이템 데이터 추가를 위한
-    public void addItem(boolean chk, String name, String id) {
+    public void addItem(boolean chk, String name, String id, ArrayList<Document> lessons) {
         FriendsItem item = new FriendsItem();
 
         item.setChk(chk);
         item.setName(name);
         item.setId(id);
+        item.setLessons(lessons);
 
         listViewItemList.add(item);
     }

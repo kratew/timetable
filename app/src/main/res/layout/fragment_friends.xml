@@ -9,12 +9,13 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:id="@+id/friendConstraint">
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
@@ -25,10 +26,11 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="검색"
+                android:text="친구 목록"
+                android:layout_gravity="center_vertical"
                 android:textSize="30sp" />
 
             <EditText
@@ -37,18 +39,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:visibility="gone" />
 
         </LinearLayout>
 
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="417dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:layout_weight="1"
-            android:divider="#FFB8D664"
-            android:dividerHeight="2dp"
+            android:divider="@color/color8"
+            android:dividerHeight="1dp"
             android:listSelector="#FFDBDCE7"
             android:textFilterEnabled="true"
             app:layout_constraintHorizontal_bias="0.513"
@@ -62,7 +65,7 @@
         android:id="@+id/receiveString"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 
 </android.support.design.widget.CoordinatorLayout>

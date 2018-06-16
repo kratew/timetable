@@ -81,6 +81,6 @@ public class Friend implements Serializable
 //    }
 
     public void setFrList(ArrayList<String> frList) {
-        this.frList = new ArrayList<String>(frList);
+        this.frList.addAll(frList);
     }
 }

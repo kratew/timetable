@@ -1,12 +1,16 @@
 package com.example.kimilm.timetable;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.util.JSON;
 
 import org.bson.Document;
@@ -86,51 +90,23 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         }
     }
 
-    //강의 정보를 로컬에 저장하는 코드
-
-    public void saveAccount(Friend friend)
+    //유저 정보를 로컬에 저장하는 코드
+    public static void saveAccount(String folderDir, Friend friend)
     {
-        JSONObject obj = new JSONObject();
+        File file = new File(folderDir + "AccInDevice.json");
+
+        Document userObj = new Document("_id", friend.getId()).append("pwd", friend.getPw())
+                .append("name", friend.getName()).append("f_id", friend.getFrList());
 
         try
         {
-            obj.put("_id", friend.getId());
-            obj.put("pwd", friend.getPw());
-            obj.put("name", friend.getName());
-            obj.put("f_id", friend.getFrList());
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
+            FileWriter output = new FileWriter(file);
 
-        File file = new File(getFilesDir(), "AccInDevice.json");
-        FileWriter fw = null;
-        BufferedWriter bufwr = null;
+            output.write(userObj.toJson());
 
-        try
-        {
-            fw = new FileWriter(file);
-            bufwr = new BufferedWriter(fw);
-            bufwr.write(obj.toString());
+            output.close();
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        try
-        {
-            if(bufwr != null)
-            {
-                bufwr.close();
-            }
-            if(fw != null)
-            {
-                fw.close();
-            }
-        }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -171,7 +147,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         // 디바이스에도 저장, 이 때 서버나 로컬에 저장할 시간표는 아직 없음
         Friend fr_new = new Friend(inputId, inputPw, inputName, new ArrayList<String>());
 
-        saveAccount(fr_new);
+        saveAccount(TimeTable.folderPath, fr_new);
 
         isCurAcc = true;
         Intent retIntent = new Intent(this, MainActivity.class);
@@ -237,7 +213,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
 
             //디바이스 저장
             TimeTable.saveTable();
-            saveAccount(dbUserData);
+            saveAccount(TimeTable.folderPath, dbUserData);
 
             //시간표 그리기
             MainActivity.toPrintTable = true;
@@ -266,6 +242,8 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         //데이터 리셋
         TimeTable.resetData();
         TimeTable.saveTable();
+
+        new File(TimeTable.folderPath + "AccInDevice.json").delete();
 
         //시간표 초기화
         MainActivity.fragmentAdapter.notifyDataSetChanged();

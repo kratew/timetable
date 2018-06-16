@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:background="@android:color/holo_orange_dark"
-    android:text="NavigationDrawer Header"
+    android:layout_height="100dp"
+    android:background="@color/color8"
     android:gravity="bottom"
     android:paddingBottom="16dp"
     android:paddingLeft="16dp"
-    android:textSize="20dp"
+    android:text="메뉴"
     android:textColor="@android:color/white"
-    android:textStyle="bold"
-/>
+    android:textSize="20dp"
+    android:textStyle="bold" />

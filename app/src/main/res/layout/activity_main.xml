@@ -13,9 +13,14 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="3dp"
         android:layout_gravity="bottom"
-        app:tabMode="scrollable"/>
+        app:tabIndicatorHeight="3dp"
+        app:tabBackground="@color/color7"
+        app:tabIndicatorColor="@color/color8"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -33,8 +38,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/main_drawer"
-        >
+        app:menu="@menu/main_drawer">
 
     </android.support.design.widget.NavigationView>
 

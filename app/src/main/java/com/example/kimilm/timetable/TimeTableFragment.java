@@ -124,47 +124,8 @@ public class TimeTableFragment extends Fragment
             }
         }.start();
 
-        View v = view.findViewById(R.id.mon);
-        v.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                popInsertLessonFragment(v);
-            }
-        });
-
-        //toImage
-        v = view.findViewById(R.id.tue);
-        v.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                toImage(v);
-            }
-        });
-
         return view;
     } // end of onCreateView()
-
-    MenuItem item1;
-    MenuItem item2;
-    MenuItem item3;
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_time_table_fab_items, menu);
-
-        item1 = menu.findItem(R.id.option1);
-        item2 = menu.findItem(R.id.option2);
-        item3 = menu.findItem(R.id.option3);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-    }
 
     //화면 사이즈에 맞게 변환
     public void setGridLayoutHeight()
@@ -179,7 +140,7 @@ public class TimeTableFragment extends Fragment
     }
 
     //강의 띄우기
-    public void showTable (Lesson lesson, byte cFlag)
+    public void showTable (Lesson lesson, byte cFlag, boolean noCompare)
     {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -208,13 +169,16 @@ public class TimeTableFragment extends Fragment
 
             view[i].setLayoutParams(viewParams);
 
-            view[i].setOnClickListener(new View.OnClickListener()
+            if (noCompare)
             {
-                @Override
-                public void onClick(View v) {
-                    BottomSheet(R.layout.modal_bottom_sheet_info_lesson, v);
-                }
-            });
+                view[i].setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v) {
+                        BottomSheet(R.layout.modal_bottom_sheet_info_lesson, v);
+                    }
+                });
+            }
 
             // 컬러 플래그
             if (cFlag == 0)
@@ -231,7 +195,7 @@ public class TimeTableFragment extends Fragment
             else
             {
                 //2 -> 시간표 비교용 알파값
-                view[i].setBackgroundColor(Color.argb(100, 250, 200, 200));
+                view[i].setBackgroundColor(Color.argb(170, 250, 200, 200));
             }
 
             //보여지는 부분
@@ -239,17 +203,27 @@ public class TimeTableFragment extends Fragment
             ((TextView)(view[i].findViewById(R.id.floatClassRoom))).setText(lesson.classroom.toString().replace("[", "").replace("]", ""));
             ((TextView)(view[i].findViewById(R.id.floatProf))).setText(lesson.prof);
 
-            //감추고 정보를 가지고 있음
-            ((TextView)(view[i].findViewById(R.id.floatClassify))).setText(lesson.classify);
-            ((TextView)(view[i].findViewById(R.id.floatCredit))).setText(lesson.credit);
-            ((TextView)(view[i].findViewById(R.id.floatCode))).setText(lesson.code);
-            ((TextView)(view[i].findViewById(R.id.floatTimes))).setText(lesson.times.toString().replace("[", "").replace("]", ""));
-            ((TextView)(view[i].findViewById(R.id.floatCount))).setText(String.valueOf(lesson.times.size()));
+            if (noCompare)
+            {
+                //감추고 정보를 가지고 있음
+                ((TextView) (view[i].findViewById(R.id.floatClassify))).setText(lesson.classify);
+                ((TextView) (view[i].findViewById(R.id.floatCredit))).setText(lesson.credit);
+                ((TextView) (view[i].findViewById(R.id.floatCode))).setText(lesson.code);
+                ((TextView) (view[i].findViewById(R.id.floatTimes))).setText(lesson.times.toString().replace("[", "").replace("]", ""));
+                ((TextView) (view[i].findViewById(R.id.floatCount))).setText(String.valueOf(lesson.times.size()));
 
-            //동적 뷰 제거 위해
-            wrapLayout.setId(Integer.parseInt(lesson.code + i));
+                //동적 뷰 제거 위해
+                wrapLayout.setId(Integer.parseInt(lesson.code + i));
+            }
 
-            frameLayout.addView(wrapLayout);
+            if(noCompare)
+            {
+                frameLayout.addView(wrapLayout);
+            }
+            else
+            {
+                CompareTable.compareFrame.addView(wrapLayout);
+            }
         }
 
         ((LinearLayout)view[0].findViewById(R.id.floatLessonTexts)).setVisibility(View.VISIBLE);
@@ -378,7 +352,7 @@ public class TimeTableFragment extends Fragment
     }
 
     // 강의 추가 화면
-    public void popInsertLessonFragment (View v)
+    public void popInsertLessonFragment ()
     {
         //프래그먼트 생성하고 강의 정보 넘김
         InsertLessonFragment insertLessonFragment = new InsertLessonFragment();
@@ -456,7 +430,7 @@ public class TimeTableFragment extends Fragment
     }
 
     //시간표를 이미지로 저장
-    public void toImage (View v)
+    public void toImage ()
     {
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED)
