@@ -406,15 +406,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 curAccId = getFriend.getName();
 
                 ((FriendsFragment)(fragmentAdapter.fragments.get(1))).addUser(thisFr.frList);
+
+                Toast.makeText(this, thisFr.getId() + " 로그인", Toast.LENGTH_LONG).show();
             }
             //3 : logoutBtn  4 : deleteBtn
             else if (data.getIntExtra("btnType", 0) > 2) {
                 thisFr = new Friend();
 
                 ((FriendsFragment)(fragmentAdapter.fragments.get(1))).resetAdapter();
+                Toast.makeText(this, "로그아웃", Toast.LENGTH_LONG).show();
             }
-
-            Toast.makeText(this, "AccountActivity가 정상적으로 종료됨." + isCurAcc, Toast.LENGTH_LONG).show();
         }
         // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
         else if (requestCode == 1001 && resultCode == RESULT_OK)
