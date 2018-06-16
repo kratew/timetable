@@ -40,7 +40,7 @@ public class CompareTable extends AppCompatActivity {
         //데이터 전달용 번들 클래스 생성
         for(int i = 0; i < CarryBundle.bundle.size(); ++i)
         {
-            for(Document doc : (ArrayList<Document>)CarryBundle.bundle.getSerializable("compare" + i))
+            for(Document doc : (ArrayList<Document>)CarryBundle.bundle.getSerializable(String.valueOf(i)))
             {
                 TimeTable.fragment.showTable(TimeTableFragment.parseLesson(doc, false), (byte) 2, false);
             }

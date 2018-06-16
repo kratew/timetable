@@ -133,7 +133,7 @@ public class FriendsFragment extends Fragment {
 
         for (int i = 0; i < count; ++i)
         {
-            if (((FriendsItem)adapter.getItem(0)).isChk())
+            if (((FriendsItem)adapter.getItem(i)).isChk())
             {
                 delUsers.add(((FriendsItem)adapter.getItem(i)).getId());
 
@@ -173,13 +173,13 @@ public class FriendsFragment extends Fragment {
 
         Intent intent = new Intent(getActivity(), CompareTable.class);
 
-        String key = "compare";
+        int key = 0;
 
         for (int i = 0; i < count; ++i)
         {
             if (((FriendsItem)adapter.getItem(i)).isChk())
             {
-                CarryBundle.bundle.putSerializable(key + i, ((FriendsItem)(adapter.getItem(i))).getLessons());
+                CarryBundle.bundle.putSerializable(String.valueOf(key++), ((FriendsItem)(adapter.getItem(i))).getLessons());
             }
         }
 
