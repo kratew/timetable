@@ -1,15 +1,10 @@
 package com.example.kimilm.timetable;
 
-import android.app.Fragment;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,13 +14,15 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 
-public class CompareTable extends AppCompatActivity {
-
+//비교한 시간표를 보여주는 액티비티
+public class CompareTable extends AppCompatActivity
+{
     GridLayout compareGrid;
     public static FrameLayout compareFrame;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compare_table);
 
@@ -56,6 +53,7 @@ public class CompareTable extends AppCompatActivity {
 
     }
 
+    //상태바 색상 변경
     public void setStatusBarColor()
     {
         Window window = getWindow();
@@ -67,6 +65,7 @@ public class CompareTable extends AppCompatActivity {
         window.setStatusBarColor(getResources().getColor(R.color.color8));
     }
 
+    //시간표의 크기는 화면의 크기와 동일하게
     public void setGridLayoutHeight()
     {
         Display display = getWindowManager().getDefaultDisplay();
@@ -79,7 +78,8 @@ public class CompareTable extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         super.onStop();
 
         finish();

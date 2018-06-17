@@ -1,6 +1,5 @@
 package com.example.kimilm.timetable;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountLoginFragment extends Fragment {
-
+//로그인 프래그먼트
+public class AccountLoginFragment extends Fragment
+{
     int btnType;
     String loginId;
     String loginPw;
@@ -21,18 +21,21 @@ public class AccountLoginFragment extends Fragment {
     Button createBtn;
     Button loginBtn;
 
-    public AccountLoginFragment() {
+    public AccountLoginFragment()
+    {
+
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_account_login, container, false);
 
         inputLoginId = (EditText)view.findViewById(R.id.inputLoginId);
@@ -41,18 +44,22 @@ public class AccountLoginFragment extends Fragment {
         createBtn = (Button)view.findViewById(R.id.cteateAccBtn);
 
         // 계정 생성 버튼 누르면 -> AccountCreateFragment로 변환. ↓
-        createBtn.setOnClickListener(new View.OnClickListener(){
+        createBtn.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 AccountActivity accountActivity = (AccountActivity) getActivity();
                 accountActivity.onFragmentChanged(1);
             }
         });
 
         // 로그인 버튼을 누르면 입력한 양식을 AccountActivity로 쏴주는 코드 ↓
-        loginBtn.setOnClickListener(new View.OnClickListener(){
+        loginBtn.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 btnType = 2;
                 loginId = inputLoginId.getText().toString();
                 loginPw = inputLoginPw.getText().toString();

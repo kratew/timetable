@@ -1,20 +1,18 @@
 package com.example.kimilm.timetable;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountCreateFragment extends Fragment {
-
+//걔정 생성 프래그먼트
+public class AccountCreateFragment extends Fragment
+{
     EditText inputId;
     EditText inputPw;
     EditText inputName;
@@ -29,13 +27,15 @@ public class AccountCreateFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_account_create, container, false);
 
         inputId = (EditText)view.findViewById(R.id.inputId);
@@ -59,22 +59,32 @@ public class AccountCreateFragment extends Fragment {
     }
 
     // AccountActivity로 데이터를 보내기 위한 인터페이스 생성 ↓
-    public interface OnCreateAccountSetListener{
+    public interface OnCreateAccountSetListener
+    {
         void onCreateAccountSet(int btnType, String inputId, String inputPw, String inputName);
     }
+
     private OnCreateAccountSetListener onCreateAccountSetListener;
+
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if(context instanceof OnCreateAccountSetListener){
+
+        if(context instanceof OnCreateAccountSetListener)
+        {
             onCreateAccountSetListener = (OnCreateAccountSetListener) context;
-        } else{
+        }
+        else
+        {
             throw new RuntimeException(context.toString()
                     + " must implement OnCreateAccountSetListener");
         }
     }
+
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         onCreateAccountSetListener = null;
     }

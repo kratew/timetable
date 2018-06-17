@@ -3,8 +3,8 @@ package com.example.kimilm.timetable;
 import org.bson.Document;
 
 import java.util.ArrayList;
-import java.util.List;
 
+//리스트뷰
 public class FriendsItem {
     boolean chk;
     private String Name;

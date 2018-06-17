@@ -1,30 +1,19 @@
 package com.example.kimilm.timetable;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.util.JSON;
-
 import org.bson.Document;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-public class AccountActivity extends AppCompatActivity implements AccountCreateFragment.OnCreateAccountSetListener, AccountLoginFragment.OnLoginAccSetListener, AccountLogoutDeleteFragment.OnCurAccCheckSetListener{
-
+//계정 관리 액티비티
+public class AccountActivity extends AppCompatActivity implements AccountCreateFragment.OnCreateAccountSetListener, AccountLoginFragment.OnLoginAccSetListener, AccountLogoutDeleteFragment.OnCurAccCheckSetListener
+{
     AccountLoginFragment frlogin;
     AccountCreateFragment frcreate;
     AccountLogoutDeleteFragment frlogoutdelacc;
@@ -44,9 +33,11 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         frlogoutdelacc = new AccountLogoutDeleteFragment();
 
         // 기존 디바이스 계정 정보가 있으면 AccountLogoutDeleteFragment를, 없으면 AccountLoginFragment를 가져오는 코드 ↓
-        Intent isCurAccIntent = getIntent();    // MainActivity에서 isCurAcc과 curAccId를 받음.
+        // MainActivity에서 isCurAcc과 curAccId를 받음.
+        Intent isCurAccIntent = getIntent();
         isCurAcc = isCurAccIntent.getBooleanExtra("isCurAcc", false);
 
+        //계정 정보가 있다면
         if(isCurAcc == true)
         {
             curAccId = isCurAccIntent.getStringExtra("curAccId");
@@ -60,22 +51,22 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        //계정정보 유무에 따라 다른 프래그먼트 실행
         if(isCurAcc == true)
         {
             fragmentTransaction.replace(R.id.fragment_lay, new AccountLogoutDeleteFragment());
             fragmentTransaction.commit();
-            //Toast.makeText(this, "현재 디바이스에 계정 정보가 있음.", Toast.LENGTH_LONG).show();
         }
         else
         {
             fragmentTransaction.replace(R.id.fragment_lay, new AccountLoginFragment());
             fragmentTransaction.commit();
-            //Toast.makeText(this, "현재 디바이스에 계정 정보가 없음.", Toast.LENGTH_LONG).show();
         }
     }
 
     public void onFragmentChanged(int index)
-    {  // 프래그먼트 간 변환 인덱스.
+    {
+        // 프래그먼트 간 변환 인덱스.
         if (index == 0)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_lay, frlogin).commit();
@@ -123,6 +114,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         final String pwd = inputPw;
         final String name = inputName;
 
+        //데이터 베이스에 유저 정보 저장
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -152,6 +144,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         isCurAcc = true;
         Intent retIntent = new Intent(this, MainActivity.class);
 
+        //새로운 정보를 저장하여 메인으로 송신
         Friend dbUserData = new Friend();
 
         dbUserData.setId(inputId);
@@ -163,7 +156,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         retIntent.putExtra("isCurAcc", isCurAcc);
         setResult(RESULT_OK, retIntent);
 
-        //시간표 그리기
+        //시간표 다시 그리기
         MainActivity.toPrintTable = true;
 
         finish();
@@ -177,6 +170,7 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         final String id = loginId;
         final String pwd = loginPw;
 
+        //유저 검색
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -193,13 +187,14 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
         //메인으로 보낼 데이터
         Intent retIntent = new Intent(this, MainActivity.class);
 
-        // 서버에 아이디가 존재하면 true, 없으면 false. 아이디가 있을때, 없을때 코드 나누기.
+        // 서버에 아이디가 존재하면
         if(loginDoc.get(0) != null)
         {
             isCurAcc = true;
 
             Friend dbUserData = new Friend();
 
+            //저장할 데이터 세팅
             dbUserData.setId(loginDoc.get(0).getString("_id"));
             dbUserData.setPw(loginDoc.get(0).getString("pwd"));
             dbUserData.setName(loginDoc.get(0).getString("name"));
@@ -239,15 +234,17 @@ public class AccountActivity extends AppCompatActivity implements AccountCreateF
     @Override
     public void OnCurAccCheckSet(boolean isCurAcc, int btnType)
     {
-        //데이터 리셋
+        //로그아웃, 계정 삭제시 데이터 리셋
         TimeTable.resetData();
         TimeTable.saveTable();
 
+        //계정 파일도 삭제
         new File(TimeTable.folderPath + "AccInDevice.json").delete();
 
         //시간표 초기화
         MainActivity.fragmentAdapter.notifyDataSetChanged();
 
+        //메인으로 데이터 송신
         Intent retIntent = new Intent(this, MainActivity.class);
         retIntent.putExtra("btnType", btnType);
         retIntent.putExtra("isCurAcc", isCurAcc);

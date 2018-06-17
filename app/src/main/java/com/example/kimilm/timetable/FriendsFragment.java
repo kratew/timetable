@@ -2,23 +2,11 @@ package com.example.kimilm.timetable;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -27,42 +15,35 @@ import android.widget.Toast;
 
 import org.bson.Document;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
-public class FriendsFragment extends Fragment {
-
-    ArrayList<FriendsItem> friends;
+//친구 정보 프래그먼트, 메인의 뷰페이저에 들어감
+public class FriendsFragment extends Fragment
+{
     ListView listView;
     ListViewAdapter adapter;
-    ArrayList<String> fr_id;
-    ArrayList<String> fr_name;
-
 
     //search Friend
     ArrayList<Document> searchDoc = new ArrayList<>();
     ArrayList<String> myFriends = new ArrayList<>();
 
-    public FriendsFragment() {
-        // Required empty public constructor
-    }
+    public FriendsFragment()
+    {
 
-    public ArrayList<FriendsItem> getFriends() {
-        return friends;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (container == null) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        if (container == null)
+        {
             return null;
         }
 
@@ -80,10 +61,12 @@ public class FriendsFragment extends Fragment {
         listView.setAdapter(adapter);
 
         return view;
-    } // end of onCreateView()
+    }
 
+    //친구 추가, 성공은 true, 실패는 false
     public boolean addUser (final ArrayList<String> addFriends)
     {
+        //결과를 받아와야 하는 쓰레드 작업
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -95,10 +78,10 @@ public class FriendsFragment extends Fragment {
 
         thread.start();
 
+        //기다림
         try { thread.join(); } catch (Exception e) {}
 
         // 불러온 친구를 리스트뷰에 넣음.
-
         if (searchDoc.get(0) != null)
         {
             for (Document friends : searchDoc) {
@@ -111,11 +94,13 @@ public class FriendsFragment extends Fragment {
             return false;
         }
 
+        //친구 목록 다시 그림
         adapter.notifyDataSetChanged();
 
         return true;
     }
 
+    //로그아웃, 계정삭제 등의 작업시 어뎁터를 초기화
     public void resetAdapter()
     {
         adapter = new ListViewAdapter();
@@ -125,6 +110,7 @@ public class FriendsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    //친구를 삭제하면 로컬 / 디비 모드 지우는 작업
     public void removeFriend()
     {
         int count = adapter.getCount();
@@ -141,6 +127,7 @@ public class FriendsFragment extends Fragment {
             }
         }
 
+        //결과를 받아와야 하는 작업
         Thread thread = new Thread()
         {
             @Override
@@ -154,27 +141,30 @@ public class FriendsFragment extends Fragment {
 
         thread.start();
 
+        //기다림
         try { thread.join(); } catch (Exception e) {}
 
+        //친구들을 새로 그리고
         resetAdapter();
 
         addUser(MainActivity.thisFr.frList);
 
+        //로컬 파일도 갱신
         AccountActivity.saveAccount(TimeTable.folderPath, MainActivity.thisFr);
 
         Toast.makeText(getActivity(), "친구 삭제", Toast.LENGTH_SHORT).show();
     }
 
+    //시간표를 비교하여 액티비티를 띄움
     public void compareTable ()
     {
-//        adapter.notifyDataSetChanged();
-
         int count = adapter.getCount();
 
         Intent intent = new Intent(getActivity(), CompareTable.class);
 
         int key = 0;
 
+        //리스트뷰에 체크된 친구들을 대상으로 시간표 비교
         for (int i = 0; i < count; ++i)
         {
             if (((FriendsItem)adapter.getItem(i)).isChk())
@@ -183,57 +173,9 @@ public class FriendsFragment extends Fragment {
             }
         }
 
+        //메뉴 아이콘 세팅값
         MainActivity.pagechk = true;
 
         startActivity(intent);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d("FriendFragment", "============\tFragmentOnStart\t============");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.d("FriendFragment", "============\tFragmentOnResume\t============");
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.d("FriendFragment", "============\tFragmentOnAttach\t============");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("FriendFragment", "============\tFragmentOnPause\t============");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("FriendFragment", "============\tFragmentOnStop\t============");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d("FriendFragment", "============\tFragmentOnDestroyView\t============");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("FriendFragment", "============\tFragmentOnDestroy\t============");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("FriendFragment", "============\tFragmentOnDetach\t============");
     }
 }
