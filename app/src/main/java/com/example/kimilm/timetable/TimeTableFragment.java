@@ -1,11 +1,6 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
-import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,36 +10,23 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.view.menu.MenuBuilder;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,38 +37,28 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class TimeTableFragment extends Fragment
 {
-//    ArrayList<TimeTable> timeTables;    //굳이 어레이리스트를 써야할까?
     FrameLayout frameLayout;
     GridLayout gridLayout;
     ScrollView scrollView;
 
+    //디비에서 강의 정보를 받아오기 위한 변수
     ArrayList<Document> documents;
 
     BottomSheetDialog modalBottomSheet;
 
-    boolean isFirstRun = true;
+    public TimeTableFragment()
+    {
 
-    Animation visib;
-    Animation invisib;
-    boolean checker; // fab.setVisibility(View.VISIBLE)가 최하단이 아닌 모든 스크롤 위치에서 작동하기 때문에 이를 막기 위한 변수.
-
-
-    public TimeTableFragment(){
-        // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-
-        Log.d("TimeTableFragment", "============\tFragmentOnCreate\t============");
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
@@ -94,12 +66,13 @@ public class TimeTableFragment extends Fragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("TimeTableFragment", "============\tFragmentOnCreateView\t============");
-
-        if(container == null){
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        if(container == null)
+        {
             return null;
         }
+
         View view = inflater.inflate(R.layout.fragment_time_table, container, false);
 
         frameLayout = (FrameLayout) view.findViewById(R.id.frame);
@@ -107,16 +80,14 @@ public class TimeTableFragment extends Fragment
         gridLayout = (GridLayout)view.findViewById(R.id.gridLayout);
 
         scrollView = (ScrollView)view.findViewById(R.id.scrollView);
-        visib = AnimationUtils.loadAnimation(getActivity(), R.anim.visib);
-        invisib = AnimationUtils.loadAnimation(getActivity(), R.anim.invisib);
-
-        checker = false;
 
         setGridLayoutHeight();  //화면 사이즈에 맞게 변환하는 메소드.
 
         setHasOptionsMenu(true);
+
         documents = new ArrayList<>();
 
+        //디비에서 강의정보를 읽어온 후 documents 변수에 저장
         new Thread() {
             @Override
             public void run() {
@@ -125,12 +96,12 @@ public class TimeTableFragment extends Fragment
         }.start();
 
         return view;
-    } // end of onCreateView()
+    }
 
     //화면 사이즈에 맞게 변환
     public void setGridLayoutHeight()
     {
-        Display display = getActivity().getWindowManager().getDefaultDisplay(); // 프래그먼트 상에서 디스플레이 사이즈를 가져오기 위해 getActivity()를 추가함.
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
@@ -153,6 +124,7 @@ public class TimeTableFragment extends Fragment
 
         for(int i = 0; i < lesson.times.size(); ++i)
         {
+            //강의에 따라 출력될 위치 설정
             LinearLayout wrapLayout = new LinearLayout(getContext());
 
             wrapLayout.setLayoutParams(layoutParams);
@@ -169,6 +141,7 @@ public class TimeTableFragment extends Fragment
 
             view[i].setLayoutParams(viewParams);
 
+            //강의 비교가 아니라면 정보창을 띄우는 온클릭 리스너 생성
             if (noCompare)
             {
                 view[i].setOnClickListener(new View.OnClickListener()
@@ -183,12 +156,12 @@ public class TimeTableFragment extends Fragment
             // 컬러 플래그
             if (cFlag == 0)
             {
-                //0 -> 저장된 색
+                //0 -> 저장된 색으로 세팅
                 view[i].setBackgroundColor(lesson.getColor());
             }
             else if (cFlag == 1)
             {
-                //1 -> 색 지정
+                //1 ->랜덤 색상을 입력
                 view[i].setBackgroundColor(Color.rgb(r, g, b));
                 lesson.setColor(Color.rgb(r, g, b));
             }
@@ -212,14 +185,16 @@ public class TimeTableFragment extends Fragment
                 ((TextView) (view[i].findViewById(R.id.floatTimes))).setText(lesson.times.toString().replace("[", "").replace("]", ""));
                 ((TextView) (view[i].findViewById(R.id.floatCount))).setText(String.valueOf(lesson.times.size()));
 
-                //동적 뷰 제거 위해
+                //동적 뷰 제거 위해 아이디 세팅, 코드 + 뷰 카운트로 유니크하게 구분
                 wrapLayout.setId(Integer.parseInt(lesson.code + i));
             }
 
+            //강의 비교가 아니라면 TimeTableFragment에 출력
             if(noCompare)
             {
                 frameLayout.addView(wrapLayout);
             }
+            //비교라면 CompareActivity에 출력
             else
             {
                 CompareTable.compareFrame.addView(wrapLayout);
@@ -386,11 +361,14 @@ public class TimeTableFragment extends Fragment
         ((ImageView)view.findViewById(R.id.lessonDelete)).setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
+                //어플에서 삭제하고
                 TimeTable.delLesson(((TextView)view.findViewById(R.id.lessonCode)).getText().toString());
 
                 int count = Integer.parseInt(((TextView)view.findViewById(R.id.lessonCount)).getText().toString());
 
+                //뷰에서 삭제하고
                 for(int i = 0; i < count; ++i)
                 {
                     frameLayout.removeView(frameLayout.findViewById(Integer.parseInt(
@@ -400,6 +378,7 @@ public class TimeTableFragment extends Fragment
                 //저장
                 TimeTable.saveTable();
 
+                //디비 업데이트
                 new Thread()
                 {
                     @Override
@@ -432,6 +411,7 @@ public class TimeTableFragment extends Fragment
     //시간표를 이미지로 저장
     public void toImage ()
     {
+        //권한 설정
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != getActivity().getPackageManager().PERMISSION_GRANTED)
         {
@@ -439,15 +419,15 @@ public class TimeTableFragment extends Fragment
             ActivityCompat.requestPermissions(getActivity(), new String [] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
         }
 
-        /*화면 크기를 초과한 이미지는 BuildDrawingCache() 사용시 이미지를 읽어오지 못하는 문제가 있어서 Canvas 클래스 사용함*/
+        //화면 크기를 초과한 이미지는 BuildDrawingCache() 사용시 이미지를 읽어오지 못하는 문제가 있어서 Canvas 클래스 사용함
         //레이아웃 크기와 동일한 비트맵 생성
-
         Bitmap bitmap = Bitmap.createBitmap(frameLayout.getWidth(), frameLayout.getHeight(), Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);
 
         frameLayout.draw(canvas);
 
+        //MyFolder가 없다면 생성
         String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "MyFolder";
 
         File folder = new File(folderPath);
@@ -480,7 +460,7 @@ public class TimeTableFragment extends Fragment
         }
     }
 
-    // 이하는 몽고디비
+    //몽고디비 연동 자바코드
     public static void mongo (ArrayList<Document> document, String key, String value)
     {
         document.clear();
@@ -489,16 +469,16 @@ public class TimeTableFragment extends Fragment
         int Port = 27017;
         String dbName = "TimeTable";
 
-        //Connect to MongoDB
+        //몽고디비 연결
         MongoClient mongoClient = new MongoClient(IP, Port);
         MongoDatabase db = mongoClient.getDatabase(dbName);
 
-        //IT_ComputerEngineering code
+        //가천대 홈페이지상의 IT대학 코드
         MongoCollection<Document> collection = db.getCollection("CJ0200");
 
         Document query = new Document();
 
-        //search
+        //검색
         if(key != null && value != null)
         {
             query = new Document(key, new Document("$regex", value));
@@ -506,31 +486,12 @@ public class TimeTableFragment extends Fragment
 
         MongoCursor<Document> cursor = collection.find(query).iterator();
 
-
         while (cursor.hasNext())
         {
             document.add(cursor.next());
         }
 
         mongoClient.close();
-    }
-
-    // 몽고디비 String Array -> ArrayList 변환
-    // 다른 방법을 찾아서 안 씀. 혹시 모르니 남겨둔다
-    public static ArrayList<String> toSubString (String str)
-    {
-        ArrayList strArray = new ArrayList<>();
-
-        str = str.replace("[", "").replace("]", "");
-
-        String [] subStr = str.split(", ");
-
-        for (String token : subStr)
-        {
-            strArray.add(token);
-        }
-
-        return strArray;
     }
 
     // Document -> Lesson 변환
@@ -550,52 +511,9 @@ public class TimeTableFragment extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.d("TimeTableFragment", "============\tFragmentOnStart\t============");
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
+
         getActivity().invalidateOptionsMenu();
-
-        Log.d("TimeTableFragment", "============\tFragmentOnResume\t============");
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.d("TimeTableFragment", "============\tFragmentOnAttach\t============");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("TimeTableFragment", "============\tFragmentOnPause\t============");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("TimeTableFragment", "============\tFragmentOnStop\t============");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d("TimeTableFragment", "============\tFragmentOnDestroyView\t============");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("TimeTableFragment", "============\tFragmentOnDestroy\t============");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("TimeTableFragment", "============\tFragmentOnDetach\t============");
     }
 }

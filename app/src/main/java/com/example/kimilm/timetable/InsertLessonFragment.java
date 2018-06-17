@@ -13,17 +13,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kimilm on 2018. 6. 10..
- */
-
+//강의 추가를 위한 프래그먼트
 public class InsertLessonFragment extends Fragment
 {
     ArrayList<Document> documents;
@@ -32,12 +28,14 @@ public class InsertLessonFragment extends Fragment
     TextView insertTitle;
     RecyclerView recyclerView;
 
-    public InsertLessonFragment() {
+    public InsertLessonFragment()
+    {
 
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -54,6 +52,7 @@ public class InsertLessonFragment extends Fragment
         insertTitle = view.findViewById(R.id.insertTitle);
         recyclerView = view.findViewById(R.id.modal_recyclerView);
 
+        //데이터베이스에서 받아온 강의 정보를 저장함
         documents = (ArrayList<Document>) getArguments().getSerializable("Doc");
 
         insertExit.setOnClickListener(new View.OnClickListener()
@@ -74,6 +73,7 @@ public class InsertLessonFragment extends Fragment
 
         List<Lesson> list = new ArrayList<>();
 
+        //강의 정보 변환
         for(Document doc : documents)
         {
             list.add(TimeTableFragment.parseLesson(doc, false));
@@ -90,6 +90,7 @@ public class InsertLessonFragment extends Fragment
         return view;
     }
 
+    //프래그먼트 나감, 자주 사용될 기능이라 종료하지 않고 히든으로 숨김
     public void insertExit (View v)
     {
         FragmentManager fManager = getFragmentManager();
@@ -98,6 +99,7 @@ public class InsertLessonFragment extends Fragment
         fTransaction.hide(this).commit();
     }
 
+    //강의 검색 프래그먼트로 넘어감
     public void setInsertSearch (View v)
     {
         SearchLessonFragment searchLessonFragment = new SearchLessonFragment();

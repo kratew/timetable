@@ -11,14 +11,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -425,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 Toast.makeText(this, "로그아웃", Toast.LENGTH_LONG).show();
             }
         }
-        // 가져온 아이디로 FriendFragment에서 검색하는 코드. ↓
+        // 가져온 아이디로 검색하여 FriendFragment를 갱신함
         else if (requestCode == 1001 && resultCode == RESULT_OK)
         {
             fr_id.clear();
@@ -474,43 +472,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("Main", "============\tMainOnStart\t============");
-    }
-
-
-    @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
 
         pagechk = true;
-
-        Log.d("Main", "============\tMainOnResume\t============");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("Main", "============\tMainOnPause\t============");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("Main", "============\tMainOnStop\t============");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("Main", "============\tMainOnDestroy\t============");
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        Log.d("Main", "============\tMainOnPostResume\t============");
     }
 }

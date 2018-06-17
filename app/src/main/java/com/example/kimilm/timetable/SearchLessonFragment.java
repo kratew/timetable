@@ -27,10 +27,7 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kimilm on 2018. 6. 10..
- */
-
+//강의 검색 프래그먼트
 public class SearchLessonFragment extends Fragment
 {
     RadioGroup prefix;
@@ -41,7 +38,8 @@ public class SearchLessonFragment extends Fragment
     String key;
     ArrayList<Document> searchDocument;
 
-    public SearchLessonFragment() {
+    public SearchLessonFragment()
+    {
 
     }
 
@@ -66,9 +64,12 @@ public class SearchLessonFragment extends Fragment
 
         searchDocument = new ArrayList<>();
 
-        prefix.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        //체크된 버튼에 따른 검색 수행
+        prefix.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
                 switch (checkedId)
                 {
                     case R.id.searchTitle:
@@ -88,6 +89,7 @@ public class SearchLessonFragment extends Fragment
 
         prefix.check(R.id.searchTitle);
 
+        //뒤로가기
         searchBack.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -96,10 +98,15 @@ public class SearchLessonFragment extends Fragment
             }
         });
 
-        toSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        //검색
+        toSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                //키보드의 엔터키가 눌리면 검색
+                if (actionId == EditorInfo.IME_ACTION_SEARCH)
+                {
                     lessonSearch(v);
 
                     KeyboardUtils.hideKeyboard(getContext());
@@ -112,6 +119,7 @@ public class SearchLessonFragment extends Fragment
         return view;
     }
 
+    //뒤로가기
     public void searchBack (View v)
     {
         KeyboardUtils.hideKeyboard(getContext());
@@ -124,6 +132,7 @@ public class SearchLessonFragment extends Fragment
         fTransaction.replace(R.id.coordinator, insertLessonFragment).commit();
     }
 
+    //강의 검색 기능
     public void lessonSearch (View v)
     {
         if(toSearch.getText().toString().length() == 0)
@@ -143,6 +152,7 @@ public class SearchLessonFragment extends Fragment
         };
 
         thread.start();
+
         //쓰레드 끝나는 시간을 기다려야한다
         try { thread.join(); } catch (Exception e) {}
 
@@ -153,6 +163,7 @@ public class SearchLessonFragment extends Fragment
             return;
         }
 
+        //받아온 강의정보 파싱
         List<Lesson> list = new ArrayList<>();
 
         for(Document doc : searchDocument)
@@ -170,6 +181,7 @@ public class SearchLessonFragment extends Fragment
     }
 }
 
+//검색하면 키보드 내려가게 설정
 class KeyboardUtils
 {
     public static void hideKeyboard(Context context)

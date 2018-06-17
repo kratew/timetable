@@ -1,47 +1,36 @@
 package com.example.kimilm.timetable;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimerTask;
 
-//어댑터 클래스
-public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
-
+//InsertLessonFragment에 사용될 어댑터 클래스
+public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>
+{
     private List<Lesson> list;
 
     public RecyclerViewAdapter(List<Lesson> list) {
         this.list = list;
     }
 
-
-
     @Override
-    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.lesson_item, parent, false);
         return new ItemHolder(root);
     }
 
+    //강의 정보를 변환하여 각 뷰에 세팅
     @Override
-    public void onBindViewHolder(final ItemHolder holder, int position) {
+    public void onBindViewHolder(final ItemHolder holder, int position)
+    {
         Lesson vo = list.get(position);
 
         holder.code.setText(vo.code);
@@ -55,10 +44,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
         final Lesson lesson = vo;
         final View holderView = holder.view;
 
+        //각 뷰에 온클릭 리스너로 강의를 추가할 수 있게 구현함
         holderView.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
+                //강의 추가 여부를 물어보는 스낵바 생성
                 Snackbar snackbar = Snackbar.make(v, "강의 추가", Snackbar.LENGTH_INDEFINITE);
                 snackbar.getView().setBackgroundColor(v.getResources().getColor(R.color.color8));
 
@@ -88,6 +80,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemHolder>  {
                     }
                 });
 
+                //스낵바가 사라지면 상태 복귀
                 snackbar.addCallback(new Snackbar.Callback()
                 {
                     @Override

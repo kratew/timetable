@@ -1,26 +1,14 @@
 package com.example.kimilm.timetable;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Application;
-import android.graphics.Color;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DB;
-import com.mongodb.DBObject;
 import org.bson.Document;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,18 +18,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by kimilm on 2018. 5. 1..
- */
-
+//데이터를 주고받기 위한 클래스, 자체의 기능도 포함, Application으로 선언하여 데이터 전달을 용이하게 하였음
 public class TimeTable extends Application
 {
+    //폴더 이름
     static String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator + "MyFolder" + File.separator;
 
-    static String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator + "MyFolder" + File.separator + "saveTable.json";
+    //시간표 파일 이름
+    static String filePath = folderPath + "saveTable.json";
 
+    //프래그먼트 접근을 직관적으로 하기 위해
     public static TimeTableFragment fragment;
 
     //월-금, 9시-22시, 5분 단위로 중복 검사
@@ -50,17 +37,20 @@ public class TimeTable extends Application
     //각 시간표별 강의 입력
     static ArrayList<Lesson> lessons = new ArrayList<>();
 
+    //중복 체크 배열을 초기화
     public TimeTable ()
     {
         Arrays.fill(jungBok, false);
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
         File file = new File(filePath);
 
+        //존재하는 파일이 있으면 읽어온다
         if(file.exists())
         {
             try
@@ -87,6 +77,7 @@ public class TimeTable extends Application
         }
     }
 
+    //디비나 파일에서 받아온 강의 정보로 데이터 갱신
     public static void setTimeTable (Document doc)
     {
         lessons.clear();
@@ -128,7 +119,8 @@ public class TimeTable extends Application
     //false -> 강의 추가 실패, true -> 강의 추가 성공
     public static boolean addLesson (Lesson lesson)
     {
-        // 강의 이름이 같다면 추가 불가, (원어 강의) 같은 접미사 체크하기 위해 두 번 검사
+        // 강의 이름이 같다면 추가 불가
+        // (원어 강의) 같은 접미사 체크하기 위해 두 번 검사
         for (int i = 0; i < lessons.size(); ++i)
         {
             if(lessons.get(i).title.contains(lesson.title))
@@ -262,7 +254,7 @@ public class TimeTable extends Application
         }
     }
 
-    //테이블 변환
+    //강의를 mongoDB 형태로 변환
     public static BasicDBObject mkTableDBObject ()
     {
         ArrayList<BasicDBObject> lessonObjList = new ArrayList<>();
@@ -315,6 +307,7 @@ public class TimeTable extends Application
         }
     }
 
+    //로그인 / 로그아웃시 중복 배열 초기화
     public static void resetData ()
     {
         Arrays.fill(jungBok, false);
