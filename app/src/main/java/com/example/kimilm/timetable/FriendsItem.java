@@ -4,7 +4,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 
-//리스트뷰
+//리스트뷰 아이템
 public class FriendsItem {
     boolean chk;
     private String Name;
