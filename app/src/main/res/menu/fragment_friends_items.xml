@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:padding="5dp"
+        android:id="@+id/option1"
+        android:icon="@drawable/add_user"
+        android:title="친구 추가"
+        app:showAsAction="always"/>
+
+    <item
+        android:padding="5dp"
+        android:id="@+id/option2"
+        android:icon="@drawable/del_user"
+        android:title="친구 삭제"
+        app:showAsAction="always"/>
+
+    <item
+        android:padding="5dp"
+        android:id="@+id/option3"
+        android:icon="@drawable/compare"
+        android:title="시간표 비교"
+        app:showAsAction="always"/>
+
+    <item
+        android:visible="false"
+        android:id="@+id/option4"
+        android:icon="@drawable/msg"
+        android:title="메시지보내기"
+        app:showAsAction="always"/>
+
+</menu>

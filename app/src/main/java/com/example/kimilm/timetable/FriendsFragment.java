@@ -1,84 +1,181 @@
 package com.example.kimilm.timetable;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
+import org.bson.Document;
+
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
-public class FriendsFragment extends Fragment implements View.OnClickListener{
+//친구 정보 프래그먼트, 메인의 뷰페이저에 들어감
+public class FriendsFragment extends Fragment
+{
+    ListView listView;
+    ListViewAdapter adapter;
 
-    ArrayList<FriendsItem> friends;
-    FloatingActionButton fab;
+    //search Friend
+    ArrayList<Document> searchDoc = new ArrayList<>();
+    ArrayList<String> myFriends = new ArrayList<>();
 
-    public FriendsFragment(){
-        // Required empty public constructor
+    public FriendsFragment()
+    {
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        if(container == null) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        if (container == null)
+        {
             return null;
         }
 
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        fab = (FloatingActionButton)view.findViewById(R.id.faButton);
-        fab.setOnClickListener(this);
+        EditText searchName = (EditText) view.findViewById(R.id.searchName);
+        listView = (ListView) view.findViewById(R.id.listView);
+
+        adapter = new ListViewAdapter();
+
+        myFriends.addAll(MainActivity.thisFr.frList);
+
+        addUser(myFriends);
+
+        listView.setAdapter(adapter);
 
         return view;
     }
 
-    @Override
-    public void onClick(View v) {
-        /* Snackbar : 간단한 문자열 메시지를 사용자에게 잠깐 보여줄 목적으로 사용
-           - Toast 메시지와 비슷하지만, 사용자의 이벤트 처리가 가능하기 때문에 많이 사용
-           - Snackbar.make(스넥바가 뜨게될 View, 사용자에게 보일 문자열 메시지, 스넥바가 화면에 뜨는 시간)
-           - setAction() 메서드를 사용하면, Snackbar에서 사용자 이벤트를 처리할 수 있음
-           - setAction(Action문자열, 이벤트 핸들러)
-           - 사용자가 Action문자열을 클릭하면, 두 번째 매개변수인 OnClickListener()를 구현한 이벤트 핸들러가 실행
-        */
-        //=====================================================================
-        Snackbar.make(v,"Snackbar with Action", Snackbar.LENGTH_LONG).setActionTextColor(Color.YELLOW).setAction("현재 시간?", new View.OnClickListener(){
+    //친구 추가, 성공은 true, 실패는 false
+    public boolean addUser (final ArrayList<String> addFriends)
+    {
+        //결과를 받아와야 하는 쓰레드 작업
+        Thread thread = new Thread() {
             @Override
-            public void onClick(View v) {
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
-                SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy", Locale.US);
-                String getTime = dateformat.format(date);
-                Toast.makeText(getActivity(), getTime, Toast.LENGTH_LONG).show();
+            public void run() {
+                synchronized (this) {
+                    UseDB.searchFriendTable(searchDoc, addFriends);
+                }
             }
-        }).show();
-        //=====================================================================
+        };
 
+        thread.start();
+
+        //기다림
+        try { thread.join(); } catch (Exception e) {}
+
+        // 불러온 친구를 리스트뷰에 넣음.
+        if (searchDoc.get(0) != null)
+        {
+            for (Document friends : searchDoc) {
+                adapter.addItem(false, friends.getString("_id"), friends.getString("name"),
+                        friends.get("timetable", Document.class).get("lessons", ArrayList.class));
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+        //친구 목록 다시 그림
+        adapter.notifyDataSetChanged();
+
+        return true;
     }
 
+    //로그아웃, 계정삭제 등의 작업시 어뎁터를 초기화
+    public void resetAdapter()
+    {
+        adapter = new ListViewAdapter();
 
-    // Fabulous Filter 코드
-    /*
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        View contentView = View.inflate(getContext(), R.layout.filter_sample_view, null);
-        RelativeLayout rl_content = (RelativeLayout) contentView.findViewById(R.id.rl_content);
-        LinearLayout ll_buttons = (LinearLayout) contentView.findViewById(R.id.ll_buttons);
-        contentView.findViewById(R.id.btn_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFilter("closed");
-            }
-        });
+        listView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
     }
-    */
+
+    //친구를 삭제하면 로컬 / 디비 모드 지우는 작업
+    public void removeFriend()
+    {
+        int count = adapter.getCount();
+
+        final ArrayList<String> delUsers = new ArrayList<>();
+
+        for (int i = 0; i < count; ++i)
+        {
+            if (((FriendsItem)adapter.getItem(i)).isChk())
+            {
+                delUsers.add(((FriendsItem)adapter.getItem(i)).getId());
+
+                MainActivity.thisFr.frList.remove(i);
+            }
+        }
+
+        //결과를 받아와야 하는 작업
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run() {
+                for (int i = 0; i < delUsers.size(); ++i)
+                {
+                    UseDB.deleteFriend(MainActivity.thisFr.getId(), delUsers.get(i));
+                }
+            }
+        };
+
+        thread.start();
+
+        //기다림
+        try { thread.join(); } catch (Exception e) {}
+
+        //친구들을 새로 그리고
+        resetAdapter();
+
+        addUser(MainActivity.thisFr.frList);
+
+        //로컬 파일도 갱신
+        AccountActivity.saveAccount(TimeTable.folderPath, MainActivity.thisFr);
+
+        Toast.makeText(getActivity(), "친구 삭제", Toast.LENGTH_SHORT).show();
+    }
+
+    //시간표를 비교하여 액티비티를 띄움
+    public void compareTable ()
+    {
+        int count = adapter.getCount();
+
+        Intent intent = new Intent(getActivity(), CompareTable.class);
+
+        int key = 0;
+
+        //리스트뷰에 체크된 친구들을 대상으로 시간표 비교
+        for (int i = 0; i < count; ++i)
+        {
+            if (((FriendsItem)adapter.getItem(i)).isChk())
+            {
+                CarryBundle.bundle.putSerializable(String.valueOf(key++), ((FriendsItem)(adapter.getItem(i))).getLessons());
+            }
+        }
+
+        //메뉴 아이콘 세팅값
+        MainActivity.pagechk = true;
+
+        startActivity(intent);
+    }
 }

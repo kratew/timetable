@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/account"
+            android:title="계정 설정" />
+
+        <item
+            android:visible="false"
+            android:id="@+id/nav_contact_mail"
+            android:icon="@drawable/save"
+            android:title="Contact Mail" />
+        <item
+            android:visible="false"
+            android:id="@+id/nav_contact_phone"
+            android:icon="@drawable/add"
+            android:title="Contact Phone" />
+    </group>
+
+</menu>

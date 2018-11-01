@@ -7,10 +7,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".TimeTable"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/timetable"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/timetable"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <activity android:name=".MainActivity">
@@ -20,8 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
+        <activity android:name=".AccountActivity" />
+        <activity android:name=".FriendAddActivity" />
+        <activity android:name=".CompareTable" />
     </application>
 
 </manifest>

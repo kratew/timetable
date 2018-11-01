@@ -1,51 +1,50 @@
 package com.example.kimilm.timetable;
 
-import android.graphics.drawable.Drawable;
+import org.bson.Document;
 
+import java.util.ArrayList;
+
+//리스트뷰 아이템
 public class FriendsItem {
-    private Drawable Photo;
+    boolean chk;
     private String Name;
-    private String PhoneNum;
-    private String Major;
-    private String Club;
+    private String id;
+    private ArrayList<Document> lessons;
 
-    public void setPhoto(Drawable photo){
-        this.Photo = Photo;
+    public FriendsItem()
+    {
+        lessons = new ArrayList<>();
     }
 
-    public void setName(String Name){
-        this.Name = Name;
+    public boolean isChk() {
+        return chk;
     }
 
-    public void setPhoneNum(String PhoneNum){
-        this.PhoneNum = PhoneNum;
+    public void setChk(boolean chk) {
+        this.chk = chk;
     }
 
-    public void setMajor(String Major){
-        this.Major = Major;
+    public String getName() {
+        return Name;
     }
 
-    public void setClub(String Club){
-        this.Club = Club;
+    public void setName(String name) {
+        Name = name;
     }
 
-    public Drawable getPhoto(){
-        return this.Photo;
+    public String getId() {
+        return id;
     }
 
-    public String getName(String Name){
-        return this.Name;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getPhoneNum(String PhoneNum){
-        return this.PhoneNum;
+    public ArrayList<Document> getLessons() {
+        return lessons;
     }
 
-    public String getMajor(String Major) {
-        return this.Major;
-    }
-
-    public String getClub(String Club){
-        return this.Club;
+    public void setLessons(ArrayList<Document> lessons) {
+        this.lessons.addAll(lessons);
     }
 }
